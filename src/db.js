@@ -14,47 +14,52 @@ const UPLOADS_DIR = isVercel
   : path.join(__dirname, "..", "data", "uploads");
 
 function ensureDb() {
-  if (!fs.existsSync(path.dirname(DB_PATH))) {
-    fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
-  }
-  if (!fs.existsSync(UPLOADS_DIR)) {
-    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-  }
-  if (!fs.existsSync(DB_PATH)) {
-    fs.writeFileSync(
-      DB_PATH,
-      JSON.stringify({ products: defaultProductsModule.products, orders: [], seq: 8800 }, null, 2)
-    );
+  try {
+    const dir = path.dirname(DB_PATH);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    if (!fs.existsSync(UPLOADS_DIR)) {
+      fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+    }
+    if (!fs.existsSync(DB_PATH)) {
+      fs.writeFileSync(
+        DB_PATH,
+        JSON.stringify({ products: defaultProductsModule.products, orders: [], seq: 8800 }, null, 2)
+      );
+    }
+  } catch (err) {
+    console.error("ensureDb error:", err.message);
   }
 }
 
 function readDB() {
   ensureDb();
-  const raw = fs.readFileSync(DB_PATH, "utf-8");
   try {
-    const data = JSON.parse(raw);
-    let dirty = false;
-    if (!Array.isArray(data.products) || data.products.length === 0) {
-      data.products = defaultProductsModule.products;
-      dirty = true;
+    if (fs.existsSync(DB_PATH)) {
+      const raw = fs.readFileSync(DB_PATH, "utf-8");
+      const data = JSON.parse(raw);
+      if (!Array.isArray(data.products) || data.products.length === 0) {
+        data.products = defaultProductsModule.products;
+      }
+      if (!Array.isArray(data.orders)) {
+        data.orders = [];
+      }
+      return data;
     }
-    if (!Array.isArray(data.orders)) {
-      data.orders = [];
-      dirty = true;
-    }
-    if (dirty) {
-      fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
-    }
-    return data;
   } catch (e) {
-    const fallback = { products: defaultProductsModule.products, orders: [], seq: 8800 };
-    fs.writeFileSync(DB_PATH, JSON.stringify(fallback, null, 2));
-    return fallback;
+    console.error("readDB error:", e.message);
   }
+  return { products: defaultProductsModule.products, orders: [], seq: 8800 };
 }
 
 function writeDB(data) {
-  fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
+  try {
+    ensureDb();
+    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
+  } catch (err) {
+    console.error("writeDB error:", err.message);
+  }
 }
 
 // ===== Product CRUD =====

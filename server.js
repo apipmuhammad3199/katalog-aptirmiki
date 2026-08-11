@@ -13,8 +13,10 @@ db.ensureDb();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const publicDir = path.resolve(__dirname, "public");
+
 app.use(express.json({ limit: "1mb" }));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(publicDir));
 app.use("/uploads", express.static(db.UPLOADS_DIR));
 
 function formatWaNumber(num) {
@@ -44,7 +46,11 @@ app.use("/api/orders", ordersRouter);
 app.use("/api/admin", adminRouter);
 
 app.get("/admin", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "admin.html"));
+  res.sendFile(path.join(publicDir, "admin.html"));
+});
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(publicDir, "index.html"));
 });
 
 app.use("/api/*", (req, res) => {
