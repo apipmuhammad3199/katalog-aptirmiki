@@ -272,8 +272,15 @@ function renderTable(orders) {
       const statusOptions = STATUS_FLOW.map(
         (s) => `<option value="${s.key}" ${s.key === o.status ? "selected" : ""}>${escapeHtml(s.label)}</option>`
       ).join("");
+function getProofSrc(proof) {
+  if (!proof) return "";
+  if (proof.dataUrl) return proof.dataUrl;
+  if (proof.filename) return `/uploads/${encodeURIComponent(proof.filename)}`;
+  return "";
+}
+
       const proofCell = o.proof
-        ? `<img data-src="/uploads/${encodeURIComponent(o.proof.filename)}" class="proof-thumb w-10 h-10 object-cover rounded cursor-pointer border border-gray-200 shadow-sm hover:scale-105 transition" src="/uploads/${encodeURIComponent(o.proof.filename)}" title="Klik untuk memperbesar" />`
+        ? `<img data-src="${getProofSrc(o.proof)}" class="proof-thumb w-10 h-10 object-cover rounded cursor-pointer border border-gray-200 shadow-sm hover:scale-105 transition" src="${getProofSrc(o.proof)}" title="Klik untuk memperbesar" />`
         : `<span class="text-xs text-gray-300">—</span>`;
 
       return `
@@ -561,7 +568,7 @@ function openTrackingModal(orderId) {
   const proofHtml = order.proof
     ? `<div class="mt-3 bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-center">
         <p class="text-xs font-semibold text-emerald-700 mb-2">Bukti Pembayaran Terunggah:</p>
-        <img src="/uploads/${encodeURIComponent(order.proof.filename)}" class="w-36 h-36 object-cover rounded-lg border border-gray-200 mx-auto cursor-pointer shadow-sm" onclick="document.getElementById('lightbox-img').src=this.src; document.getElementById('lightbox').classList.remove('hidden');" />
+        <img src="${getProofSrc(order.proof)}" class="w-36 h-36 object-cover rounded-lg border border-gray-200 mx-auto cursor-pointer shadow-sm" onclick="document.getElementById('lightbox-img').src=this.src; document.getElementById('lightbox').classList.remove('hidden');" />
       </div>`
     : `<p class="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-xl p-2.5 mt-3 text-center">Pembeli belum mengunggah foto bukti transfer.</p>`;
 

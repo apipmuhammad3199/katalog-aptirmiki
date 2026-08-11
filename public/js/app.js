@@ -667,7 +667,7 @@ async function renderKonfirmasi(orderId) {
           <svg class="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           <span>Bukti transfer sudah diunggah. Menunggu verifikasi admin.</span>
         </div>
-        <img src="/uploads/${encodeURIComponent(order.proof.filename)}" alt="Bukti Transfer" class="w-32 h-32 object-cover rounded-lg border border-gray-200 mx-auto shadow-sm" />
+        <img src="${getProofSrc(order.proof)}" alt="Bukti Transfer" class="w-32 h-32 object-cover rounded-lg border border-gray-200 mx-auto shadow-sm" />
       </div>`
     : "";
 
@@ -964,11 +964,18 @@ function renderTrackCard(order, statusFlow) {
   const waMessage = `Halo Admin APTIRMIKI, saya ingin menanyakan status pesanan saya.\nID Pesanan: ${order.id}\nNama: ${order.customer.name}`;
   const waLink = formatWaLink(CONFIG.adminWaNumber, waMessage);
 
+function getProofSrc(proof) {
+  if (!proof) return "";
+  if (proof.dataUrl) return proof.dataUrl;
+  if (proof.filename) return `/uploads/${encodeURIComponent(proof.filename)}`;
+  return "";
+}
+
   const proofThumbnail = order.proof
     ? `<div class="mt-2 text-xs text-emerald-700 bg-emerald-50 rounded-lg p-2 flex items-center gap-2 border border-emerald-200">
         <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         <span class="font-medium">Bukti Transfer Terunggah</span>
-        <img src="/uploads/${encodeURIComponent(order.proof.filename)}" class="w-8 h-8 object-cover rounded border border-gray-200 ml-auto" />
+        <img src="${getProofSrc(order.proof)}" class="w-8 h-8 object-cover rounded border border-gray-200 ml-auto cursor-pointer" onclick="if(document.getElementById('lightbox-img')){document.getElementById('lightbox-img').src=this.src; document.getElementById('lightbox').classList.remove('hidden');}" />
       </div>`
     : "";
 

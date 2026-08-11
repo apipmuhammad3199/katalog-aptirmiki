@@ -150,8 +150,21 @@ router.post("/:id/proof", (req, res, next) => {
     }
   }
 
+  let dataUrl = "";
+  try {
+    const fileBuffer = fs.readFileSync(req.file.path);
+    const mimeType = req.file.mimetype || "image/jpeg";
+    dataUrl = `data:${mimeType};base64,${fileBuffer.toString("base64")}`;
+  } catch (err) {
+    console.error("Base64 proof conversion error:", err);
+  }
+
   const updated = db.updateOrder(req.params.id, (o) => {
-    o.proof = { filename: req.file.filename, uploadedAt: new Date().toISOString() };
+    o.proof = {
+      filename: req.file.filename,
+      dataUrl,
+      uploadedAt: new Date().toISOString()
+    };
     return o;
   });
   res.json({ order: updated });
