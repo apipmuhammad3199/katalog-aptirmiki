@@ -5,8 +5,13 @@ const fs = require("fs");
 const path = require("path");
 const defaultProductsModule = require("./products");
 
-const DB_PATH = path.join(__dirname, "..", "data", "db.json");
-const UPLOADS_DIR = path.join(__dirname, "..", "data", "uploads");
+const isVercel = Boolean(process.env.VERCEL || process.env.NOW_REGION);
+const DB_PATH = isVercel
+  ? path.join("/tmp", "db.json")
+  : path.join(__dirname, "..", "data", "db.json");
+const UPLOADS_DIR = isVercel
+  ? path.join("/tmp", "uploads")
+  : path.join(__dirname, "..", "data", "uploads");
 
 function ensureDb() {
   if (!fs.existsSync(path.dirname(DB_PATH))) {
