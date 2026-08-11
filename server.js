@@ -57,7 +57,11 @@ app.use((err, req, res, next) => {
   res.status(400).json({ error: err.message || "Terjadi kesalahan pada server." });
 });
 
-app.listen(PORT, () => {
-  console.log(`Katalog APTIRMIKI berjalan di http://localhost:${PORT}`);
-  console.log(`Admin dashboard: http://localhost:${PORT}/admin`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Katalog APTIRMIKI berjalan di http://localhost:${PORT}`);
+    console.log(`Admin dashboard: http://localhost:${PORT}/admin`);
+  });
+}
+
+module.exports = app;
