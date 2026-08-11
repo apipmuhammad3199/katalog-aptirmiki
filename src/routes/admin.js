@@ -1,0 +1,257 @@
+const express = require("express");
+const crypto = require("crypto");
+const db = require("../db");
+const { products } = require("../products");
+const { STATUS_FLOW, isValidStatus } = require("../status");
+
+const router = express.Router();
+
+// Token sesi admin disimpan in-memory (cukup untuk skala 1 server selama acara berlangsung).
+const sessions = new Map(); // token -> expiresAt
+const SESSION_TTL_MS = 12 * 60 * 60 * 1000; // 12 jam
+
+function createSession() {
+  const token = crypto.randomBytes(24).toString("hex");
+  sessions.set(token, Date.now() + SESSION_TTL_MS);
+  return token;
+}
+
+function requireAdmin(req, res, next) {
+  const auth = req.headers.authorization || "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : null;
+  const expiresAt = token && sessions.get(token);
+  if (!expiresAt || expiresAt < Date.now()) {
+    return res.status(401).json({ error: "Sesi admin tidak valid atau sudah habis. Silakan login kembali." });
+  }
+  next();
+}
+
+router.post("/login", (req, res) => {
+  const { password } = req.body || {};
+  const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
+  if (password !== adminPassword) {
+    return res.status(401).json({ error: "Password salah." });
+  }
+  const token = createSession();
+  res.json({ token });
+});
+
+router.post("/logout", requireAdmin, (req, res) => {
+  const token = (req.headers.authorization || "").slice(7);
+  sessions.delete(token);
+  res.json({ ok: true });
+});
+
+router.get("/orders", requireAdmin, (req, res) => {
+  const orders = db.getOrders().slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  res.json({ orders, statusFlow: STATUS_FLOW });
+});
+
+router.patch("/orders/:id/status", requireAdmin, (req, res) => {
+  const { status } = req.body || {};
+  if (!isValidStatus(status)) {
+    return res.status(400).json({ error: "Status tidak valid." });
+  }
+  const updated = db.updateOrder(req.params.id, (o) => {
+    o.status = status;
+    return o;
+  });
+  if (!updated) return res.status(404).json({ error: "Pesanan tidak ditemukan." });
+  res.json({ order: updated });
+});
+
+router.delete("/orders/:id", requireAdmin, (req, res) => {
+  const deleted = db.deleteOrder(req.params.id);
+  if (!deleted) return res.status(404).json({ error: "Pesanan tidak ditemukan." });
+  res.json({ ok: true, deletedId: deleted.id });
+});
+
+// ===== Product Management Endpoints =====
+function convertDriveUrl(url) {
+  if (!url || typeof url !== "string") return url || "";
+  const trimmed = url.trim();
+  const fileIdMatch = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (fileIdMatch && fileIdMatch[1]) {
+    return `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
+  }
+  const idParamMatch = trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (idParamMatch && idParamMatch[1]) {
+    return `https://lh3.googleusercontent.com/d/${idParamMatch[1]}`;
+  }
+  return trimmed;
+}
+
+// ===== Product Management Endpoints =====
+router.get("/products", requireAdmin, (req, res) => {
+  res.json({ products: db.getProducts() });
+});
+
+router.post("/products", requireAdmin, (req, res) => {
+  const { name, category, price, supplierPrice, unit, origin, expiryDetail, description, image } = req.body || {};
+  if (!name || !category || !price || !unit) {
+    return res.status(400).json({ error: "Nama, kategori, harga, dan satuan produk wajib diisi." });
+  }
+
+  const slug = String(name)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+  const id = `${slug}-${Date.now().toString(36)}`;
+
+  const sellingPrice = Number(price) || 0;
+  const costPrice = supplierPrice !== undefined && supplierPrice !== "" ? Number(supplierPrice) : Math.round(sellingPrice * 0.7);
+
+  const newProduct = {
+    id,
+    name: String(name).trim(),
+    category: String(category).trim(),
+    price: sellingPrice,
+    supplierPrice: costPrice,
+    unit: String(unit).trim(),
+    origin: origin ? String(origin).trim() : "Betawi, Jakarta",
+    expiryDetail: expiryDetail ? String(expiryDetail).trim() : "Tahan Lama",
+    description: description ? String(description).trim() : "",
+    image: image ? convertDriveUrl(String(image)) : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=600&fit=crop&auto=format&q=80",
+  };
+
+  db.saveProduct(newProduct);
+  res.json({ ok: true, product: newProduct });
+});
+
+router.put("/products/:id", requireAdmin, (req, res) => {
+  const { name, category, price, supplierPrice, unit, origin, expiryDetail, description, image } = req.body || {};
+  const updates = {};
+  if (name !== undefined) updates.name = String(name).trim();
+  if (category !== undefined) updates.category = String(category).trim();
+  if (price !== undefined) updates.price = Number(price) || 0;
+  if (supplierPrice !== undefined && supplierPrice !== "") updates.supplierPrice = Number(supplierPrice) || 0;
+  if (unit !== undefined) updates.unit = String(unit).trim();
+  if (origin !== undefined) updates.origin = String(origin).trim();
+  if (expiryDetail !== undefined) updates.expiryDetail = String(expiryDetail).trim();
+  if (description !== undefined) updates.description = String(description).trim();
+  if (image !== undefined) updates.image = convertDriveUrl(String(image));
+
+  const updated = db.updateProduct(req.params.id, updates);
+  if (!updated) return res.status(404).json({ error: "Produk tidak ditemukan." });
+  res.json({ ok: true, product: updated });
+});
+
+router.delete("/products/:id", requireAdmin, (req, res) => {
+  const deleted = db.deleteProduct(req.params.id);
+  if (!deleted) return res.status(404).json({ error: "Produk tidak ditemukan." });
+  res.json({ ok: true, deletedId: deleted.id });
+});
+
+router.get("/summary", requireAdmin, (req, res) => {
+  const orders = db.getOrders();
+  const allProducts = db.getProducts();
+
+  const prodMap = {};
+  for (const p of allProducts) {
+    const sellPrice = Number(p.price) || 0;
+    const suppPrice = p.supplierPrice !== undefined ? Number(p.supplierPrice) : Math.round(sellPrice * 0.7);
+    prodMap[p.id] = {
+      ...p,
+      price: sellPrice,
+      supplierPrice: suppPrice,
+      profitPerUnit: sellPrice - suppPrice,
+      totalQty: 0,
+      totalRevenue: 0,
+      totalCost: 0,
+      totalProfit: 0,
+    };
+  }
+
+  for (const order of orders) {
+    for (const item of order.items) {
+      if (prodMap[item.productId]) {
+        const qty = Number(item.qty) || 0;
+        const sellPrice = Number(item.price) || Number(prodMap[item.productId].price) || 0;
+        const suppPrice = Number(prodMap[item.productId].supplierPrice) || 0;
+
+        prodMap[item.productId].totalQty += qty;
+        prodMap[item.productId].totalRevenue += sellPrice * qty;
+        prodMap[item.productId].totalCost += suppPrice * qty;
+        prodMap[item.productId].totalProfit += (sellPrice - suppPrice) * qty;
+      }
+    }
+  }
+
+  const summary = Object.values(prodMap).map((p) => ({
+    productId: p.id,
+    name: p.name,
+    category: p.category,
+    unit: p.unit,
+    price: p.price,
+    supplierPrice: p.supplierPrice,
+    profitPerUnit: p.profitPerUnit,
+    totalQty: p.totalQty,
+    totalRevenue: p.totalRevenue,
+    totalCost: p.totalCost,
+    totalProfit: p.totalProfit,
+  }));
+
+  const totalOrders = orders.length;
+  const totalRevenue = orders.reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+  const totalCost = summary.reduce((sum, p) => sum + p.totalCost, 0);
+  const totalProfit = totalRevenue - totalCost;
+  const profitMarginPercent = totalRevenue > 0 ? Number(((totalProfit / totalRevenue) * 100).toFixed(1)) : 0;
+
+  res.json({
+    summary,
+    totalOrders,
+    totalRevenue,
+    totalCost,
+    totalProfit,
+    profitMarginPercent,
+  });
+});
+
+function csvEscape(value) {
+  const str = String(value ?? "");
+  if (/[",\n]/.test(str)) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+  return str;
+}
+
+router.get("/orders/export.csv", requireAdmin, (req, res) => {
+  const orders = db.getOrders().slice().sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+  const statusLabel = (key) => STATUS_FLOW.find((s) => s.key === key)?.label || key;
+
+  const header = [
+    "ID Pesanan",
+    "Waktu",
+    "Nama Pemesan",
+    "Nomor WhatsApp",
+    "Instansi/Asal Daerah",
+    "Metode Pengambilan",
+    "Detail Lokasi",
+    "Detail Barang",
+    "Total Harga",
+    "Status",
+    "Bukti Transfer",
+  ];
+
+  const rows = orders.map((o) => [
+    o.id,
+    new Date(o.createdAt).toLocaleString("id-ID"),
+    o.customer.name,
+    o.customer.wa,
+    o.customer.instansi,
+    o.customer.method,
+    o.customer.detail || "",
+    o.items.map((i) => `${i.name} x${i.qty}`).join("; "),
+    o.total,
+    statusLabel(o.status),
+    o.proof ? o.proof.filename : "Belum upload",
+  ]);
+
+  const csv = [header, ...rows].map((r) => r.map(csvEscape).join(",")).join("\n");
+  const bom = "﻿"; // agar Excel membaca UTF-8 dengan benar
+  res.setHeader("Content-Type", "text/csv; charset=utf-8");
+  res.setHeader("Content-Disposition", `attachment; filename="rekap-pesanan-aptirmiki-${Date.now()}.csv"`);
+  res.send(bom + csv);
+});
+
+module.exports = router;

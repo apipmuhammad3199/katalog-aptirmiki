@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard — Oleh-Oleh APTIRMIKI</title>
+  <link rel="icon" href="/images/logo.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { primary: "#0056d2", secondary: "#e60012", gold: "#0056d2", cream: "#f0f6ff" } } },
+    };
+  </script>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-800">
+
+  <!-- Login Screen -->
+  <div id="login-screen" class="min-h-screen flex items-center justify-center px-4">
+    <div class="bg-white rounded-2xl shadow-lg p-8 w-full max-w-sm border border-gray-100">
+      <div class="text-center mb-6">
+        <img src="/images/logo.svg" alt="APTIRMIKI Logo" class="w-14 h-14 mx-auto mb-3 object-contain" />
+        <h1 class="font-bold text-lg text-gray-800">Admin Dashboard</h1>
+        <p class="text-xs text-gray-400">Oleh-Oleh Resmi APTIRMIKI</p>
+      </div>
+      <form id="login-form" class="space-y-3">
+        <input id="login-password" type="password" placeholder="Masukkan password admin"
+          class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:border-[--color-primary]" required />
+        <button class="w-full bg-[--color-primary] text-white rounded-lg py-2.5 text-sm font-semibold">Masuk</button>
+        <p id="login-error" class="text-xs text-red-500 hidden"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dashboard Screen -->
+  <div id="dashboard-screen" class="hidden">
+    <header class="sticky top-0 z-30 bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <img src="/images/logo.svg" alt="APTIRMIKI Logo" class="w-8 h-8 object-contain" />
+        <span class="font-bold text-gray-900">Rekap Pesanan APTIRMIKI</span>
+      </div>
+      <button id="logout-btn" class="text-xs text-gray-400 border border-gray-200 rounded-full px-3 py-1.5 hover:bg-gray-50">Keluar</button>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-4">
+
+      <!-- Summary cards (Omset, Modal Supplier, Keuntungan Panitia) -->
+      <div id="summary-cards" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-4"></div>
+
+      <!-- Restock summary -->
+      <details class="bg-white rounded-xl border border-gray-100 mb-4 p-4 shadow-sm">
+        <summary class="font-semibold text-sm cursor-pointer text-gray-700 flex items-center gap-2">
+          <svg class="w-4 h-4 text-[--color-primary]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+          </svg>
+          <span>Rekap Total Item Terpesan & Analisis Laba Panitia</span>
+        </summary>
+        <div id="restock-summary" class="mt-3 space-y-1"></div>
+      </details>
+
+      <!-- Dashboard Tabs (Tracking vs History vs Products) -->
+      <div class="flex border-b border-gray-200 mb-4 gap-2 overflow-x-auto">
+        <button id="tab-all" data-tab="all" class="tab-btn px-4 py-2.5 text-sm font-semibold text-[--color-primary] border-b-2 border-[--color-primary] flex items-center gap-2 whitespace-nowrap">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+          <span>Semua Pesanan</span>
+          <span id="badge-count-all" class="bg-blue-100 text-[--color-primary] text-xs px-2 py-0.5 rounded-full font-mono">0</span>
+        </button>
+        <button id="tab-active" data-tab="active" class="tab-btn px-4 py-2.5 text-sm font-medium text-gray-500 hover:text-gray-700 flex items-center gap-2 whitespace-nowrap border-b-2 border-transparent">
+          <svg class="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span>Tracking Pesanan (Dalam Proses)</span>
+          <span id="badge-count-active" class="bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full font-mono">0</span>
+        </button>
+        <button id="tab-completed" data-tab="completed" class="tab-btn px-4 py-2.5 text-sm font-medium text-gray-500 hover:text-gray-700 flex items-center gap-2 whitespace-nowrap border-b-2 border-transparent">
+          <svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span>Riwayat Pesanan Selesai</span>
+          <span id="badge-count-completed" class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full font-mono">0</span>
+        </button>
+        <button id="tab-products" data-tab="products" class="tab-btn px-4 py-2.5 text-sm font-medium text-gray-500 hover:text-gray-700 flex items-center gap-2 whitespace-nowrap border-b-2 border-transparent">
+          <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+          <span>Kelola Katalog & Harga Supplier</span>
+          <span id="badge-count-products" class="bg-indigo-100 text-indigo-700 text-xs px-2 py-0.5 rounded-full font-mono">0</span>
+        </button>
+      </div>
+
+      <!-- Controls -->
+      <div id="orders-controls" class="flex flex-col sm:flex-row gap-2 mb-3">
+        <div class="relative flex-1">
+          <input id="admin-search" type="text" placeholder="Cari ID, nama, WA, instansi, atau barang..."
+            class="w-full border border-gray-200 rounded-lg pl-9 pr-3 py-2 text-sm bg-white focus:border-[--color-primary]" />
+          <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </div>
+        <select id="status-filter" class="border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:border-[--color-primary]">
+          <option value="">Semua Status</option>
+        </select>
+        <button id="add-product-btn" class="bg-[--color-primary] hover:bg-blue-700 text-white rounded-lg px-4 py-2 text-sm font-semibold whitespace-nowrap flex items-center gap-1.5 shadow-sm transition">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          <span>Tambah Produk</span>
+        </button>
+        <button id="export-btn" class="bg-gray-900 hover:bg-black text-white rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap flex items-center gap-2 shadow-sm transition">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+          </svg>
+          <span>Export CSV</span>
+        </button>
+        <button id="refresh-btn" class="border border-gray-200 hover:border-[--color-primary] text-gray-700 rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap bg-white flex items-center gap-2 shadow-sm transition">
+          <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          <span>Refresh</span>
+        </button>
+      </div>
+
+      <!-- Orders Table Container -->
+      <div id="orders-table-wrap" class="bg-white rounded-xl border border-gray-100 overflow-x-auto shadow-sm">
+        <table class="w-full text-sm min-w-[950px]">
+          <thead class="bg-gray-50 text-gray-500 text-xs uppercase border-b border-gray-100">
+            <tr>
+              <th class="text-left px-3 py-3">ID</th>
+              <th class="text-left px-3 py-3">Waktu</th>
+              <th class="text-left px-3 py-3">Pemesan</th>
+              <th class="text-left px-3 py-3">Instansi</th>
+              <th class="text-left px-3 py-3">Barang</th>
+              <th class="text-left px-3 py-3">Total</th>
+              <th class="text-left px-3 py-3">Bukti</th>
+              <th class="text-left px-3 py-3">Progres Tracking</th>
+              <th class="text-left px-3 py-3">Status</th>
+              <th class="text-right px-3 py-3">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="orders-tbody"></tbody>
+        </table>
+        <div id="orders-empty" class="hidden text-center text-gray-400 py-12 text-sm">Belum ada pesanan dalam kategori ini.</div>
+      </div>
+
+      <!-- Products Table Container -->
+      <div id="products-table-wrap" class="hidden bg-white rounded-xl border border-gray-100 overflow-x-auto shadow-sm">
+        <table class="w-full text-sm min-w-[1050px]">
+          <thead class="bg-gray-50 text-gray-500 text-xs uppercase border-b border-gray-100">
+            <tr>
+              <th class="text-left px-3 py-3">Foto</th>
+              <th class="text-left px-3 py-3">Nama Produk</th>
+              <th class="text-left px-3 py-3">Kategori</th>
+              <th class="text-left px-3 py-3">Harga Supplier</th>
+              <th class="text-left px-3 py-3">Harga Jual</th>
+              <th class="text-left px-3 py-3">Laba Panitia / Unit</th>
+              <th class="text-left px-3 py-3">Asal & Expired</th>
+              <th class="text-right px-3 py-3">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="products-tbody"></tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Lightbox Proof Image -->
+  <div id="lightbox" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onclick="this.classList.add('hidden')">
+    <img id="lightbox-img" src="" class="max-w-full max-h-full rounded-xl shadow-2xl border border-white/20" />
+  </div>
+
+  <!-- Admin Order Tracking Detail Modal -->
+  <div id="tracking-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 relative max-h-[90vh] overflow-y-auto">
+      <button id="close-tracking-modal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-lg p-1">✕</button>
+      <div id="tracking-modal-content"></div>
+    </div>
+  </div>
+
+  <!-- Product Modal (Add & Edit) -->
+  <div id="product-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 relative max-h-[90vh] overflow-y-auto">
+      <button id="close-product-modal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-lg p-1">✕</button>
+      <h3 id="product-modal-title" class="font-bold text-lg text-gray-900 mb-4 pb-2 border-b border-gray-100">Tambah Produk Baru</h3>
+      
+      <form id="product-form" class="space-y-3">
+        <input type="hidden" id="prod-id" />
+        <div>
+          <label class="text-xs font-semibold text-gray-600">Nama Produk *</label>
+          <input required id="prod-name" type="text" placeholder="Contoh: Kerak Telor Betawi" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm mt-1 focus:border-[--color-primary]" />
+        </div>
+        
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-xs font-semibold text-gray-600">Kategori *</label>
+            <select required id="prod-category" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm mt-1 focus:border-[--color-primary]">
+              <option value="Makanan & Minuman Khas">Makanan & Minuman Khas</option>
+              <option value="Totebag">Totebag</option>
+              <option value="Notes / Alat Tulis">Notes / Alat Tulis</option>
+              <option value="Tumbler">Tumbler</option>
+              <option value="Cangkir Enamel">Cangkir Enamel</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-600">Satuan *</label>
+            <input required id="prod-unit" type="text" placeholder="pack / pcs / botol" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm mt-1 focus:border-[--color-primary]" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-xs font-semibold text-gray-600">Harga Modal Supplier (Rp) *</label>
+            <input required id="prod-supplier-price" type="number" min="0" placeholder="25000" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm mt-1 focus:border-[--color-primary]" />
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-600">Harga Jual Pembeli (Rp) *</label>
+            <input required id="prod-price" type="number" min="0" placeholder="35000" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm mt-1 focus:border-[--color-primary]" />
+          </div>
+        </div>
+
+        <div id="profit-preview" class="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg p-2.5 flex items-center justify-between">
+          <span>Keuntungan Bersih Panitia per Unit:</span>
+          <span id="profit-preview-val" class="font-bold text-sm text-emerald-800">Rp 0 (0%)</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-xs font-semibold text-gray-600">Asal Produk *</label>
+            <input required id="prod-origin" type="text" placeholder="Contoh: Betawi, Jakarta" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm mt-1 focus:border-[--color-primary]" />
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-600">Detail Expired *</label>
+            <input required id="prod-expiry" type="text" placeholder="Contoh: 6 Bulan / Tahan Lama" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm mt-1 focus:border-[--color-primary]" />
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-gray-600">Deskripsi Produk</label>
+          <textarea id="prod-desc" rows="2" placeholder="Penjelasan singkat mengenai keunggulan produk..." class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm mt-1 focus:border-[--color-primary]"></textarea>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-gray-600">URL Foto Gambar / Link Google Drive</label>
+          <input id="prod-image" type="url" placeholder="Paste link Google Drive (https://drive.google.com/file/d/...) atau URL Foto" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm mt-1 focus:border-[--color-primary]" />
+          <p class="text-[11px] text-gray-400 mt-1">Bisa pakai link share Google Drive, otomatis dikonversi ke tampilan gambar.</p>
+        </div>
+
+        <p id="product-form-error" class="text-xs text-red-500 hidden"></p>
+
+        <div class="flex gap-2 pt-2">
+          <button type="button" id="cancel-product-modal" class="flex-1 border border-gray-200 text-gray-600 rounded-xl py-2.5 text-xs font-semibold hover:bg-gray-50">Batal</button>
+          <button type="submit" id="save-product-btn" class="flex-1 bg-[--color-primary] text-white rounded-xl py-2.5 text-xs font-semibold shadow-sm hover:bg-blue-700">Simpan Produk</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

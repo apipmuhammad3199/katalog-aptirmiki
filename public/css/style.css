@@ -1,0 +1,109 @@
+:root {
+  --color-primary: #0056d2;
+  --color-primary-dark: #003e99;
+  --color-secondary: #e60012;
+  --color-gold: #0056d2;
+  --color-cream: #f0f6ff;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  background-color: var(--color-cream);
+}
+
+::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: #a3c1f7;
+  border-radius: 999px;
+}
+
+.view-enter {
+  animation: viewFade 0.25s ease-out;
+}
+@keyframes viewFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.badge-bounce {
+  animation: badgeBounce 0.35s ease;
+}
+@keyframes badgeBounce {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+/* Status timeline */
+.timeline-step {
+  position: relative;
+}
+.timeline-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 1.1rem;
+  left: 50%;
+  width: 100%;
+  height: 3px;
+  background: #cbdcfc;
+  z-index: 0;
+}
+.timeline-step.done:not(:last-child)::after {
+  background: var(--color-primary);
+}
+.timeline-dot {
+  position: relative;
+  z-index: 1;
+}
+
+.category-chip {
+  transition: all 0.15s ease;
+}
+
+.product-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px -8px rgba(0, 86, 210, 0.25);
+}
+
+.spinner {
+  border: 3px solid #cbdcfc;
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+}
+
+/* Toast Notification */
+#toast {
+  position: fixed;
+  bottom: 5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 99;
+}
+#toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+

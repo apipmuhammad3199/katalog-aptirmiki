@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Blue Circle -->
+  <circle cx="250" cy="250" r="165" fill="#0062FF" />
+
+  <!-- Red Orbital Ring Swoosh -->
+  <path d="M 32 370 C -10 395 30 355 100 305 C 190 240 460 110 488 140 C 510 162 450 205 340 270 C 230 335 70 345 32 370 Z" fill="#E60012" />
+
+  <!-- Red Arc Accent Overlay -->
+  <path d="M 28 360 C 90 290 320 160 482 145 C 478 128 440 135 340 200 C 240 265 95 325 28 360 Z" fill="#D00010" />
+
+  <!-- APTIRMIKI Text -->
+  <text x="250" y="278" font-family="'Arial Black', 'Impact', 'Trebuchet MS', sans-serif" font-weight="900" font-size="68" fill="#FFFFFF" text-anchor="middle" letter-spacing="-1">APTIRMIKI</text>
+</svg>
