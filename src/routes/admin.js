@@ -6,21 +6,38 @@ const { STATUS_FLOW, isValidStatus } = require("../status");
 
 const router = express.Router();
 
-// Token sesi admin disimpan in-memory (cukup untuk skala 1 server selama acara berlangsung).
-const sessions = new Map(); // token -> expiresAt
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000; // 12 jam
 
 function createSession() {
-  const token = crypto.randomBytes(24).toString("hex");
-  sessions.set(token, Date.now() + SESSION_TTL_MS);
-  return token;
+  const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
+  const expiresAt = Date.now() + SESSION_TTL_MS;
+  const hmac = crypto.createHmac("sha256", adminPassword).update(expiresAt.toString()).digest("hex");
+  return `${expiresAt}.${hmac}`;
+}
+
+function verifyToken(token) {
+  if (!token || typeof token !== "string" || !token.includes(".")) return false;
+  const [expiresStr, signature] = token.split(".");
+  const expiresAt = Number(expiresStr);
+  if (!expiresAt || isNaN(expiresAt) || expiresAt < Date.now()) return false;
+
+  const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
+  const expectedSignature = crypto.createHmac("sha256", adminPassword).update(expiresStr).digest("hex");
+
+  try {
+    return crypto.timingSafeEqual(
+      Buffer.from(signature, "hex"),
+      Buffer.from(expectedSignature, "hex")
+    );
+  } catch (e) {
+    return false;
+  }
 }
 
 function requireAdmin(req, res, next) {
   const auth = req.headers.authorization || "";
   const token = auth.startsWith("Bearer ") ? auth.slice(7) : null;
-  const expiresAt = token && sessions.get(token);
-  if (!expiresAt || expiresAt < Date.now()) {
+  if (!token || !verifyToken(token)) {
     return res.status(401).json({ error: "Sesi admin tidak valid atau sudah habis. Silakan login kembali." });
   }
   next();
@@ -37,8 +54,6 @@ router.post("/login", (req, res) => {
 });
 
 router.post("/logout", requireAdmin, (req, res) => {
-  const token = (req.headers.authorization || "").slice(7);
-  sessions.delete(token);
   res.json({ ok: true });
 });
 
