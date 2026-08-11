@@ -13,6 +13,11 @@ const UPLOADS_DIR = isVercel
   ? path.join("/tmp", "uploads")
   : path.join(__dirname, "..", "data", "uploads");
 
+// Global memory cache for serverless environments
+if (!global.GLOBAL_DB) {
+  global.GLOBAL_DB = null;
+}
+
 function ensureDb() {
   try {
     const dir = path.dirname(DB_PATH);
@@ -35,25 +40,42 @@ function ensureDb() {
 
 function readDB() {
   ensureDb();
+  let data = null;
   try {
     if (fs.existsSync(DB_PATH)) {
       const raw = fs.readFileSync(DB_PATH, "utf-8");
-      const data = JSON.parse(raw);
-      if (!Array.isArray(data.products) || data.products.length === 0) {
-        data.products = defaultProductsModule.products;
-      }
-      if (!Array.isArray(data.orders)) {
-        data.orders = [];
-      }
-      return data;
+      data = JSON.parse(raw);
     }
   } catch (e) {
     console.error("readDB error:", e.message);
   }
-  return { products: defaultProductsModule.products, orders: [], seq: 8800 };
+
+  if (!data) {
+    data = global.GLOBAL_DB || { products: defaultProductsModule.products, orders: [], seq: 8800 };
+  }
+
+  if (!Array.isArray(data.products) || data.products.length === 0) {
+    data.products = defaultProductsModule.products;
+  }
+  if (!Array.isArray(data.orders)) {
+    data.orders = [];
+  }
+
+  // Merge with global memory cache if global cache has more orders
+  if (global.GLOBAL_DB && Array.isArray(global.GLOBAL_DB.orders)) {
+    for (const o of global.GLOBAL_DB.orders) {
+      if (o && o.id && !data.orders.some((item) => item.id === o.id)) {
+        data.orders.push(o);
+      }
+    }
+  }
+
+  global.GLOBAL_DB = data;
+  return data;
 }
 
 function writeDB(data) {
+  global.GLOBAL_DB = data;
   try {
     ensureDb();
     fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
@@ -64,7 +86,8 @@ function writeDB(data) {
 
 // ===== Product CRUD =====
 function getProducts() {
-  return readDB().products;
+  const data = readDB();
+  return data.products;
 }
 
 function saveProduct(product) {
@@ -74,29 +97,28 @@ function saveProduct(product) {
   return product;
 }
 
-function updateProduct(id, updates) {
+function updateProduct(id, updater) {
   const data = readDB();
-  const targetId = String(id || "").toLowerCase();
-  const idx = data.products.findIndex((p) => p && p.id && p.id.toLowerCase() === targetId);
+  const idx = data.products.findIndex((p) => p.id === id);
   if (idx === -1) return null;
-  data.products[idx] = { ...data.products[idx], ...updates, id: data.products[idx].id };
+  data.products[idx] = updater({ ...data.products[idx] });
   writeDB(data);
   return data.products[idx];
 }
 
 function deleteProduct(id) {
   const data = readDB();
-  const targetId = String(id || "").toLowerCase();
-  const idx = data.products.findIndex((p) => p && p.id && p.id.toLowerCase() === targetId);
+  const idx = data.products.findIndex((p) => p.id === id);
   if (idx === -1) return null;
   const [removed] = data.products.splice(idx, 1);
   writeDB(data);
   return removed;
 }
 
-// ===== Orders CRUD =====
+// ===== Order CRUD =====
 function getOrders() {
-  return readDB().orders;
+  const data = readDB();
+  return data.orders;
 }
 
 function saveOrder(order) {
@@ -106,10 +128,24 @@ function saveOrder(order) {
   return order;
 }
 
+function matchOrderId(o, targetId) {
+  if (!o || !o.id) return false;
+  const rawTarget = String(targetId || "").toLowerCase().trim();
+  const cleanTargetNum = rawTarget.replace(/\D/g, "");
+  const itemRaw = String(o.id).toLowerCase();
+  const itemNum = itemRaw.replace(/\D/g, "");
+
+  return (
+    itemRaw === rawTarget ||
+    itemRaw === `apt-${rawTarget}` ||
+    `apt-${itemRaw}` === rawTarget ||
+    (cleanTargetNum.length > 0 && itemNum === cleanTargetNum)
+  );
+}
+
 function updateOrder(id, updater) {
   const data = readDB();
-  const targetId = String(id || "").toLowerCase();
-  const idx = data.orders.findIndex((o) => o && o.id && o.id.toLowerCase() === targetId);
+  const idx = data.orders.findIndex((o) => matchOrderId(o, id));
   if (idx === -1) return null;
   data.orders[idx] = updater({ ...data.orders[idx] });
   writeDB(data);
@@ -118,8 +154,7 @@ function updateOrder(id, updater) {
 
 function deleteOrder(id) {
   const data = readDB();
-  const targetId = String(id || "").toLowerCase();
-  const idx = data.orders.findIndex((o) => o && o.id && o.id.toLowerCase() === targetId);
+  const idx = data.orders.findIndex((o) => matchOrderId(o, id));
   if (idx === -1) return null;
   const [removed] = data.orders.splice(idx, 1);
   if (removed.proof && removed.proof.filename) {
@@ -136,8 +171,7 @@ function deleteOrder(id) {
 
 function findOrderById(id) {
   const data = readDB();
-  const targetId = String(id || "").toLowerCase();
-  return data.orders.find((o) => o && o.id && o.id.toLowerCase() === targetId);
+  return data.orders.find((o) => matchOrderId(o, id));
 }
 
 function findOrdersByWa(wa) {
