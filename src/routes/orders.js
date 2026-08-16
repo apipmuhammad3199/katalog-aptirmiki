@@ -44,6 +44,7 @@ router.post("/", (req, res) => {
   const instansi = customer && customer.instansi ? String(customer.instansi).trim() : "";
   const method = customer && customer.method ? customer.method : "";
   const detail = customer && customer.detail ? String(customer.detail).trim() : "";
+  const targetBank = customer && customer.targetBank ? String(customer.targetBank).trim() : "BCA";
 
   if (!name || !wa || !instansi || !method) {
     return res.status(400).json({ error: "Data pemesan belum lengkap." });
@@ -58,9 +59,11 @@ router.post("/", (req, res) => {
     return res.status(400).json({ error: "Keranjang masih kosong." });
   }
 
+  const dbProducts = db.getProducts();
+
   const lineItems = [];
   for (const item of items) {
-    const product = products.find((p) => p.id === item.productId);
+    const product = dbProducts.find((p) => p.id === item.productId) || products.find((p) => p.id === item.productId);
     if (!product) {
       return res.status(400).json({ error: `Produk tidak ditemukan: ${item.productId}` });
     }
@@ -71,6 +74,7 @@ router.post("/", (req, res) => {
     lineItems.push({
       productId: product.id,
       name: product.name,
+      brand: product.brand || "Umum",
       price: product.price,
       unit: product.unit,
       qty,
@@ -90,6 +94,7 @@ router.post("/", (req, res) => {
       instansi,
       method,
       detail,
+      targetBank,
     },
     items: lineItems,
     total,

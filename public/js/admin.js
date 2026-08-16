@@ -74,6 +74,8 @@ async function loadAll() {
     populateStatusFilter();
     updateTabBadges();
     renderSummaryCards(summaryData, ALL_ORDERS);
+    renderBankSummaryCards(summaryData.bankSummary || []);
+    renderBrandSummary(summaryData.brandSummary || []);
     renderRestock(summaryData.summary);
     applyFilters();
     renderProductsTable();
@@ -162,6 +164,79 @@ function renderSummaryCards(summaryData, orders) {
     .join("");
 }
 
+function renderBankSummaryCards(bankSummary) {
+  const container = document.getElementById("bank-summary-cards");
+  if (!container) return;
+
+  const colorMap = {
+    BCA: { bg: "bg-blue-50/70 border-blue-200", badge: "bg-blue-600 text-white", text: "text-blue-900" },
+    BSI: { bg: "bg-emerald-50/70 border-emerald-200", badge: "bg-emerald-600 text-white", text: "text-emerald-900" },
+    Mandiri: { bg: "bg-amber-50/70 border-amber-200", badge: "bg-amber-600 text-white", text: "text-amber-900" },
+    Lainnya: { bg: "bg-gray-50 border-gray-200", badge: "bg-gray-600 text-white", text: "text-gray-900" },
+  };
+
+  container.innerHTML = bankSummary
+    .map((b) => {
+      const theme = colorMap[b.bank] || colorMap.Lainnya;
+      return `
+      <div class="bg-white rounded-xl border ${theme.bg} p-3.5 shadow-sm flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-1.5 mb-1">
+            <span class="text-xs font-bold px-2 py-0.5 rounded-full ${theme.badge}">${escapeHtml(b.bank)}</span>
+            <span class="text-xs text-gray-500 font-medium">(${b.count} Transaksi)</span>
+          </div>
+          <p class="font-black text-lg ${theme.text}">${rupiah(b.totalRevenue)}</p>
+        </div>
+        <div class="p-2 bg-white rounded-lg border border-gray-100 shadow-xs text-xs font-mono font-bold text-gray-500">
+          Transfer
+        </div>
+      </div>`;
+    })
+    .join("");
+}
+
+function renderBrandSummary(brandSummary) {
+  const container = document.getElementById("brand-summary");
+  if (!container) return;
+
+  if (!brandSummary || brandSummary.length === 0) {
+    container.innerHTML = `<p class="text-xs text-gray-400">Belum ada data transaksi brand.</p>`;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="overflow-x-auto">
+      <table class="w-full text-xs min-w-[450px]">
+        <thead>
+          <tr class="border-b border-gray-100 text-gray-400 text-left">
+            <th class="pb-2 font-semibold">Brand / Supplier</th>
+            <th class="pb-2 font-semibold text-right">Terjual</th>
+            <th class="pb-2 font-semibold text-right">Omset</th>
+            <th class="pb-2 font-semibold text-right">Modal</th>
+            <th class="pb-2 font-semibold text-right text-emerald-700">Laba Net</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50">
+          ${brandSummary
+            .map(
+              (bs) => `
+            <tr>
+              <td class="py-2 font-bold text-gray-800 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-[--color-primary]"></span>
+                <span>${escapeHtml(bs.brand)}</span>
+              </td>
+              <td class="py-2 text-right font-semibold text-gray-700">${bs.totalQty} pcs</td>
+              <td class="py-2 text-right text-gray-900 font-medium">${rupiah(bs.totalRevenue)}</td>
+              <td class="py-2 text-right text-amber-700 font-medium">${rupiah(bs.totalCost)}</td>
+              <td class="py-2 text-right text-emerald-700 font-extrabold">${rupiah(bs.totalProfit)}</td>
+            </tr>`
+            )
+            .join("")}
+        </tbody>
+      </table>
+    </div>`;
+}
+
 function renderRestock(summary) {
   const sorted = summary.filter((s) => s.totalQty > 0).sort((a, b) => b.totalQty - a.totalQty);
   if (sorted.length === 0) {
@@ -216,17 +291,20 @@ function applyFilters() {
   if (currentTab === "products") return;
   const q = document.getElementById("admin-search").value.trim().toLowerCase();
   const statusFilter = document.getElementById("status-filter").value;
+  const bankFilter = document.getElementById("bank-filter") ? document.getElementById("bank-filter").value : "";
 
   const filtered = ALL_ORDERS.filter((o) => {
     if (currentTab === "active" && o.status === "selesai") return false;
     if (currentTab === "completed" && o.status !== "selesai") return false;
 
     const matchStatus = !statusFilter || o.status === statusFilter;
-    const itemsText = o.items.map((i) => `${i.name}`).join(" ");
-    const haystack = `${o.id} ${o.customer.name} ${o.customer.wa} ${o.customer.instansi} ${o.customer.method} ${o.customer.detail || ""} ${itemsText}`.toLowerCase();
+    const matchBank = !bankFilter || (o.customer && o.customer.targetBank === bankFilter);
+
+    const itemsText = o.items.map((i) => `${i.name} ${i.brand || ""}`).join(" ");
+    const haystack = `${o.id} ${o.customer.name} ${o.customer.wa} ${o.customer.instansi} ${o.customer.targetBank || ""} ${o.customer.method} ${o.customer.detail || ""} ${itemsText}`.toLowerCase();
     const matchQuery = !q || haystack.includes(q);
 
-    return matchStatus && matchQuery;
+    return matchStatus && matchBank && matchQuery;
   });
 
   renderTable(filtered);
@@ -288,7 +366,10 @@ function getProofSrc(proof) {
         <td class="px-3 py-3 font-mono font-bold text-[--color-primary] whitespace-nowrap">#${escapeHtml(o.id)}</td>
         <td class="px-3 py-3 text-xs text-gray-500 whitespace-nowrap">${new Date(o.createdAt).toLocaleString("id-ID")}</td>
         <td class="px-3 py-3">
-          <p class="font-semibold text-gray-900">${escapeHtml(o.customer.name)}</p>
+          <div class="flex items-center gap-2 mb-0.5">
+            <p class="font-semibold text-gray-900">${escapeHtml(o.customer.name)}</p>
+            <span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-mono font-bold text-[11px] border border-indigo-100">${escapeHtml(o.customer.targetBank || "BCA")}</span>
+          </div>
           <a href="https://wa.me/${escapeHtml(o.customer.wa.replace(/\D/g, ''))}" target="_blank" rel="noopener" class="text-xs text-emerald-600 font-medium hover:underline flex items-center gap-1">
             <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-0.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
             <span>${escapeHtml(o.customer.wa)}</span>
@@ -382,7 +463,10 @@ function renderProductsTable() {
       <td class="px-3 py-3">
         <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(p.name)}" class="w-12 h-12 object-cover rounded-lg border border-gray-200 shadow-sm" onerror="this.src='https://via.placeholder.com/100?text=Foto+Produk'" />
       </td>
-      <td class="px-3 py-3 font-semibold text-gray-900">${escapeHtml(p.name)}</td>
+      <td class="px-3 py-3">
+        <p class="font-semibold text-gray-900">${escapeHtml(p.name)}</p>
+        <span class="text-[10px] bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full font-bold border border-purple-100">${escapeHtml(p.brand || "Betawi Asli")}</span>
+      </td>
       <td class="px-3 py-3 text-xs"><span class="bg-blue-50 text-[--color-primary] px-2 py-1 rounded-full font-semibold border border-blue-100">${escapeHtml(p.category)}</span></td>
       <td class="px-3 py-3 font-semibold text-amber-700 whitespace-nowrap">${rupiah(suppPrice)}</td>
       <td class="px-3 py-3 font-bold text-gray-900 whitespace-nowrap">${rupiah(sellPrice)} <span class="text-xs font-normal text-gray-400">/${escapeHtml(p.unit)}</span></td>
@@ -449,6 +533,7 @@ function openProductModal(productId = null) {
     document.getElementById("product-modal-title").textContent = "Edit Produk";
     document.getElementById("prod-id").value = p.id;
     document.getElementById("prod-name").value = p.name;
+    if (document.getElementById("prod-brand")) document.getElementById("prod-brand").value = p.brand || "Betawi Asli";
     document.getElementById("prod-category").value = p.category;
     document.getElementById("prod-price").value = p.price;
     document.getElementById("prod-supplier-price").value = p.supplierPrice !== undefined ? p.supplierPrice : Math.round(p.price * 0.7);
@@ -490,6 +575,7 @@ document.getElementById("product-form").addEventListener("submit", async (e) => 
   const id = document.getElementById("prod-id").value;
   const payload = {
     name: document.getElementById("prod-name").value,
+    brand: document.getElementById("prod-brand") ? document.getElementById("prod-brand").value : "Betawi Asli",
     category: document.getElementById("prod-category").value,
     price: Number(document.getElementById("prod-price").value),
     supplierPrice: Number(document.getElementById("prod-supplier-price").value),
@@ -624,6 +710,9 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
 
 document.getElementById("admin-search").addEventListener("input", applyFilters);
 document.getElementById("status-filter").addEventListener("change", applyFilters);
+if (document.getElementById("bank-filter")) {
+  document.getElementById("bank-filter").addEventListener("change", applyFilters);
+}
 document.getElementById("refresh-btn").addEventListener("click", loadAll);
 
 document.getElementById("export-btn").addEventListener("click", async () => {

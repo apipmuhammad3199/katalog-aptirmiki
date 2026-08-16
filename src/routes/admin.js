@@ -102,7 +102,7 @@ router.get("/products", requireAdmin, (req, res) => {
 });
 
 router.post("/products", requireAdmin, (req, res) => {
-  const { name, category, price, supplierPrice, unit, origin, expiryDetail, description, image } = req.body || {};
+  const { name, brand, category, price, supplierPrice, unit, origin, expiryDetail, description, image } = req.body || {};
   if (!name || !category || !price || !unit) {
     return res.status(400).json({ error: "Nama, kategori, harga, dan satuan produk wajib diisi." });
   }
@@ -119,6 +119,7 @@ router.post("/products", requireAdmin, (req, res) => {
   const newProduct = {
     id,
     name: String(name).trim(),
+    brand: brand ? String(brand).trim() : "Betawi Asli",
     category: String(category).trim(),
     price: sellingPrice,
     supplierPrice: costPrice,
@@ -134,9 +135,10 @@ router.post("/products", requireAdmin, (req, res) => {
 });
 
 router.put("/products/:id", requireAdmin, (req, res) => {
-  const { name, category, price, supplierPrice, unit, origin, expiryDetail, description, image } = req.body || {};
+  const { name, brand, category, price, supplierPrice, unit, origin, expiryDetail, description, image } = req.body || {};
   const updates = {};
   if (name !== undefined) updates.name = String(name).trim();
+  if (brand !== undefined) updates.brand = String(brand).trim();
   if (category !== undefined) updates.category = String(category).trim();
   if (price !== undefined) updates.price = Number(price) || 0;
   if (supplierPrice !== undefined && supplierPrice !== "") updates.supplierPrice = Number(supplierPrice) || 0;
@@ -167,6 +169,7 @@ router.get("/summary", requireAdmin, (req, res) => {
     const suppPrice = p.supplierPrice !== undefined ? Number(p.supplierPrice) : Math.round(sellPrice * 0.7);
     prodMap[p.id] = {
       ...p,
+      brand: p.brand || "Umum",
       price: sellPrice,
       supplierPrice: suppPrice,
       profitPerUnit: sellPrice - suppPrice,
@@ -177,7 +180,25 @@ router.get("/summary", requireAdmin, (req, res) => {
     };
   }
 
+  // Bank summary accumulator
+  const bankMap = {
+    BCA: { count: 0, totalRevenue: 0 },
+    BSI: { count: 0, totalRevenue: 0 },
+    Mandiri: { count: 0, totalRevenue: 0 },
+    Lainnya: { count: 0, totalRevenue: 0 },
+  };
+
   for (const order of orders) {
+    // Bank grouping
+    const bankKey = (order.customer && order.customer.targetBank) || "BCA";
+    if (bankMap[bankKey]) {
+      bankMap[bankKey].count += 1;
+      bankMap[bankKey].totalRevenue += Number(order.total) || 0;
+    } else {
+      bankMap.Lainnya.count += 1;
+      bankMap.Lainnya.totalRevenue += Number(order.total) || 0;
+    }
+
     for (const item of order.items) {
       if (prodMap[item.productId]) {
         const qty = Number(item.qty) || 0;
@@ -195,6 +216,7 @@ router.get("/summary", requireAdmin, (req, res) => {
   const summary = Object.values(prodMap).map((p) => ({
     productId: p.id,
     name: p.name,
+    brand: p.brand || "Umum",
     category: p.category,
     unit: p.unit,
     price: p.price,
@@ -206,6 +228,34 @@ router.get("/summary", requireAdmin, (req, res) => {
     totalProfit: p.totalProfit,
   }));
 
+  // Brand / Supplier breakdown summary accumulator
+  const brandMap = {};
+  for (const p of summary) {
+    const brandName = p.brand || "Umum";
+    if (!brandMap[brandName]) {
+      brandMap[brandName] = {
+        brand: brandName,
+        totalQty: 0,
+        totalRevenue: 0,
+        totalCost: 0,
+        totalProfit: 0,
+        itemCount: 0,
+      };
+    }
+    brandMap[brandName].totalQty += p.totalQty;
+    brandMap[brandName].totalRevenue += p.totalRevenue;
+    brandMap[brandName].totalCost += p.totalCost;
+    brandMap[brandName].totalProfit += p.totalProfit;
+    brandMap[brandName].itemCount += 1;
+  }
+  const brandSummary = Object.values(brandMap).sort((a, b) => b.totalRevenue - a.totalRevenue);
+
+  const bankSummary = Object.entries(bankMap).map(([key, data]) => ({
+    bank: key,
+    count: data.count,
+    totalRevenue: data.totalRevenue,
+  }));
+
   const totalOrders = orders.length;
   const totalRevenue = orders.reduce((sum, o) => sum + (Number(o.total) || 0), 0);
   const totalCost = summary.reduce((sum, p) => sum + p.totalCost, 0);
@@ -214,6 +264,8 @@ router.get("/summary", requireAdmin, (req, res) => {
 
   res.json({
     summary,
+    bankSummary,
+    brandSummary,
     totalOrders,
     totalRevenue,
     totalCost,
@@ -231,7 +283,7 @@ function csvEscape(value) {
 }
 
 router.get("/orders/export.csv", requireAdmin, (req, res) => {
-  const orders = db.getOrders().slice().sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+  const orders = db.getOrders().slice().sort((a, b) => new Date(a.createdAt) - new Date(a.createdAt));
   const statusLabel = (key) => STATUS_FLOW.find((s) => s.key === key)?.label || key;
 
   const header = [
@@ -240,6 +292,7 @@ router.get("/orders/export.csv", requireAdmin, (req, res) => {
     "Nama Pemesan",
     "Nomor WhatsApp",
     "Instansi/Asal Daerah",
+    "Bank Tujuan",
     "Metode Pengambilan",
     "Detail Lokasi",
     "Detail Barang",
@@ -254,9 +307,10 @@ router.get("/orders/export.csv", requireAdmin, (req, res) => {
     o.customer.name,
     o.customer.wa,
     o.customer.instansi,
+    o.customer.targetBank || "BCA",
     o.customer.method,
     o.customer.detail || "",
-    o.items.map((i) => `${i.name} x${i.qty}`).join("; "),
+    o.items.map((i) => `${i.name} (Brand: ${i.brand || "Betawi Asli"}) x${i.qty}`).join("; "),
     o.total,
     statusLabel(o.status),
     o.proof ? o.proof.filename : "Belum upload",

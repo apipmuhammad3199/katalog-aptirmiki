@@ -29,14 +29,38 @@ function formatWaNumber(num) {
 
 // Konfigurasi publik (nomor WA admin, info bank/QRIS, nama acara) untuk frontend.
 app.get("/api/config", (req, res) => {
+  const defaultBank = {
+    name: process.env.BANK_NAME || "Bank Central Asia (BCA)",
+    accountNumber: process.env.BANK_ACCOUNT_NUMBER || "1234567890",
+    accountName: process.env.BANK_ACCOUNT_NAME || "Panitia APTIRMIKI",
+  };
+
+  const banks = [
+    {
+      key: "BCA",
+      name: process.env.BCA_NAME || "Bank Central Asia (BCA)",
+      accountNumber: process.env.BCA_ACCOUNT_NUMBER || defaultBank.accountNumber,
+      accountName: process.env.BCA_ACCOUNT_NAME || defaultBank.accountName,
+    },
+    {
+      key: "BSI",
+      name: process.env.BSI_NAME || "Bank Syariah Indonesia (BSI)",
+      accountNumber: process.env.BSI_ACCOUNT_NUMBER || "7700123456",
+      accountName: process.env.BSI_ACCOUNT_NAME || "Panitia APTIRMIKI (BSI)",
+    },
+    {
+      key: "Mandiri",
+      name: process.env.MANDIRI_NAME || "Bank Mandiri",
+      accountNumber: process.env.MANDIRI_ACCOUNT_NUMBER || "137001234567",
+      accountName: process.env.MANDIRI_ACCOUNT_NAME || "Panitia APTIRMIKI (Mandiri)",
+    },
+  ];
+
   res.json({
     eventName: process.env.EVENT_NAME || "APTIRMIKI",
     adminWaNumber: formatWaNumber(process.env.ADMIN_WA_NUMBER || "6281234567890"),
-    bank: {
-      name: process.env.BANK_NAME || "Bank Central Asia (BCA)",
-      accountNumber: process.env.BANK_ACCOUNT_NUMBER || "1234567890",
-      accountName: process.env.BANK_ACCOUNT_NAME || "Panitia APTIRMIKI",
-    },
+    bank: defaultBank,
+    banks,
     qrisImageUrl: process.env.QRIS_IMAGE_URL || "",
   });
 });

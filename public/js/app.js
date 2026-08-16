@@ -478,6 +478,27 @@ function renderCheckout() {
     )
     .join("");
 
+  const bankOptionsList = (CONFIG.banks && CONFIG.banks.length > 0)
+    ? CONFIG.banks
+    : [
+        { key: "BCA", name: "BCA" },
+        { key: "BSI", name: "BSI" },
+        { key: "Mandiri", name: "Mandiri" },
+      ];
+
+  const bankRadioOptions = bankOptionsList
+    .map(
+      (b, idx) => `
+    <label class="flex items-center justify-between border border-gray-200 rounded-xl p-3 text-sm cursor-pointer has-[:checked]:border-[--color-primary] has-[:checked]:bg-blue-50/50 transition">
+      <div class="flex items-center gap-2">
+        <input type="radio" name="targetBank" value="${escapeHtml(b.key)}" ${idx === 0 ? "checked" : ""} class="accent-[--color-primary]" />
+        <span class="font-semibold text-gray-800">${escapeHtml(b.name)}</span>
+      </div>
+      <span class="text-xs text-gray-400 font-mono">${escapeHtml(b.accountNumber || "")}</span>
+    </label>`
+    )
+    .join("");
+
   setView(`
     <div class="px-4 sm:px-6 py-4 pb-28 max-w-2xl mx-auto">
       <h2 class="font-semibold text-lg text-gray-800 mb-3 flex items-center gap-2">
@@ -509,6 +530,10 @@ function renderCheckout() {
           <label class="text-xs font-medium text-gray-600">Instansi / Asal Daerah *</label>
           <input required name="instansi" type="text" placeholder="Contoh: Poltekkes Jakarta III"
             class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm mt-1 focus:border-[--color-primary]" />
+        </div>
+        <div>
+          <label class="text-xs font-medium text-gray-600 mb-1.5 block">Pilih Bank Tujuan Transfer *</label>
+          <div class="space-y-2">${bankRadioOptions}</div>
         </div>
         <div>
           <label class="text-xs font-medium text-gray-600 mb-1.5 block">Metode Pengambilan / Pengiriman *</label>
@@ -552,6 +577,7 @@ function renderCheckout() {
     const fd = new FormData(form);
     const method = fd.get("method");
     const detail = fd.get("detail") ? String(fd.get("detail")).trim() : "";
+    const targetBank = fd.get("targetBank") ? String(fd.get("targetBank")).trim() : "BCA";
 
     if (method !== "Ambil di Booth" && !detail) {
       const errEl = document.getElementById("checkout-error");
@@ -567,6 +593,7 @@ function renderCheckout() {
         instansi: String(fd.get("instansi")).trim(),
         method,
         detail,
+        targetBank,
       },
       items: items.map((i) => ({ productId: i.product.id, qty: i.qty })),
     };
@@ -671,6 +698,9 @@ async function renderKonfirmasi(orderId) {
       </div>`
     : "";
 
+  const selectedBankKey = (order.customer && order.customer.targetBank) || "BCA";
+  const matchedBank = (CONFIG.banks || []).find((b) => b.key === selectedBankKey) || CONFIG.bank || {};
+
   setView(`
     <div class="px-4 sm:px-6 py-4 pb-32 max-w-2xl mx-auto">
       <div class="text-center mb-6">
@@ -695,21 +725,21 @@ async function renderKonfirmasi(orderId) {
       <div class="bg-white rounded-xl p-4 border border-gray-100 mb-4 shadow-sm">
         <h3 class="text-xs uppercase tracking-wide font-semibold text-gray-400 mb-2 flex items-center gap-1.5">
           <svg class="w-4 h-4 text-[--color-primary]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-          <span>Info Pembayaran</span>
+          <span>Info Pembayaran (Transfer Ke ${escapeHtml(selectedBankKey)})</span>
         </h3>
         <div class="text-sm text-gray-700 space-y-2">
-          <p class="text-xs text-gray-500"><span class="text-gray-400">Bank:</span> <b>${escapeHtml(CONFIG.bank?.name || "-")}</b></p>
+          <p class="text-xs text-gray-500"><span class="text-gray-400">Bank Tujuan:</span> <b class="text-gray-900">${escapeHtml(matchedBank.name || selectedBankKey)}</b></p>
           <div class="flex items-center justify-between bg-blue-50/60 p-3 rounded-lg border border-blue-100">
             <div>
               <p class="text-[11px] text-gray-500">Nomor Rekening</p>
-              <p class="font-mono font-bold text-gray-900 text-base">${escapeHtml(CONFIG.bank?.accountNumber || "-")}</p>
+              <p class="font-mono font-bold text-gray-900 text-base">${escapeHtml(matchedBank.accountNumber || "-")}</p>
             </div>
-            <button data-action="copy-bank" class="bg-white border border-gray-200 hover:border-[--color-primary] text-xs px-3 py-1.5 rounded-lg font-semibold shadow-sm transition flex items-center gap-1 text-[--color-primary]">
+            <button data-action="copy-bank" onclick="copyText('${escapeHtml(matchedBank.accountNumber || "")}', 'Nomor Rekening ${escapeHtml(selectedBankKey)}')" class="bg-white border border-gray-200 hover:border-[--color-primary] text-xs px-3 py-1.5 rounded-lg font-semibold shadow-sm transition flex items-center gap-1 text-[--color-primary]">
               <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
               <span>Salin</span>
             </button>
           </div>
-          <p class="text-xs text-gray-500"><span class="text-gray-400">Atas Nama:</span> <b>${escapeHtml(CONFIG.bank?.accountName || "-")}</b></p>
+          <p class="text-xs text-gray-500"><span class="text-gray-400">Atas Nama:</span> <b>${escapeHtml(matchedBank.accountName || "-")}</b></p>
         </div>
         ${qrisBlock}
       </div>

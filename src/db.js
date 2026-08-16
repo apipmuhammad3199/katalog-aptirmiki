@@ -54,11 +54,26 @@ function readDB() {
     data = global.GLOBAL_DB || { products: defaultProductsModule.products, orders: [], seq: 8800 };
   }
 
+  let shouldWrite = false;
   if (!Array.isArray(data.products) || data.products.length === 0) {
     data.products = defaultProductsModule.products;
+    shouldWrite = true;
+  } else {
+    // Sync new default products into data.products if missing
+    for (const defProd of defaultProductsModule.products) {
+      if (!data.products.some((p) => p.id === defProd.id)) {
+        data.products.push(defProd);
+        shouldWrite = true;
+      }
+    }
   }
   if (!Array.isArray(data.orders)) {
     data.orders = [];
+    shouldWrite = true;
+  }
+
+  if (shouldWrite) {
+    writeDB(data);
   }
 
   // Merge with global memory cache if global cache has more orders
