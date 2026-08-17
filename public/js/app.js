@@ -248,7 +248,6 @@ function setView(html) {
 }
 
 // ===== Katalog =====
-// ===== Katalog =====
 function renderKatalog() {
   const uniqueCats = Array.from(new Set(PRODUCTS.map((p) => p.category))).filter(Boolean);
   const cats = ["Semua", ...uniqueCats];
@@ -257,7 +256,7 @@ function renderKatalog() {
     .map(
       (c) => `
       <button data-action="filter-cat" data-cat="${escapeHtml(c)}"
-        class="category-chip whitespace-nowrap px-4 py-2 rounded-full text-sm border font-medium transition-all ${
+        class="category-chip whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm border font-medium transition-all shrink-0 ${
           activeCategory === c
             ? "bg-[--color-primary] text-white border-[--color-primary] shadow-sm"
             : "bg-white text-gray-600 border-gray-200 hover:border-blue-300"
@@ -268,20 +267,20 @@ function renderKatalog() {
     .join("");
 
   setView(`
-    <div class="px-4 sm:px-6 lg:px-8 pt-4 pb-2 sticky top-16 z-20 bg-[--color-cream]/95 backdrop-blur">
+    <div class="px-3 sm:px-6 lg:px-8 pt-3 sm:pt-4 pb-2 sticky top-14 sm:top-16 z-20 bg-[--color-cream]/95 backdrop-blur">
       <div class="max-w-screen-2xl mx-auto">
-        <div class="relative mb-3 max-w-md">
-          <input id="search-input" type="text" placeholder="Cari oleh-oleh khas Jakarta..." value="${escapeHtml(searchQuery)}"
-            class="w-full rounded-full border border-gray-200 bg-white pl-10 pr-4 py-2.5 text-sm shadow-sm focus:border-[--color-primary] focus:ring-2 focus:ring-blue-100" />
-          <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <div class="relative mb-2.5 sm:mb-3 max-w-md">
+          <input id="search-input" type="text" placeholder="Cari oleh-oleh Kartika Sari & khas Bandung..." value="${escapeHtml(searchQuery)}"
+            class="w-full rounded-full border border-gray-200 bg-white pl-9 sm:pl-10 pr-4 py-2 sm:py-2.5 text-xs sm:text-sm shadow-sm focus:border-[--color-primary] focus:ring-2 focus:ring-blue-100" />
+          <svg class="absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="7"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
         </div>
-        <div class="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">${chips}</div>
+        <div class="flex gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar touch-scroll pb-1 -mx-1 px-1">${chips}</div>
       </div>
     </div>
-    <div class="px-4 sm:px-6 lg:px-8 py-3 max-w-screen-2xl mx-auto pb-32" id="product-grid-container">
+    <div class="px-3 sm:px-6 lg:px-8 py-2 sm:py-3 max-w-screen-2xl mx-auto pb-32" id="product-grid-container">
       ${renderProductGridHtml()}
     </div>
   `);
@@ -303,17 +302,17 @@ function renderProductCardItemHtml(p, cart) {
   return `
     <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex flex-col hover:border-blue-200 transition">
       ${productImage(p, "w-full aspect-square")}
-      <div class="p-3 sm:p-4 flex flex-col flex-1">
-        <span class="text-[10px] sm:text-xs uppercase tracking-wide text-[--color-secondary] font-semibold mb-1">${escapeHtml(p.category)}</span>
-        <h3 class="font-semibold text-gray-900 leading-tight mb-1 text-sm sm:text-base">${escapeHtml(p.name)}</h3>
-        <p class="text-xs sm:text-sm text-gray-500 mb-1.5 line-clamp-2 flex-1">${escapeHtml(p.description)}</p>
-        <div class="flex flex-wrap items-center gap-1 my-1 text-[11px]">
-          <span class="bg-blue-50 text-[--color-primary] px-2 py-0.5 rounded-full font-medium border border-blue-100">📍 ${escapeHtml(p.origin || "Betawi, Jakarta")}</span>
-          <span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-medium border border-amber-100">⏳ ${escapeHtml(p.expiryDetail || "Tahan Lama")}</span>
+      <div class="p-2.5 sm:p-4 flex flex-col flex-1">
+        <span class="text-[10px] sm:text-xs uppercase tracking-wider text-[--color-secondary] font-bold mb-1 truncate">${escapeHtml(p.category)}</span>
+        <h3 class="font-bold text-gray-900 leading-tight mb-1 text-xs sm:text-sm sm:min-h-[2.5rem] line-clamp-2">${escapeHtml(p.name)}</h3>
+        <p class="text-[11px] sm:text-xs text-gray-500 mb-1.5 line-clamp-2 flex-1">${escapeHtml(p.description)}</p>
+        <div class="flex flex-wrap items-center gap-1 my-1 text-[10px] sm:text-[11px]">
+          <span class="bg-blue-50 text-[--color-primary] px-1.5 sm:px-2 py-0.5 rounded-full font-medium border border-blue-100 truncate max-w-full">📍 ${escapeHtml(p.origin || "Bandung")}</span>
+          <span class="bg-amber-50 text-amber-700 px-1.5 sm:px-2 py-0.5 rounded-full font-medium border border-amber-100">⏳ ${escapeHtml(p.expiryDetail || "Tahan Lama")}</span>
         </div>
-        <div class="flex items-center justify-between mt-auto pt-1">
-          <span class="font-bold text-[--color-primary] text-base sm:text-lg">${rupiah(p.price)}</span>
-          <span class="text-[10px] sm:text-xs text-gray-400">/${escapeHtml(p.unit)}</span>
+        <div class="flex items-baseline justify-between mt-auto pt-1.5 border-t border-gray-50">
+          <span class="font-extrabold text-[--color-primary] text-sm sm:text-lg">${rupiah(p.price)}</span>
+          <span class="text-[10px] sm:text-xs text-gray-400 font-medium">/${escapeHtml(p.unit)}</span>
         </div>
         <div class="mt-2" id="cart-ctrl-${p.id}">
           ${cartControl(p.id, qty)}
