@@ -93,7 +93,18 @@ function writeDB(data) {
   global.GLOBAL_DB = data;
   try {
     ensureDb();
-    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
+    const tempPath = `${DB_PATH}.${Date.now()}.${Math.random().toString(36).slice(2)}.tmp`;
+    const jsonStr = JSON.stringify(data, null, 2);
+    fs.writeFileSync(tempPath, jsonStr, "utf-8");
+    try {
+      fs.renameSync(tempPath, DB_PATH);
+    } catch (renameErr) {
+      // Fallback for Windows if file is temporarily locked
+      fs.writeFileSync(DB_PATH, jsonStr, "utf-8");
+      if (fs.existsSync(tempPath)) {
+        try { fs.unlinkSync(tempPath); } catch (e) {}
+      }
+    }
   } catch (err) {
     console.error("writeDB error:", err.message);
   }
