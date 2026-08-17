@@ -31,22 +31,22 @@ function formatWaNumber(num) {
 app.get("/api/config", (req, res) => {
   const defaultBank = {
     name: process.env.BANK_NAME || "Bank Central Asia (BCA)",
-    accountNumber: process.env.BANK_ACCOUNT_NUMBER || "1234567890",
-    accountName: process.env.BANK_ACCOUNT_NAME || "Panitia APTIRMIKI",
+    accountNumber: process.env.BANK_ACCOUNT_NUMBER || "7235088592",
+    accountName: process.env.BANK_ACCOUNT_NAME || "AMIK Panitia APTIRMIKI",
   };
 
   const banks = [
     {
       key: "BCA",
-      name: process.env.BCA_NAME || "Bank Central Asia (BCA)",
-      accountNumber: process.env.BCA_ACCOUNT_NUMBER || defaultBank.accountNumber,
-      accountName: process.env.BCA_ACCOUNT_NAME || defaultBank.accountName,
+      name: process.env.BCA_NAME || process.env.BANK_NAME || "Bank Central Asia (BCA)",
+      accountNumber: process.env.BCA_ACCOUNT_NUMBER || process.env.BANK_ACCOUNT_NUMBER || "7235088592",
+      accountName: process.env.BCA_ACCOUNT_NAME || process.env.BANK_ACCOUNT_NAME || "AMIK Panitia APTIRMIKI",
     },
     {
       key: "BSI",
       name: process.env.BSI_NAME || "Bank Syariah Indonesia (BSI)",
-      accountNumber: process.env.BSI_ACCOUNT_NUMBER || "7700123456",
-      accountName: process.env.BSI_ACCOUNT_NAME || "Panitia APTIRMIKI (BSI)",
+      accountNumber: process.env.BSI_ACCOUNT_NUMBER || "7360123728",
+      accountName: process.env.BSI_ACCOUNT_NAME || "APTIRMIKI KORWIL 3 (BSI)",
     },
     {
       key: "Mandiri",
