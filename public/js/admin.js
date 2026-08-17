@@ -116,14 +116,16 @@ function renderSummaryCards(summaryData, orders) {
   const cards = [
     {
       label: "Total Pesanan",
-      value: summaryData.totalOrders,
+      value: `${summaryData.totalOrders || 0} Transaksi`,
+      sub: "Semua pesanan",
       color: "text-gray-900",
       bg: "bg-blue-50 text-[--color-primary]",
       icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>`
     },
     {
-      label: "Omset Kotor",
+      label: "Total Omset",
       value: rupiah(summaryData.totalRevenue || 0),
+      sub: "Penjualan kotor",
       color: "text-[--color-primary]",
       bg: "bg-blue-50 text-[--color-primary]",
       icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V6m0 12v-2m-9-1h18"/></svg>`
@@ -131,21 +133,24 @@ function renderSummaryCards(summaryData, orders) {
     {
       label: "Modal Supplier",
       value: rupiah(summaryData.totalCost || 0),
-      color: "text-amber-600",
+      sub: "Beban pokok beli",
+      color: "text-amber-700",
       bg: "bg-amber-50 text-amber-600",
       icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>`
     },
     {
-      label: "Keuntungan Panitia",
+      label: "Laba Panitia",
       value: rupiah(summaryData.totalProfit || 0),
-      color: "text-emerald-600",
+      sub: "Keuntungan bersih",
+      color: "text-emerald-700",
       bg: "bg-emerald-50 text-emerald-600",
       icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>`
     },
     {
       label: "Margin Laba",
       value: `${summaryData.profitMarginPercent || 0}%`,
-      color: "text-indigo-600",
+      sub: "Persentase profit",
+      color: "text-indigo-700",
       bg: "bg-indigo-50 text-indigo-600",
       icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>`
     },
@@ -153,41 +158,46 @@ function renderSummaryCards(summaryData, orders) {
 
   document.getElementById("summary-cards").innerHTML = cards
     .map(
-      (c) => `<div class="bg-white rounded-xl border border-gray-100 p-3.5 shadow-sm flex items-center justify-between">
+      (c) => `<div class="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm flex items-center justify-between hover:shadow-md transition">
         <div>
-          <p class="text-xs text-gray-400 font-medium mb-0.5">${c.label}</p>
-          <p class="font-extrabold text-base sm:text-lg ${c.color}">${c.value}</p>
+          <p class="text-xs text-gray-500 font-medium mb-1">${c.label}</p>
+          <p class="font-black text-base sm:text-xl ${c.color} leading-tight">${c.value}</p>
+          <p class="text-[10px] text-gray-400 mt-0.5">${c.sub}</p>
         </div>
-        <div class="p-2 rounded-xl ${c.bg}">${c.icon}</div>
+        <div class="p-3 rounded-2xl ${c.bg} shrink-0 ml-2">${c.icon}</div>
       </div>`
     )
     .join("");
 }
 
-function renderBankSummaryCards(bankSummary) {
+function renderBankSummaryCards(bankSummary = []) {
   const container = document.getElementById("bank-summary-cards");
   if (!container) return;
+
+  const validBanks = bankSummary.filter((b) => b.bank !== "Lainnya" || b.count > 0);
 
   const colorMap = {
     BCA: { bg: "bg-blue-50/70 border-blue-200", badge: "bg-blue-600 text-white", text: "text-blue-900" },
     BSI: { bg: "bg-emerald-50/70 border-emerald-200", badge: "bg-emerald-600 text-white", text: "text-emerald-900" },
     Mandiri: { bg: "bg-amber-50/70 border-amber-200", badge: "bg-amber-600 text-white", text: "text-amber-900" },
-    Lainnya: { bg: "bg-gray-50 border-gray-200", badge: "bg-gray-600 text-white", text: "text-gray-900" },
+    Lainnya: { bg: "bg-purple-50/70 border-purple-200", badge: "bg-purple-600 text-white", text: "text-purple-900" },
   };
 
-  container.innerHTML = bankSummary
+  container.className = `grid grid-cols-1 sm:grid-cols-${Math.min(validBanks.length, 3)} lg:grid-cols-${validBanks.length} gap-3 mb-4`;
+
+  container.innerHTML = validBanks
     .map((b) => {
       const theme = colorMap[b.bank] || colorMap.Lainnya;
       return `
-      <div class="bg-white rounded-xl border ${theme.bg} p-3.5 shadow-sm flex items-center justify-between">
+      <div class="bg-white rounded-2xl border ${theme.bg} p-4 shadow-sm flex items-center justify-between transition hover:shadow-md">
         <div>
-          <div class="flex items-center gap-1.5 mb-1">
-            <span class="text-xs font-bold px-2 py-0.5 rounded-full ${theme.badge}">${escapeHtml(b.bank)}</span>
-            <span class="text-xs text-gray-500 font-medium">(${b.count} Transaksi)</span>
+          <div class="flex items-center gap-1.5 mb-1.5">
+            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full ${theme.badge}">${escapeHtml(b.bank)}</span>
+            <span class="text-xs text-gray-500 font-medium">${b.count} Transaksi</span>
           </div>
-          <p class="font-black text-lg ${theme.text}">${rupiah(b.totalRevenue)}</p>
+          <p class="font-extrabold text-lg sm:text-xl ${theme.text}">${rupiah(b.totalRevenue)}</p>
         </div>
-        <div class="p-2 bg-white rounded-lg border border-gray-100 shadow-xs text-xs font-mono font-bold text-gray-500">
+        <div class="p-2.5 bg-white/80 rounded-xl border border-gray-100 shadow-xs text-xs font-mono font-bold text-gray-500">
           Transfer
         </div>
       </div>`;
