@@ -125,14 +125,20 @@ function cartTotal() {
   return cartDetailed().reduce((sum, item) => sum + item.subtotal, 0);
 }
 function updateCartBadge() {
-  const badge = document.getElementById("cart-badge");
-  if (!badge) return;
+  const badges = [
+    document.getElementById("cart-badge"),
+    document.getElementById("cart-badge-header"),
+    document.getElementById("cart-badge-bottom"),
+  ];
   const count = cartCount();
-  badge.textContent = count;
-  badge.classList.toggle("hidden", count === 0);
-  badge.classList.remove("badge-bounce");
-  void badge.offsetWidth;
-  badge.classList.add("badge-bounce");
+  badges.forEach((badge) => {
+    if (!badge) return;
+    badge.textContent = count;
+    badge.classList.toggle("hidden", count === 0);
+    badge.classList.remove("badge-bounce");
+    void badge.offsetWidth;
+    badge.classList.add("badge-bounce");
+  });
 }
 
 // ===== Floating buttons visibility =====
@@ -299,6 +305,7 @@ function renderKatalog() {
 
 function renderProductCardItemHtml(p, cart) {
   const qty = cart[p.id] || 0;
+  const shortOrigin = String(p.origin || "Bandung").replace(/Kartika Sari\s*/i, "").trim() || "Bandung";
   return `
     <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex flex-col hover:border-blue-200 transition">
       ${productImage(p, "w-full aspect-square")}
@@ -307,7 +314,7 @@ function renderProductCardItemHtml(p, cart) {
         <h3 class="font-bold text-gray-900 leading-tight mb-1 text-xs sm:text-sm sm:min-h-[2.5rem] line-clamp-2">${escapeHtml(p.name)}</h3>
         <p class="text-[11px] sm:text-xs text-gray-500 mb-1.5 line-clamp-2 flex-1">${escapeHtml(p.description)}</p>
         <div class="flex flex-wrap items-center gap-1 my-1 text-[10px] sm:text-[11px]">
-          <span class="bg-blue-50 text-[--color-primary] px-1.5 sm:px-2 py-0.5 rounded-full font-medium border border-blue-100 truncate max-w-full">📍 ${escapeHtml(p.origin || "Bandung")}</span>
+          <span class="bg-blue-50 text-[--color-primary] px-1.5 sm:px-2 py-0.5 rounded-full font-medium border border-blue-100 truncate max-w-full">📍 ${escapeHtml(shortOrigin)}</span>
           <span class="bg-amber-50 text-amber-700 px-1.5 sm:px-2 py-0.5 rounded-full font-medium border border-amber-100">⏳ ${escapeHtml(p.expiryDetail || "Tahan Lama")}</span>
         </div>
         <div class="flex items-baseline justify-between mt-auto pt-1.5 border-t border-gray-50">
@@ -1196,10 +1203,14 @@ async function init() {
     CONFIG = config;
 
     document.getElementById("event-title").textContent = `Oleh-Oleh ${config.eventName}`;
-    document.getElementById("wa-float").href = formatWaLink(
+    const waUrl = formatWaLink(
       config.adminWaNumber,
       "Halo Admin, saya ingin bertanya mengenai pemesanan oleh-oleh APTIRMIKI."
     );
+    const waFloat = document.getElementById("wa-float");
+    if (waFloat) waFloat.href = waUrl;
+    const waBottom = document.getElementById("wa-bottom");
+    if (waBottom) waBottom.href = waUrl;
 
     updateCartBadge();
     render();
