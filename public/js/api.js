@@ -33,6 +33,9 @@ const Api = {
   postForm(url, formData, opts = {}) {
     return this.request("POST", url, { ...opts, formData });
   },
+  put(url, body, opts = {}) {
+    return this.request("PUT", url, { ...opts, body });
+  },
   patch(url, body, opts = {}) {
     return this.request("PATCH", url, { ...opts, body });
   },
