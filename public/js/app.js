@@ -715,7 +715,30 @@ async function renderKonfirmasi(orderId) {
     )
     .join("");
 
-  const waMessage = `Halo Admin APTIRMIKI, saya ingin konfirmasi pesanan.\nID Pesanan: ${order.id}\nNama: ${order.customer.name}\nTotal: ${rupiah(order.total)}\nSaya sudah melakukan pembayaran, mohon diverifikasi. Terima kasih.`;
+  const selectedBankKey = (order.customer && order.customer.targetBank) || "BCA";
+  const matchedBank = (CONFIG.banks || []).find((b) => b.key === selectedBankKey) || CONFIG.bank || {};
+  const targetBankInfo = `${matchedBank.name || selectedBankKey} (${matchedBank.accountNumber || "-"} a.n. ${matchedBank.accountName || "-"})`;
+  const itemsTextList = order.items.map((i) => `• ${i.name} x${i.qty} = ${rupiah(i.subtotal)}`).join("\n");
+
+  const waMessage = `Halo Admin APTIRMIKI, saya ingin konfirmasi bukti transfer pembayaran pesanan saya:
+
+📋 *DETAIL PESANAN*
+• ID Pesanan: *#${order.id}*
+• Nama Pemesan: *${order.customer.name}*
+• No. WhatsApp: *${order.customer.wa}*
+• Instansi: *${order.customer.instansi}*
+• Metode Pengambilan: *${order.customer.method}${order.customer.detail ? ` (${order.customer.detail})` : ""}*
+
+🛍️ *RINCIAN BARANG*
+${itemsTextList}
+
+💰 *TOTAL PEMBAYARAN: ${rupiah(order.total)}*
+💳 *Transfer ke: ${targetBankInfo}*
+
+📸 *(Berikut saya lampirkan foto/screenshot bukti transfer pembayaran saya di pesan ini)*
+
+Mohon segera diverifikasi dan diproses ya Admin. Terima kasih!`;
+
   const waLink = formatWaLink(CONFIG.adminWaNumber, waMessage);
 
   const qrisBlock = CONFIG.qrisImageUrl
@@ -724,16 +747,16 @@ async function renderKonfirmasi(orderId) {
 
   const proofBlock = order.proof
     ? `<div class="mt-3 space-y-2">
-        <div class="flex items-center gap-2 text-sm text-emerald-700 bg-emerald-50 rounded-lg p-2.5 border border-emerald-200">
-          <svg class="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          <span>Bukti transfer sudah diunggah. Menunggu verifikasi admin.</span>
+        <div class="flex items-center gap-2 text-sm text-emerald-700 bg-emerald-50 rounded-xl p-3 border border-emerald-200">
+          <svg class="w-5 h-5 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <div>
+            <p class="font-bold text-xs">Bukti Transfer Berhasil Diunggah!</p>
+            <p class="text-[11px] text-emerald-800">Menunggu verifikasi admin panitia.</p>
+          </div>
         </div>
-        <img src="${getProofSrc(order.proof)}" alt="Bukti Transfer" class="w-32 h-32 object-cover rounded-lg border border-gray-200 mx-auto shadow-sm" />
+        <img src="${getProofSrc(order.proof)}" alt="Bukti Transfer" class="w-36 h-36 object-cover rounded-xl border border-gray-200 mx-auto shadow-sm" />
       </div>`
     : "";
-
-  const selectedBankKey = (order.customer && order.customer.targetBank) || "BCA";
-  const matchedBank = (CONFIG.banks || []).find((b) => b.key === selectedBankKey) || CONFIG.bank || {};
 
   setView(`
     <div class="px-4 sm:px-6 py-4 pb-32 max-w-2xl mx-auto">
@@ -748,7 +771,7 @@ async function renderKonfirmasi(orderId) {
         <p class="text-xs text-gray-400 mt-1">Simpan ID ini untuk melacak status pesananmu.</p>
       </div>
 
-      <div class="bg-white rounded-xl p-4 border border-gray-100 mb-4 shadow-sm">
+      <div class="bg-white rounded-2xl p-4 border border-gray-100 mb-4 shadow-sm">
         <h3 class="text-xs uppercase tracking-wide font-semibold text-gray-400 mb-2">Detail Pesanan</h3>
         ${itemsList}
         <div class="border-t border-dashed border-gray-200 mt-2 pt-2 flex justify-between font-bold">
@@ -756,19 +779,19 @@ async function renderKonfirmasi(orderId) {
         </div>
       </div>
 
-      <div class="bg-white rounded-xl p-4 border border-gray-100 mb-4 shadow-sm">
+      <div class="bg-white rounded-2xl p-4 border border-gray-100 mb-4 shadow-sm">
         <h3 class="text-xs uppercase tracking-wide font-semibold text-gray-400 mb-2 flex items-center gap-1.5">
           <svg class="w-4 h-4 text-[--color-primary]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-          <span>Info Pembayaran (Transfer Ke ${escapeHtml(selectedBankKey)})</span>
+          <span>Info Rekening Pembayaran (Transfer Ke ${escapeHtml(selectedBankKey)})</span>
         </h3>
         <div class="text-sm text-gray-700 space-y-2">
           <p class="text-xs text-gray-500"><span class="text-gray-400">Bank Tujuan:</span> <b class="text-gray-900">${escapeHtml(matchedBank.name || selectedBankKey)}</b></p>
-          <div class="flex items-center justify-between bg-blue-50/60 p-3 rounded-lg border border-blue-100">
+          <div class="flex items-center justify-between bg-blue-50/60 p-3 rounded-xl border border-blue-100">
             <div>
               <p class="text-[11px] text-gray-500">Nomor Rekening</p>
-              <p class="font-mono font-bold text-gray-900 text-base">${escapeHtml(matchedBank.accountNumber || "-")}</p>
+              <p class="font-mono font-black text-gray-900 text-base sm:text-lg">${escapeHtml(matchedBank.accountNumber || "-")}</p>
             </div>
-            <button data-action="copy-bank" onclick="copyText('${escapeHtml(matchedBank.accountNumber || "")}', 'Nomor Rekening ${escapeHtml(selectedBankKey)}')" class="bg-white border border-gray-200 hover:border-[--color-primary] text-xs px-3 py-1.5 rounded-lg font-semibold shadow-sm transition flex items-center gap-1 text-[--color-primary]">
+            <button data-action="copy-bank" onclick="copyText('${escapeHtml(matchedBank.accountNumber || "")}', 'Nomor Rekening ${escapeHtml(selectedBankKey)}')" class="bg-white border border-gray-200 hover:border-[--color-primary] text-xs px-3.5 py-2 rounded-xl font-bold shadow-sm transition flex items-center gap-1 text-[--color-primary] active:scale-95">
               <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
               <span>Salin</span>
             </button>
@@ -778,31 +801,54 @@ async function renderKonfirmasi(orderId) {
         ${qrisBlock}
       </div>
 
-      <div class="bg-white rounded-xl p-4 border border-gray-100 mb-4 shadow-sm">
-        <h3 class="text-xs uppercase tracking-wide font-semibold text-gray-400 mb-2 flex items-center gap-1.5">
-          <svg class="w-4 h-4 text-[--color-primary]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-          <span>Upload Bukti Transfer</span>
-        </h3>
-        <input id="proof-input" type="file" accept="image/*" class="text-xs w-full border border-gray-200 rounded-lg p-2" />
-        <div id="proof-preview-wrap" class="hidden mt-3 text-center">
-          <p class="text-xs text-gray-400 mb-1">Pratinjau Foto:</p>
-          <img id="proof-preview-img" src="" class="w-32 h-32 object-cover rounded-lg border border-gray-200 mx-auto" />
+      <!-- Upload Bukti Transfer (WAJIB) -->
+      <div class="bg-white rounded-2xl p-4 border border-blue-100 mb-4 shadow-sm ring-1 ring-blue-50">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="text-xs uppercase tracking-wide font-bold text-gray-800 flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-[--color-primary]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            <span>Unggah Bukti Transfer</span>
+          </h3>
+          <span class="bg-red-50 text-red-600 border border-red-200 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">WAJIB</span>
         </div>
-        <button id="proof-submit" class="w-full mt-3 bg-gray-900 hover:bg-black text-white rounded-xl py-2.5 text-sm font-semibold shadow-sm transition">Unggah Bukti Pembayaran</button>
-        <p id="proof-error" class="text-xs text-red-500 hidden mt-2"></p>
+
+        <p class="text-xs text-gray-500 mb-3">Mohon unggah foto / screenshot bukti transfer Anda agar pesanan dapat segera diproses panitia.</p>
+
+        <input id="proof-input" type="file" accept="image/*" class="text-xs w-full border border-gray-200 rounded-xl p-2.5 bg-gray-50 cursor-pointer" />
+        <div id="proof-preview-wrap" class="hidden mt-3 text-center">
+          <p class="text-xs text-gray-400 mb-1 font-medium">Pratinjau Foto Bukti:</p>
+          <img id="proof-preview-img" src="" class="w-36 h-36 object-cover rounded-xl border border-gray-200 mx-auto shadow-sm" />
+        </div>
+        <button id="proof-submit" class="w-full mt-3 bg-[--color-primary] hover:bg-[--color-primary-dark] text-white rounded-xl py-3 text-xs font-bold shadow-md shadow-blue-600/20 transition active:scale-98 flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+          <span>Kirim Bukti Pembayaran Sekarang</span>
+        </button>
+        <p id="proof-error" class="text-xs text-red-500 hidden mt-2 text-center font-medium"></p>
         ${proofBlock}
+
+        <!-- Catatan Bantuan WhatsApp -->
+        <div class="mt-4 p-3 bg-amber-50/90 border border-amber-200 rounded-xl text-xs text-amber-900 flex items-start gap-2.5">
+          <svg class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <div class="space-y-1">
+            <p class="font-bold text-amber-900">Kendala Unggah Foto di Website?</p>
+            <p class="text-amber-800 text-[11px] leading-relaxed">
+              Jika Anda tidak dapat mengunggah bukti di formulir atas, silakan klik tombol <b>Konfirmasi via WhatsApp Admin</b> di bawah untuk mengirimkan format pesanan sekaligus melampirkan foto bukti pembayaran Anda.
+            </p>
+          </div>
+        </div>
       </div>
 
       <a href="${waLink}" target="_blank" rel="noopener"
-        class="flex items-center justify-center gap-2 text-center w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl py-3 text-sm font-semibold mb-2 shadow-sm transition">
+        class="flex items-center justify-center gap-2 text-center w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl py-3.5 text-xs sm:text-sm font-bold mb-3 shadow-md shadow-emerald-600/20 transition active:scale-98">
         <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-0.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-        <span>Konfirmasi via WhatsApp Admin</span>
+        <span>Konfirmasi & Kirim Bukti via WhatsApp Admin</span>
       </a>
-      <button data-action="go-tracking-order" data-id="${escapeHtml(order.id)}" class="w-full border border-gray-200 text-gray-700 hover:border-blue-300 rounded-xl py-3 text-sm font-semibold mb-2 transition flex items-center justify-center gap-1.5">
+      <button data-action="go-tracking-order" data-id="${escapeHtml(order.id)}" class="w-full border border-gray-200 text-gray-700 hover:border-blue-300 rounded-xl py-3 text-xs sm:text-sm font-semibold mb-2 transition flex items-center justify-center gap-1.5 bg-white">
         <svg class="w-4 h-4 text-[--color-primary]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-        <span>Lihat di Riwayat Pesanan</span>
+        <span>Lihat di Riwayat & Lacak Status</span>
       </button>
-      <button data-action="go-katalog" class="w-full text-[--color-primary] py-2 text-sm font-semibold hover:underline">
+      <button data-action="go-katalog" class="w-full text-[--color-primary] py-2 text-xs sm:text-sm font-semibold hover:underline">
         Kembali ke Katalog
       </button>
     </div>
@@ -827,7 +873,7 @@ async function renderKonfirmasi(orderId) {
     const errEl = document.getElementById("proof-error");
     errEl.classList.add("hidden");
     if (!fileInput.files[0]) {
-      errEl.textContent = "Pilih file foto bukti transfer terlebih dahulu.";
+      errEl.textContent = "Wajib memilih file foto bukti transfer terlebih dahulu.";
       errEl.classList.remove("hidden");
       return;
     }
@@ -835,7 +881,7 @@ async function renderKonfirmasi(orderId) {
     fd.append("proof", fileInput.files[0]);
     const btn = document.getElementById("proof-submit");
     btn.disabled = true;
-    btn.textContent = "Mengunggah...";
+    btn.textContent = "Mengunggah Bukti...";
     try {
       await Api.postForm(`/api/orders/${encodeURIComponent(order.id)}/proof`, fd);
       showSuccessModal(order.id);
@@ -843,7 +889,7 @@ async function renderKonfirmasi(orderId) {
       errEl.textContent = err.message;
       errEl.classList.remove("hidden");
       btn.disabled = false;
-      btn.textContent = "Unggah Bukti Pembayaran";
+      btn.textContent = "Kirim Bukti Pembayaran Sekarang";
     }
   });
 }
@@ -1025,7 +1071,37 @@ function renderTrackCard(order, statusFlow) {
     .map((i) => `<div class="flex justify-between text-xs py-0.5"><span class="text-gray-600">${escapeHtml(i.name)} x${i.qty}</span><span class="font-medium">${rupiah(i.subtotal)}</span></div>`)
     .join("");
 
-  const waMessage = `Halo Admin APTIRMIKI, saya ingin menanyakan status pesanan saya.\nID Pesanan: ${order.id}\nNama: ${order.customer.name}`;
+  const selectedBankKey = (order.customer && order.customer.targetBank) || "BCA";
+  const matchedBank = (CONFIG.banks || []).find((b) => b.key === selectedBankKey) || CONFIG.bank || {};
+  const targetBankInfo = `${matchedBank.name || selectedBankKey} (${matchedBank.accountNumber || "-"} a.n. ${matchedBank.accountName || "-"})`;
+  const itemsTextList = order.items.map((i) => `• ${i.name} x${i.qty} = ${rupiah(i.subtotal)}`).join("\n");
+
+  const waMessage = order.status === "menunggu_pembayaran"
+    ? `Halo Admin APTIRMIKI, saya ingin konfirmasi bukti transfer pembayaran pesanan saya:
+
+📋 *DETAIL PESANAN*
+• ID Pesanan: *#${order.id}*
+• Nama Pemesan: *${order.customer.name}*
+• No. WhatsApp: *${order.customer.wa}*
+• Instansi: *${order.customer.instansi}*
+• Metode Pengambilan: *${order.customer.method}${order.customer.detail ? ` (${order.customer.detail})` : ""}*
+
+🛍️ *RINCIAN BARANG*
+${itemsTextList}
+
+💰 *TOTAL PEMBAYARAN: ${rupiah(order.total)}*
+💳 *Transfer ke: ${targetBankInfo}*
+
+📸 *(Berikut saya lampirkan foto/screenshot bukti transfer pembayaran saya di pesan ini)*
+
+Mohon segera diverifikasi dan diproses ya Admin. Terima kasih!`
+    : `Halo Admin APTIRMIKI, saya ingin menanyakan status pesanan saya:
+• ID Pesanan: *#${order.id}*
+• Nama Pemesan: *${order.customer.name}*
+• Status Saat Ini: *${statusFlow[currentIdx]?.label || order.status}*
+
+Terima kasih!`;
+
   const waLink = formatWaLink(CONFIG.adminWaNumber, waMessage);
 
 function getProofSrc(proof) {
@@ -1036,10 +1112,10 @@ function getProofSrc(proof) {
 }
 
   const proofThumbnail = order.proof
-    ? `<div class="mt-2 text-xs text-emerald-700 bg-emerald-50 rounded-lg p-2 flex items-center gap-2 border border-emerald-200">
-        <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        <span class="font-medium">Bukti Transfer Terunggah</span>
-        <img src="${getProofSrc(order.proof)}" class="w-8 h-8 object-cover rounded border border-gray-200 ml-auto cursor-pointer" onclick="if(document.getElementById('lightbox-img')){document.getElementById('lightbox-img').src=this.src; document.getElementById('lightbox').classList.remove('hidden');}" />
+    ? `<div class="mt-2 text-xs text-emerald-700 bg-emerald-50 rounded-xl p-2.5 flex items-center gap-2 border border-emerald-200">
+        <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span class="font-bold text-xs">Bukti Transfer Berhasil Diunggah</span>
+        <img src="${getProofSrc(order.proof)}" class="w-9 h-9 object-cover rounded-lg border border-gray-200 ml-auto cursor-pointer shadow-xs" onclick="if(document.getElementById('lightbox-img')){document.getElementById('lightbox-img').src=this.src; document.getElementById('lightbox').classList.remove('hidden');}" />
       </div>`
     : "";
 
@@ -1047,15 +1123,18 @@ function getProofSrc(proof) {
     order.status === "menunggu_pembayaran"
       ? `
     <div class="border-t border-dashed border-gray-200 mt-3 pt-3">
-      <p class="text-xs font-semibold text-gray-500 mb-1.5 flex items-center gap-1">
-        <svg class="w-3.5 h-3.5 text-[--color-primary]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-        <span>Instruksi Pembayaran</span>
-      </p>
-      <div class="text-xs text-gray-600 space-y-1 mb-2 bg-blue-50/50 p-2.5 rounded-lg border border-blue-100">
-        <p>Bank: <b>${escapeHtml(CONFIG.bank?.name || "-")}</b></p>
+      <div class="flex items-center justify-between mb-1.5">
+        <p class="text-xs font-bold text-gray-800 flex items-center gap-1">
+          <svg class="w-3.5 h-3.5 text-[--color-primary]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          <span>Instruksi Transfer (${escapeHtml(selectedBankKey)})</span>
+        </p>
+        <span class="bg-red-50 text-red-600 border border-red-200 text-[9px] font-extrabold px-1.5 py-0.5 rounded-full uppercase">WAJIB BUKTI</span>
+      </div>
+      <div class="text-xs text-gray-600 space-y-1 mb-2 bg-blue-50/50 p-2.5 rounded-xl border border-blue-100">
+        <p>Bank Tujuan: <b>${escapeHtml(matchedBank.name || selectedBankKey)}</b></p>
         <div class="flex items-center justify-between">
-          <p>No. Rek: <b class="font-mono text-sm text-gray-900">${escapeHtml(CONFIG.bank?.accountNumber || "-")}</b> a.n. ${escapeHtml(CONFIG.bank?.accountName || "-")}</p>
-          <button data-action="copy-bank" class="text-[11px] bg-white border border-gray-200 hover:border-[--color-primary] px-2 py-0.5 rounded font-semibold text-[--color-primary]">Salin</button>
+          <p>No. Rek: <b class="font-mono text-sm text-gray-900">${escapeHtml(matchedBank.accountNumber || "-")}</b> <span class="text-gray-500 text-[11px]">(a.n. ${escapeHtml(matchedBank.accountName || "-")})</span></p>
+          <button data-action="copy-bank" onclick="copyText('${escapeHtml(matchedBank.accountNumber || "")}', 'Nomor Rekening ${escapeHtml(selectedBankKey)}')" class="text-[11px] bg-white border border-gray-200 hover:border-[--color-primary] px-2 py-0.5 rounded font-semibold text-[--color-primary] shadow-xs">Salin</button>
         </div>
       </div>
       ${
@@ -1063,20 +1142,20 @@ function getProofSrc(proof) {
           ? proofThumbnail
           : `<div class="space-y-2">
               <div class="flex flex-col sm:flex-row gap-2">
-                <input id="proof-input-${escapeHtml(order.id)}" type="file" accept="image/*" class="text-xs flex-1 border border-gray-200 rounded-lg px-2 py-1.5 min-w-0" />
-                <button data-proof-order="${escapeHtml(order.id)}" class="proof-upload-btn bg-gray-900 hover:bg-black text-white text-xs font-semibold rounded-lg px-3 py-1.5 whitespace-nowrap shadow-sm">Unggah Bukti</button>
+                <input id="proof-input-${escapeHtml(order.id)}" type="file" accept="image/*" class="text-xs flex-1 border border-gray-200 rounded-xl px-2.5 py-2 min-w-0 bg-gray-50 cursor-pointer" />
+                <button data-proof-order="${escapeHtml(order.id)}" class="proof-upload-btn bg-[--color-primary] hover:bg-[--color-primary-dark] text-white text-xs font-bold rounded-xl px-3.5 py-2 whitespace-nowrap shadow-sm transition active:scale-95">Unggah Bukti</button>
               </div>
               <div id="proof-prev-wrap-${escapeHtml(order.id)}" class="hidden text-center">
-                <img id="proof-prev-img-${escapeHtml(order.id)}" class="w-24 h-24 object-cover rounded border border-gray-200 mx-auto" />
+                <img id="proof-prev-img-${escapeHtml(order.id)}" class="w-28 h-28 object-cover rounded-xl border border-gray-200 mx-auto shadow-sm" />
               </div>
-              <p id="proof-error-${escapeHtml(order.id)}" class="text-xs text-red-500 hidden mt-1.5"></p>
+              <p id="proof-error-${escapeHtml(order.id)}" class="text-xs text-red-500 hidden mt-1.5 font-medium text-center"></p>
             </div>`
       }
     </div>`
       : proofThumbnail;
 
   return `
-    <div class="bg-white rounded-xl p-4 border border-gray-100 mb-3 shadow-sm">
+    <div class="bg-white rounded-2xl p-4 border border-gray-100 mb-3 shadow-sm">
       <div class="flex justify-between items-start mb-1">
         <div>
           <p class="font-bold text-[--color-primary] text-base">#${escapeHtml(order.id)}</p>
@@ -1094,9 +1173,9 @@ function getProofSrc(proof) {
       <p class="text-xs text-gray-500 mt-2">Metode: <b>${escapeHtml(order.customer.method)}</b>${order.customer.detail ? " — " + escapeHtml(order.customer.detail) : ""}</p>
       ${paymentBlock}
       <a href="${waLink}" target="_blank" rel="noopener"
-        class="mt-3 flex items-center justify-center gap-2 w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg py-2.5 transition shadow-sm">
+        class="mt-3 flex items-center justify-center gap-2 w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl py-3 transition shadow-sm active:scale-98">
         <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-0.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-        <span>Hubungi Admin via WhatsApp</span>
+        <span>Konfirmasi & Kirim Bukti via WhatsApp</span>
       </a>
     </div>
   `;
