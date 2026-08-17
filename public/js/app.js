@@ -141,11 +141,23 @@ function updateCartBadge() {
   });
 }
 
-// ===== Floating buttons visibility =====
+// ===== Floating buttons & Mobile Bottom Nav visibility =====
 function toggleFloatingButtons(show) {
   const cartFab = document.getElementById("cart-fab");
   const waFab = document.getElementById("wa-float");
-  [cartFab, waFab].forEach((el) => el && el.classList.toggle("hidden", !show));
+  const bottomNav = document.getElementById("mobile-bottom-nav");
+  [cartFab, waFab].forEach((el) => {
+    if (el) {
+      if (!show || window.innerWidth < 768) {
+        el.classList.add("hidden");
+      } else {
+        el.classList.remove("hidden");
+      }
+    }
+  });
+  if (bottomNav) {
+    bottomNav.classList.toggle("hidden", !show);
+  }
 }
 
 // ===== Google Drive URL Converter & Image Helper =====

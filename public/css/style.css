@@ -223,3 +223,11 @@ input:focus, select:focus, textarea:focus {
   }
 }
 
+/* Force hide all floating action buttons on mobile & small tablets */
+@media (max-width: 768px) {
+  #cart-fab,
+  #wa-float {
+    display: none !important;
+  }
+}
+
