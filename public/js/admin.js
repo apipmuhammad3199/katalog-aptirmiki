@@ -19,13 +19,49 @@ function escapeHtml(str) {
     .replace(/"/g, "&quot;");
 }
 
+let adminLiveSyncTimer = null;
+let lastKnownOrdersChecksum = "";
+
+function stopAdminLiveSync() {
+  if (adminLiveSyncTimer) {
+    clearInterval(adminLiveSyncTimer);
+    adminLiveSyncTimer = null;
+  }
+}
+
+function startAdminLiveSync() {
+  stopAdminLiveSync();
+  adminLiveSyncTimer = setInterval(async () => {
+    if (!TOKEN || currentTab === "products") return;
+    try {
+      const [ordersData, summaryData] = await Promise.all([
+        Api.get("/api/admin/orders", { token: TOKEN }),
+        Api.get("/api/admin/summary", { token: TOKEN }),
+      ]);
+      const currentChecksum = ordersData.orders.map((o) => `${o.id}:${o.status}:${Boolean(o.proof)}`).join("|");
+      if (lastKnownOrdersChecksum && currentChecksum !== lastKnownOrdersChecksum) {
+        ALL_ORDERS = ordersData.orders;
+        updateTabBadges();
+        renderSummaryCards(summaryData, ALL_ORDERS);
+        renderBankSummaryCards(summaryData.bankSummary || []);
+        renderBrandSummary(summaryData.brandSummary || []);
+        renderRestock(summaryData.summary);
+        applyFilters();
+      }
+      lastKnownOrdersChecksum = currentChecksum;
+    } catch (e) {}
+  }, 4000);
+}
+
 function showDashboard() {
   loginScreen.classList.add("hidden");
   dashboardScreen.classList.remove("hidden");
   loadAll();
+  startAdminLiveSync();
 }
 
 function showLogin(message) {
+  stopAdminLiveSync();
   TOKEN = null;
   sessionStorage.removeItem(TOKEN_KEY);
   dashboardScreen.classList.add("hidden");

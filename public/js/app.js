@@ -237,6 +237,10 @@ async function render() {
     await refreshProducts();
   }
 
+  if (path !== "tracking" && path !== "riwayat" && path !== "konfirmasi") {
+    stopLiveSync();
+  }
+
   if (path === "keranjang") {
     toggleFloatingButtons(false);
     return renderKeranjang();
@@ -247,7 +251,22 @@ async function render() {
   }
   if (path === "konfirmasi") {
     toggleFloatingButtons(true);
-    return renderKonfirmasi(params[0]);
+    renderKonfirmasi(params[0]);
+    startLiveSync(async () => {
+      try {
+        const data = await Api.get(`/api/orders/${encodeURIComponent(params[0])}`);
+        if (data && data.order) {
+          const prevKey = `${data.order.id}_${data.order.status}_${Boolean(data.order.proof)}`;
+          if (lastKnownStatusMap[data.order.id] && lastKnownStatusMap[data.order.id] !== prevKey) {
+            const flowItem = (data.statusFlow || []).find((s) => s.key === data.order.status);
+            showToast(`🔔 Status pesanan #${data.order.id} diperbarui: ${flowItem ? flowItem.label : data.order.status}`);
+            renderKonfirmasi(params[0]);
+          }
+          lastKnownStatusMap[data.order.id] = prevKey;
+        }
+      } catch (e) {}
+    }, 4000);
+    return;
   }
   if (path === "tracking") {
     toggleFloatingButtons(true);
@@ -894,6 +913,26 @@ Mohon segera diverifikasi dan diproses ya Admin. Terima kasih!`;
   });
 }
 
+// ===== Real-time Auto-Sync for Tracking & Orders =====
+let activeLiveSyncTimer = null;
+let lastKnownStatusMap = {};
+
+function stopLiveSync() {
+  if (activeLiveSyncTimer) {
+    clearInterval(activeLiveSyncTimer);
+    activeLiveSyncTimer = null;
+  }
+}
+
+function startLiveSync(syncCallback, intervalMs = 4000) {
+  stopLiveSync();
+  activeLiveSyncTimer = setInterval(async () => {
+    try {
+      await syncCallback(true);
+    } catch (e) {}
+  }, intervalMs);
+}
+
 // ===== Riwayat & Status Pesanan (Tracking & History) =====
 function renderTracking(prefillQuery, defaultTab = "tracking") {
   const myOrders = getMyOrders();
@@ -909,7 +948,7 @@ function renderTracking(prefillQuery, defaultTab = "tracking") {
 
   const recentBlock = recentChips
     ? `<div class="mb-4">
-        <p class="text-xs text-gray-400 mb-1.5">Pesanan Terakhir Anda di Perangkat Ini:</p>
+        <p class="text-xs text-gray-400 mb-1.5 font-medium">Pesanan Terakhir Anda di Perangkat Ini:</p>
         <div class="flex flex-wrap gap-1.5">${recentChips}</div>
       </div>`
     : "";
@@ -917,6 +956,21 @@ function renderTracking(prefillQuery, defaultTab = "tracking") {
   setView(`
     <div class="px-4 sm:px-6 py-4 max-w-2xl mx-auto pb-32">
       
+      <!-- Live Sync Status Banner -->
+      <div class="flex items-center justify-between mb-4 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-2xl text-xs shadow-xs">
+        <div class="flex items-center gap-2 text-emerald-800 font-semibold">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-600"></span>
+          </span>
+          <span>Sinkronisasi Real-Time Aktif</span>
+        </div>
+        <button id="manual-sync-btn" class="text-[--color-primary] hover:text-[--color-primary-dark] font-bold flex items-center gap-1 active:scale-95 transition">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          <span>Refresh</span>
+        </button>
+      </div>
+
       <!-- Sub Nav Tabs (Tracking vs History) -->
       <div class="flex border-b border-gray-200 mb-5 gap-4">
         <button id="user-tab-tracking" data-action="go-tracking"
@@ -946,12 +1000,12 @@ function renderTracking(prefillQuery, defaultTab = "tracking") {
           isHistoryTab
             ? `<div id="history-content"><div class="flex justify-center py-10"><div class="spinner"></div></div></div>`
             : `
-              <p class="text-xs text-gray-400 mb-3">Masukkan ID Pesanan (contoh: APT-8821) atau Nomor WhatsApp yang digunakan saat memesan untuk melacak status pesanan secara real-time.</p>
+              <p class="text-xs text-gray-500 mb-3">Masukkan ID Pesanan (contoh: APT-8821) atau Nomor WhatsApp yang digunakan saat memesan untuk melacak status pesanan secara real-time.</p>
               
               <div class="flex gap-2 mb-3">
                 <input id="track-input" type="text" placeholder="APT-8821 atau 08xxxxxxxxxx" value="${escapeHtml(prefillQuery || myOrders[0] || "")}"
-                  class="flex-1 border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:border-[--color-primary]" />
-                <button id="track-btn" class="bg-[--color-primary] hover:bg-[--color-primary-dark] text-white px-5 rounded-lg text-sm font-semibold shadow-sm transition">Lacak</button>
+                  class="flex-1 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:border-[--color-primary]" />
+                <button id="track-btn" class="bg-[--color-primary] hover:bg-[--color-primary-dark] text-white px-5 rounded-xl text-sm font-bold shadow-sm transition active:scale-95">Lacak</button>
               </div>
 
               ${recentBlock}
@@ -963,45 +1017,71 @@ function renderTracking(prefillQuery, defaultTab = "tracking") {
     </div>
   `);
 
+  const manualBtn = document.getElementById("manual-sync-btn");
+
   if (isHistoryTab) {
     loadMyHistoryOrders();
+    startLiveSync(() => loadMyHistoryOrders(true), 4000);
+    if (manualBtn) manualBtn.onclick = () => loadMyHistoryOrders(false);
   } else {
-    const runSearch = async () => {
+    const runSearch = async (isSilent = false) => {
       const q = document.getElementById("track-input")?.value.trim();
       const resultEl = document.getElementById("track-result");
       if (!q || !resultEl) return;
-      resultEl.innerHTML = `<div class="flex justify-center py-10"><div class="spinner"></div></div>`;
+      if (!isSilent) {
+        resultEl.innerHTML = `<div class="flex justify-center py-10"><div class="spinner"></div></div>`;
+      }
       try {
         const data = await Api.get(`/api/orders/track?query=${encodeURIComponent(q)}`);
+        
+        // Detect if any status changed to notify user
+        let hasChange = false;
+        data.orders.forEach((o) => {
+          const prevKey = `${o.id}_${o.status}_${Boolean(o.proof)}`;
+          if (lastKnownStatusMap[o.id] && lastKnownStatusMap[o.id] !== prevKey) {
+            hasChange = true;
+            const flowItem = data.statusFlow.find((s) => s.key === o.status);
+            showToast(`🔔 Status pesanan #${o.id} diperbarui: ${flowItem ? flowItem.label : o.status}`);
+          }
+          lastKnownStatusMap[o.id] = prevKey;
+        });
+
         resultEl.innerHTML = `
           <p class="text-xs text-gray-400 mb-2 font-medium">${data.orders.length} pesanan ditemukan</p>
           ${data.orders.map((o) => renderTrackCard(o, data.statusFlow)).join("")}
         `;
-        attachTrackCardHandlers(resultEl, runSearch);
+        attachTrackCardHandlers(resultEl, () => runSearch(false));
       } catch (err) {
-        resultEl.innerHTML = `
-          <div class="text-center text-gray-400 py-12 px-4 bg-white rounded-xl border border-gray-100 shadow-sm">
-            <svg class="w-10 h-10 text-gray-300 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <p class="text-sm font-medium text-gray-600">${escapeHtml(err.message)}</p>
-          </div>`;
+        if (!isSilent) {
+          resultEl.innerHTML = `
+            <div class="text-center text-gray-400 py-12 px-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+              <svg class="w-10 h-10 text-gray-300 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              <p class="text-sm font-medium text-gray-600">${escapeHtml(err.message)}</p>
+            </div>`;
+        }
       }
     };
 
     const trackBtn = document.getElementById("track-btn");
     const trackInput = document.getElementById("track-input");
-    if (trackBtn) trackBtn.addEventListener("click", runSearch);
+    if (trackBtn) trackBtn.addEventListener("click", () => runSearch(false));
     if (trackInput) {
       trackInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") runSearch();
+        if (e.key === "Enter") runSearch(false);
       });
     }
 
+    if (manualBtn) manualBtn.onclick = () => runSearch(false);
+
     const queryToRun = prefillQuery || myOrders[0];
-    if (queryToRun) runSearch();
+    if (queryToRun) {
+      runSearch(false);
+      startLiveSync(() => runSearch(true), 4000);
+    }
   }
 }
 
-async function loadMyHistoryOrders() {
+async function loadMyHistoryOrders(isSilent = false) {
   const historyEl = document.getElementById("history-content");
   if (!historyEl) return;
 
@@ -1034,21 +1114,35 @@ async function loadMyHistoryOrders() {
     });
 
     if (allFetchedOrders.length === 0) {
-      historyEl.innerHTML = `
-        <div class="text-center py-12 px-4 bg-white rounded-xl border border-gray-100 shadow-sm">
-          <p class="text-sm text-gray-500 font-medium">Tidak ada riwayat pesanan aktif yang dapat dimuat.</p>
-        </div>`;
+      if (!isSilent) {
+        historyEl.innerHTML = `
+          <div class="text-center py-12 px-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+            <p class="text-sm text-gray-500 font-medium">Tidak ada riwayat pesanan aktif yang dapat dimuat.</p>
+          </div>`;
+      }
       return;
     }
+
+    // Check if status changed
+    allFetchedOrders.forEach((o) => {
+      const prevKey = `${o.id}_${o.status}_${Boolean(o.proof)}`;
+      if (lastKnownStatusMap[o.id] && lastKnownStatusMap[o.id] !== prevKey) {
+        const flowItem = statusFlow.find((s) => s.key === o.status);
+        showToast(`🔔 Status pesanan #${o.id} diperbarui: ${flowItem ? flowItem.label : o.status}`);
+      }
+      lastKnownStatusMap[o.id] = prevKey;
+    });
 
     historyEl.innerHTML = `
       <div class="space-y-3">
         <p class="text-xs text-gray-400 font-medium">Menampilkan ${allFetchedOrders.length} riwayat pesanan Anda:</p>
         ${allFetchedOrders.map((o) => renderTrackCard(o, statusFlow)).join("")}
       </div>`;
-    attachTrackCardHandlers(historyEl, loadMyHistoryOrders);
+    attachTrackCardHandlers(historyEl, () => loadMyHistoryOrders(false));
   } catch (err) {
-    historyEl.innerHTML = `<div class="text-center text-gray-400 py-10 text-xs">${escapeHtml(err.message)}</div>`;
+    if (!isSilent) {
+      historyEl.innerHTML = `<div class="text-center text-gray-400 py-10 text-xs">${escapeHtml(err.message)}</div>`;
+    }
   }
 }
 
