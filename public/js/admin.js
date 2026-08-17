@@ -509,9 +509,22 @@ function renderProductsTable() {
   });
 }
 
+function formatRupiahInput(value) {
+  if (value === undefined || value === null || value === "") return "";
+  const clean = String(value).replace(/\D/g, "");
+  if (!clean) return "";
+  return new Intl.NumberFormat("id-ID").format(Number(clean));
+}
+
+function parseRupiahInput(value) {
+  if (!value) return 0;
+  const clean = String(value).replace(/\D/g, "");
+  return Number(clean) || 0;
+}
+
 function updateProfitPreview() {
-  const supp = Number(document.getElementById("prod-supplier-price").value) || 0;
-  const sell = Number(document.getElementById("prod-price").value) || 0;
+  const supp = parseRupiahInput(document.getElementById("prod-supplier-price").value);
+  const sell = parseRupiahInput(document.getElementById("prod-price").value);
   const profit = sell - supp;
   const margin = sell > 0 ? ((profit / sell) * 100).toFixed(1) : 0;
 
@@ -535,8 +548,8 @@ function openProductModal(productId = null) {
     document.getElementById("prod-name").value = p.name;
     if (document.getElementById("prod-brand")) document.getElementById("prod-brand").value = p.brand || "Betawi Asli";
     document.getElementById("prod-category").value = p.category;
-    document.getElementById("prod-price").value = p.price;
-    document.getElementById("prod-supplier-price").value = p.supplierPrice !== undefined ? p.supplierPrice : Math.round(p.price * 0.7);
+    document.getElementById("prod-price").value = p.price ? formatRupiahInput(p.price) : "";
+    document.getElementById("prod-supplier-price").value = p.supplierPrice !== undefined ? formatRupiahInput(p.supplierPrice) : formatRupiahInput(Math.round(p.price * 0.7));
     document.getElementById("prod-unit").value = p.unit;
     document.getElementById("prod-origin").value = p.origin || "";
     document.getElementById("prod-expiry").value = p.expiryDetail || "";
@@ -552,8 +565,17 @@ function openProductModal(productId = null) {
   document.getElementById("product-modal").classList.remove("hidden");
 }
 
-document.getElementById("prod-supplier-price").addEventListener("input", updateProfitPreview);
-document.getElementById("prod-price").addEventListener("input", updateProfitPreview);
+function setupCurrencyInput(inputEl) {
+  if (!inputEl) return;
+  inputEl.addEventListener("input", (e) => {
+    const num = parseRupiahInput(e.target.value);
+    e.target.value = num > 0 ? formatRupiahInput(num) : "";
+    updateProfitPreview();
+  });
+}
+
+setupCurrencyInput(document.getElementById("prod-supplier-price"));
+setupCurrencyInput(document.getElementById("prod-price"));
 
 document.getElementById("add-product-btn").addEventListener("click", () => {
   openProductModal(null);
@@ -577,8 +599,8 @@ document.getElementById("product-form").addEventListener("submit", async (e) => 
     name: document.getElementById("prod-name").value,
     brand: document.getElementById("prod-brand") ? document.getElementById("prod-brand").value : "Betawi Asli",
     category: document.getElementById("prod-category").value,
-    price: Number(document.getElementById("prod-price").value),
-    supplierPrice: Number(document.getElementById("prod-supplier-price").value),
+    price: parseRupiahInput(document.getElementById("prod-price").value),
+    supplierPrice: parseRupiahInput(document.getElementById("prod-supplier-price").value),
     unit: document.getElementById("prod-unit").value,
     origin: document.getElementById("prod-origin").value,
     expiryDetail: document.getElementById("prod-expiry").value,

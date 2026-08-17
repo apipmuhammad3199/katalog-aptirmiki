@@ -116,7 +116,11 @@ function updateProduct(id, updater) {
   const data = readDB();
   const idx = data.products.findIndex((p) => p.id === id);
   if (idx === -1) return null;
-  data.products[idx] = updater({ ...data.products[idx] });
+  if (typeof updater === "function") {
+    data.products[idx] = updater({ ...data.products[idx] });
+  } else if (updater && typeof updater === "object") {
+    data.products[idx] = { ...data.products[idx], ...updater };
+  }
   writeDB(data);
   return data.products[idx];
 }
@@ -162,7 +166,11 @@ function updateOrder(id, updater) {
   const data = readDB();
   const idx = data.orders.findIndex((o) => matchOrderId(o, id));
   if (idx === -1) return null;
-  data.orders[idx] = updater({ ...data.orders[idx] });
+  if (typeof updater === "function") {
+    data.orders[idx] = updater({ ...data.orders[idx] });
+  } else if (updater && typeof updater === "object") {
+    data.orders[idx] = { ...data.orders[idx], ...updater };
+  }
   writeDB(data);
   return data.orders[idx];
 }
