@@ -625,32 +625,33 @@ function renderCheckout() {
   });
 }
 
-// ===== Modal Success Pop-up =====
+// ===== Modal Success Pop-up with Animated Checkmark =====
 function showSuccessModal(orderId) {
   const existing = document.getElementById("success-modal");
   if (existing) existing.remove();
 
   const modalHtml = `
-    <div id="success-modal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 view-enter">
-      <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl border border-gray-100 relative">
-        <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm ring-8 ring-emerald-50">
-          <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+    <div id="success-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-3xl max-w-sm w-full p-6 sm:p-8 text-center shadow-2xl border border-gray-100 relative anim-modal-in flex flex-col items-center">
+        <div class="w-20 h-20 mb-4 relative flex items-center justify-center anim-checkmark-pop">
+          <svg class="w-20 h-20" viewBox="0 0 52 52">
+            <circle class="checkmark-circle" cx="26" cy="26" r="23" />
+            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
           </svg>
         </div>
-        <h3 class="font-bold text-lg text-gray-900 mb-1">Bukti Transfer Berhasil Dikirim! 🎉</h3>
+        <h3 class="font-bold text-xl text-gray-900 mb-1">Bukti Transfer Terkirim! 🎉</h3>
         <p class="text-xs text-gray-500 mb-5 leading-relaxed">
-          Bukti pembayaran pesanan <b class="text-[--color-primary] font-mono">#${escapeHtml(orderId)}</b> telah berhasil diunggah. Admin APTIRMIKI akan memverifikasi terlebih dahulu dari dashboard.
+          Bukti pembayaran pesanan <b class="text-[--color-primary] font-mono font-semibold">#${escapeHtml(orderId)}</b> berhasil diunggah. Tim admin akan segera memverifikasi pesanan Anda.
         </p>
-        <div class="space-y-2">
+        <div class="space-y-2.5 w-full">
           <button onclick="document.getElementById('success-modal').remove(); navigate('#/tracking/${encodeURIComponent(orderId)}');"
-            class="w-full bg-[--color-primary] hover:bg-[--color-primary-dark] text-white rounded-xl py-3 text-xs font-semibold shadow-md transition flex items-center justify-center gap-1.5">
+            class="w-full bg-[--color-primary] hover:bg-[--color-primary-dark] text-white rounded-xl py-3 text-xs font-semibold shadow-md transition flex items-center justify-center gap-2">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
             <span>Lacak Status Pesanan Saya</span>
           </button>
           <button onclick="document.getElementById('success-modal').remove(); navigate('#/katalog');"
             class="w-full border border-gray-200 text-gray-600 hover:bg-gray-50 rounded-xl py-2.5 text-xs font-semibold transition">
-            🏠 Kembali ke Beranda (Katalog)
+            🏠 Kembali ke Beranda Katalog
           </button>
         </div>
       </div>

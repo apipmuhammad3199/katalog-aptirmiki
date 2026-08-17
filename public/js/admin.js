@@ -409,18 +409,25 @@ function getProofSrc(proof) {
   });
 
   tbody.querySelectorAll(".delete-btn").forEach((btn) => {
-    btn.addEventListener("click", async () => {
+    btn.addEventListener("click", () => {
       const id = btn.dataset.deleteId;
-      if (!confirm(`Apakah Anda yakin ingin menghapus pesanan #${id}?`)) return;
-      btn.disabled = true;
-      try {
-        await Api.delete(`/api/admin/orders/${encodeURIComponent(id)}`, { token: TOKEN });
-        ALL_ORDERS = ALL_ORDERS.filter((o) => o.id !== id);
-        loadAll();
-      } catch (err) {
-        alert("Gagal menghapus pesanan: " + err.message);
-        btn.disabled = false;
-      }
+      showConfirmModal({
+        title: "Hapus Pesanan?",
+        message: `Apakah Anda yakin ingin menghapus pesanan #${id}? Tindakan ini tidak dapat dibatalkan.`,
+        confirmText: "Ya, Hapus Pesanan",
+        onConfirm: async () => {
+          btn.disabled = true;
+          try {
+            await Api.delete(`/api/admin/orders/${encodeURIComponent(id)}`, { token: TOKEN });
+            ALL_ORDERS = ALL_ORDERS.filter((o) => o.id !== id);
+            showSuccessModal({ title: "Pesanan Dihapus!", message: `Pesanan #${id} telah berhasil dihapus.` });
+            loadAll();
+          } catch (err) {
+            alert("Gagal menghapus pesanan: " + err.message);
+            btn.disabled = false;
+          }
+        },
+      });
     });
   });
 
@@ -493,18 +500,25 @@ function renderProductsTable() {
   });
 
   tbody.querySelectorAll(".del-prod-btn").forEach((btn) => {
-    btn.addEventListener("click", async () => {
+    btn.addEventListener("click", () => {
       const id = btn.dataset.delProd;
       const prod = ALL_PRODUCTS.find((p) => p.id === id);
-      if (!confirm(`Apakah Anda yakin ingin menghapus produk "${prod?.name || id}"?`)) return;
-      btn.disabled = true;
-      try {
-        await Api.delete(`/api/admin/products/${encodeURIComponent(id)}`, { token: TOKEN });
-        loadAll();
-      } catch (err) {
-        alert("Gagal menghapus produk: " + err.message);
-        btn.disabled = false;
-      }
+      showConfirmModal({
+        title: "Hapus Produk?",
+        message: `Apakah Anda yakin ingin menghapus produk "${prod?.name || id}"? Tindakan ini tidak dapat dibatalkan.`,
+        confirmText: "Ya, Hapus Produk",
+        onConfirm: async () => {
+          btn.disabled = true;
+          try {
+            await Api.delete(`/api/admin/products/${encodeURIComponent(id)}`, { token: TOKEN });
+            showSuccessModal({ title: "Produk Dihapus!", message: `Produk "${prod?.name || id}" telah berhasil dihapus.` });
+            loadAll();
+          } catch (err) {
+            alert("Gagal menghapus produk: " + err.message);
+            btn.disabled = false;
+          }
+        },
+      });
     });
   });
 }
@@ -533,6 +547,71 @@ function updateProfitPreview() {
     valEl.textContent = `${rupiah(profit)} (${margin}%)`;
     valEl.className = profit >= 0 ? "font-bold text-sm text-emerald-800" : "font-bold text-sm text-red-600";
   }
+}
+
+let successModalTimer = null;
+function showSuccessModal({ title = "Berhasil!", message = "Data berhasil diperbarui.", duration = 2400 } = {}) {
+  const modal = document.getElementById("success-modal");
+  if (!modal) return;
+  const titleEl = document.getElementById("success-modal-title");
+  const msgEl = document.getElementById("success-modal-msg");
+  if (titleEl) titleEl.textContent = title;
+  if (msgEl) msgEl.textContent = message;
+
+  // Re-trigger SVG Checkmark animation
+  const iconContainer = modal.querySelector(".anim-checkmark-pop");
+  if (iconContainer) {
+    iconContainer.innerHTML = `
+      <svg class="w-20 h-20" viewBox="0 0 52 52">
+        <circle class="checkmark-circle" cx="26" cy="26" r="23" />
+        <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+      </svg>
+    `;
+  }
+
+  modal.classList.remove("hidden");
+
+  if (successModalTimer) clearTimeout(successModalTimer);
+  if (duration > 0) {
+    successModalTimer = setTimeout(() => {
+      modal.classList.add("hidden");
+    }, duration);
+  }
+}
+
+document.getElementById("success-modal-close")?.addEventListener("click", () => {
+  if (successModalTimer) clearTimeout(successModalTimer);
+  document.getElementById("success-modal")?.classList.add("hidden");
+});
+
+function showConfirmModal({ title = "Konfirmasi Hapus", message = "Apakah Anda yakin?", confirmText = "Ya, Hapus", onConfirm }) {
+  const modal = document.getElementById("confirm-modal");
+  if (!modal) {
+    if (confirm(message)) onConfirm();
+    return;
+  }
+  const titleEl = document.getElementById("confirm-modal-title");
+  const msgEl = document.getElementById("confirm-modal-msg");
+  const okBtn = document.getElementById("confirm-modal-ok");
+  const cancelBtn = document.getElementById("confirm-modal-cancel");
+
+  if (titleEl) titleEl.textContent = title;
+  if (msgEl) msgEl.textContent = message;
+  if (okBtn) okBtn.textContent = confirmText;
+
+  modal.classList.remove("hidden");
+
+  const cleanup = () => {
+    modal.classList.add("hidden");
+    okBtn.onclick = null;
+    cancelBtn.onclick = null;
+  };
+
+  cancelBtn.onclick = cleanup;
+  okBtn.onclick = async () => {
+    cleanup();
+    if (onConfirm) await onConfirm();
+  };
 }
 
 function openProductModal(productId = null) {
@@ -615,8 +694,10 @@ document.getElementById("product-form").addEventListener("submit", async (e) => 
   try {
     if (id) {
       await Api.put(`/api/admin/products/${encodeURIComponent(id)}`, payload, { token: TOKEN });
+      showSuccessModal({ title: "Produk Diperbarui!", message: `Data produk "${payload.name}" berhasil disimpan.` });
     } else {
       await Api.post("/api/admin/products", payload, { token: TOKEN });
+      showSuccessModal({ title: "Produk Ditambahkan!", message: `Produk "${payload.name}" berhasil ditambahkan ke katalog.` });
     }
     document.getElementById("product-modal").classList.add("hidden");
     loadAll();
@@ -638,6 +719,7 @@ async function updateOrderStatus(orderId, newStatus, targetElement) {
     updateTabBadges();
     renderSummaryCards({ totalOrders: ALL_ORDERS.length, totalRevenue: ALL_ORDERS.reduce((s, o) => s + o.total, 0) }, ALL_ORDERS);
     applyFilters();
+    showSuccessModal({ title: "Status Diperbarui!", message: `Status pesanan #${orderId} telah diperbarui.` });
   } catch (err) {
     alert("Gagal update status: " + err.message);
   } finally {

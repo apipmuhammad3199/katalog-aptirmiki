@@ -289,6 +289,44 @@
     </div>
   </div>
 
+  <!-- Centered Animated Success Checkmark Modal -->
+  <div id="success-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-all duration-300">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center shadow-2xl border border-gray-100 flex flex-col items-center anim-modal-in">
+      <div class="w-20 h-20 mb-4 relative flex items-center justify-center anim-checkmark-pop">
+        <svg class="w-20 h-20" viewBox="0 0 52 52">
+          <circle class="checkmark-circle" cx="26" cy="26" r="23" />
+          <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+        </svg>
+      </div>
+      <h3 id="success-modal-title" class="text-xl font-bold text-gray-900 mb-1">Berhasil!</h3>
+      <p id="success-modal-msg" class="text-sm text-gray-500 mb-5 leading-relaxed">Perubahan data berhasil disimpan.</p>
+      <button id="success-modal-close" class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-emerald-500/20">
+        Tutup
+      </button>
+    </div>
+  </div>
+
+  <!-- Custom Confirmation Modal (Replaces browser confirm) -->
+  <div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-all duration-300">
+    <div class="bg-white rounded-3xl p-6 sm:p-7 max-w-sm w-full text-center shadow-2xl border border-gray-100 flex flex-col items-center anim-modal-in">
+      <div class="w-16 h-16 mb-3 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center">
+        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+      </div>
+      <h3 id="confirm-modal-title" class="text-lg font-bold text-gray-900 mb-1">Konfirmasi Hapus</h3>
+      <p id="confirm-modal-msg" class="text-sm text-gray-500 mb-6 leading-relaxed">Apakah Anda yakin ingin menghapus item ini?</p>
+      <div class="flex gap-2.5 w-full">
+        <button type="button" id="confirm-modal-cancel" class="flex-1 py-2.5 px-4 border border-gray-200 text-gray-600 hover:bg-gray-50 font-semibold rounded-xl text-sm transition">
+          Batal
+        </button>
+        <button type="button" id="confirm-modal-ok" class="flex-1 py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-red-500/20">
+          Ya, Hapus
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="/js/api.js"></script>
   <script src="/js/admin.js"></script>
 </body>
