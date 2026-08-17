@@ -89,8 +89,28 @@ function readDB() {
   return data;
 }
 
+const KV_REST_API_URL = (process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || "").trim();
+const KV_REST_API_TOKEN = (process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || "").trim();
+
+function pushToKV(data) {
+  if (!KV_REST_API_URL || !KV_REST_API_TOKEN) return;
+  try {
+    fetch(`${KV_REST_API_URL}/set/aptirmiki_db`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${KV_REST_API_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }).catch((e) => console.error("KV push error:", e.message));
+  } catch (err) {
+    console.error("KV push sync error:", err.message);
+  }
+}
+
 function writeDB(data) {
   global.GLOBAL_DB = data;
+  pushToKV(data);
   try {
     ensureDb();
     const tempPath = `${DB_PATH}.${Date.now()}.${Math.random().toString(36).slice(2)}.tmp`;
