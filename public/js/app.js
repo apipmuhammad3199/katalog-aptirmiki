@@ -196,6 +196,17 @@ function currentRoute() {
   return { path: path || "katalog", params: rest.map(decodeURIComponent) };
 }
 
+async function refreshProducts() {
+  try {
+    const productData = await Api.get("/api/products");
+    if (productData && Array.isArray(productData.products)) {
+      PRODUCTS = productData.products;
+      if (productData.categories) CATEGORIES = productData.categories;
+      updateCartBadge();
+    }
+  } catch (e) {}
+}
+
 async function render() {
   const { path, params } = currentRoute();
   document.querySelectorAll("[data-nav]").forEach((el) => {
@@ -203,6 +214,10 @@ async function render() {
     el.classList.toggle("font-semibold", el.dataset.nav === path);
   });
   window.scrollTo({ top: 0, behavior: "instant" });
+
+  if (path === "katalog" || path === "keranjang" || path === "checkout" || !path) {
+    await refreshProducts();
+  }
 
   if (path === "keranjang") {
     toggleFloatingButtons(false);

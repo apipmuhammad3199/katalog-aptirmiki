@@ -693,14 +693,19 @@ document.getElementById("product-form").addEventListener("submit", async (e) => 
 
   try {
     if (id) {
-      await Api.put(`/api/admin/products/${encodeURIComponent(id)}`, payload, { token: TOKEN });
+      const res = await Api.put(`/api/admin/products/${encodeURIComponent(id)}`, payload, { token: TOKEN });
+      if (res && res.product) {
+        const pIdx = ALL_PRODUCTS.findIndex((p) => p.id === id);
+        if (pIdx !== -1) ALL_PRODUCTS[pIdx] = res.product;
+      }
       showSuccessModal({ title: "Produk Diperbarui!", message: `Data produk "${payload.name}" berhasil disimpan.` });
     } else {
-      await Api.post("/api/admin/products", payload, { token: TOKEN });
+      const res = await Api.post("/api/admin/products", payload, { token: TOKEN });
+      if (res && res.product) ALL_PRODUCTS.push(res.product);
       showSuccessModal({ title: "Produk Ditambahkan!", message: `Produk "${payload.name}" berhasil ditambahkan ke katalog.` });
     }
     document.getElementById("product-modal").classList.add("hidden");
-    loadAll();
+    await loadAll();
   } catch (err) {
     errEl.textContent = err.message;
     errEl.classList.remove("hidden");

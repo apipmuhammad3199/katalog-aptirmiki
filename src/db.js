@@ -114,12 +114,19 @@ function saveProduct(product) {
 
 function updateProduct(id, updater) {
   const data = readDB();
-  const idx = data.products.findIndex((p) => p.id === id);
+  const targetId = String(id || "").toLowerCase().trim();
+  const idx = data.products.findIndex((p) => String(p.id).toLowerCase().trim() === targetId);
   if (idx === -1) return null;
   if (typeof updater === "function") {
     data.products[idx] = updater({ ...data.products[idx] });
   } else if (updater && typeof updater === "object") {
     data.products[idx] = { ...data.products[idx], ...updater };
+  }
+  if (data.products[idx].price !== undefined) {
+    data.products[idx].price = Number(data.products[idx].price) || 0;
+  }
+  if (data.products[idx].supplierPrice !== undefined) {
+    data.products[idx].supplierPrice = Number(data.products[idx].supplierPrice) || 0;
   }
   writeDB(data);
   return data.products[idx];
@@ -127,7 +134,8 @@ function updateProduct(id, updater) {
 
 function deleteProduct(id) {
   const data = readDB();
-  const idx = data.products.findIndex((p) => p.id === id);
+  const targetId = String(id || "").toLowerCase().trim();
+  const idx = data.products.findIndex((p) => String(p.id).toLowerCase().trim() === targetId);
   if (idx === -1) return null;
   const [removed] = data.products.splice(idx, 1);
   writeDB(data);
