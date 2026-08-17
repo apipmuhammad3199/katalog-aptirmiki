@@ -29,30 +29,44 @@ function formatWaNumber(num) {
 
 // Konfigurasi publik (nomor WA admin, info bank/QRIS, nama acara) untuk frontend.
 app.get("/api/config", (req, res) => {
+  const bcaNumber = (process.env.BCA_ACCOUNT_NUMBER || process.env.BANK_ACCOUNT_NUMBER || "").trim();
+  const bcaName = (process.env.BCA_ACCOUNT_NAME || process.env.BANK_ACCOUNT_NAME || "").trim();
+  const bsiNumber = (process.env.BSI_ACCOUNT_NUMBER || "").trim();
+  const bsiName = (process.env.BSI_ACCOUNT_NAME || "").trim();
+  const mandiriNumber = (process.env.MANDIRI_ACCOUNT_NUMBER || "").trim();
+  const mandiriName = (process.env.MANDIRI_ACCOUNT_NAME || "").trim();
+
+  const finalBcaNumber = bcaNumber && bcaNumber !== "1234567890" ? bcaNumber : "7235088592";
+  const finalBcaName = bcaName && bcaName !== "Panitia APTIRMIKI" ? bcaName : "AMIK Panitia APTIRMIKI";
+  const finalBsiNumber = bsiNumber && bsiNumber !== "7700123456" ? bsiNumber : "7360123728";
+  const finalBsiName = bsiName && bsiName !== "Panitia APTIRMIKI (BSI)" ? bsiName : "APTIRMIKI KORWIL 3 (BSI)";
+  const finalMandiriNumber = mandiriNumber || "137001234567";
+  const finalMandiriName = mandiriName || "Panitia APTIRMIKI (Mandiri)";
+
   const defaultBank = {
     name: process.env.BANK_NAME || "Bank Central Asia (BCA)",
-    accountNumber: process.env.BANK_ACCOUNT_NUMBER || "7235088592",
-    accountName: process.env.BANK_ACCOUNT_NAME || "AMIK Panitia APTIRMIKI",
+    accountNumber: finalBcaNumber,
+    accountName: finalBcaName,
   };
 
   const banks = [
     {
       key: "BCA",
       name: process.env.BCA_NAME || process.env.BANK_NAME || "Bank Central Asia (BCA)",
-      accountNumber: process.env.BCA_ACCOUNT_NUMBER || process.env.BANK_ACCOUNT_NUMBER || "7235088592",
-      accountName: process.env.BCA_ACCOUNT_NAME || process.env.BANK_ACCOUNT_NAME || "AMIK Panitia APTIRMIKI",
+      accountNumber: finalBcaNumber,
+      accountName: finalBcaName,
     },
     {
       key: "BSI",
       name: process.env.BSI_NAME || "Bank Syariah Indonesia (BSI)",
-      accountNumber: process.env.BSI_ACCOUNT_NUMBER || "7360123728",
-      accountName: process.env.BSI_ACCOUNT_NAME || "APTIRMIKI KORWIL 3 (BSI)",
+      accountNumber: finalBsiNumber,
+      accountName: finalBsiName,
     },
     {
       key: "Mandiri",
       name: process.env.MANDIRI_NAME || "Bank Mandiri",
-      accountNumber: process.env.MANDIRI_ACCOUNT_NUMBER || "137001234567",
-      accountName: process.env.MANDIRI_ACCOUNT_NAME || "Panitia APTIRMIKI (Mandiri)",
+      accountNumber: finalMandiriNumber,
+      accountName: finalMandiriName,
     },
   ];
 
