@@ -6,7 +6,12 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   await db.syncWithKV();
-  res.json({ products: db.getProducts(), categories: CATEGORIES });
+  const products = db.getProducts();
+  const catSet = new Set(CATEGORIES);
+  products.forEach((p) => {
+    if (p.category) catSet.add(p.category);
+  });
+  res.json({ products, categories: Array.from(catSet) });
 });
 
 module.exports = router;
