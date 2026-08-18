@@ -293,7 +293,67 @@ function csvEscape(value) {
 }
 
 router.get("/orders/export.csv", requireAdmin, (req, res) => {
-  const orders = db.getOrders().slice().sort((a, b) => new Date(a.createdAt) - new Date(a.createdAt));
+  const { bank, brand, type } = req.query || {};
+  let orders = db.getOrders().slice().sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
+  if (bank) {
+    orders = orders.filter((o) => (o.customer && o.customer.targetBank) === bank);
+  }
+  if (brand) {
+    orders = orders.filter((o) => o.items.some((i) => (i.brand || "Umum").toLowerCase() === brand.toLowerCase()));
+  }
+
+  // Type = supplier -> export PO Rekap per Produk
+  if (type === "supplier") {
+    const allProducts = db.getProducts();
+    const prodMap = {};
+    for (const p of allProducts) {
+      const sellPrice = Number(p.price) || 0;
+      const suppPrice = p.supplierPrice !== undefined ? Number(p.supplierPrice) : Math.round(sellPrice * 0.7);
+      prodMap[p.id] = {
+        name: p.name,
+        brand: p.brand || "Umum",
+        unit: p.unit || "pcs",
+        supplierPrice: suppPrice,
+        totalQty: 0,
+        totalCost: 0,
+      };
+    }
+
+    for (const order of orders) {
+      for (const item of order.items) {
+        if (prodMap[item.productId]) {
+          const qty = Number(item.qty) || 0;
+          prodMap[item.productId].totalQty += qty;
+          prodMap[item.productId].totalCost += prodMap[item.productId].supplierPrice * qty;
+        }
+      }
+    }
+
+    let itemsToExport = Object.values(prodMap).filter((p) => p.totalQty > 0);
+    if (brand) {
+      itemsToExport = itemsToExport.filter((p) => p.brand.toLowerCase() === brand.toLowerCase());
+    }
+    itemsToExport.sort((a, b) => a.brand.localeCompare(b.brand) || b.totalQty - a.totalQty);
+
+    const header = ["Brand / Supplier", "Nama Produk", "Satuan", "Total Qty Pesanan", "Harga Modal Supplier (Satuan)", "Total Biaya PO ke Supplier"];
+    const rows = itemsToExport.map((p) => [
+      p.brand,
+      p.name,
+      p.unit,
+      p.totalQty,
+      p.supplierPrice,
+      p.totalCost,
+    ]);
+
+    const csv = [header, ...rows].map((r) => r.map(csvEscape).join(",")).join("\n");
+    const bom = "﻿";
+    res.setHeader("Content-Type", "text/csv; charset=utf-8");
+    const filenameBrand = brand ? `-${brand.replace(/[^a-zA-Z0-9]/g, "")}` : "";
+    res.setHeader("Content-Disposition", `attachment; filename="rekap-po-supplier${filenameBrand}-${Date.now()}.csv"`);
+    return res.send(bom + csv);
+  }
+
   const statusLabel = (key) => STATUS_FLOW.find((s) => s.key === key)?.label || key;
 
   const header = [
@@ -327,9 +387,10 @@ router.get("/orders/export.csv", requireAdmin, (req, res) => {
   ]);
 
   const csv = [header, ...rows].map((r) => r.map(csvEscape).join(",")).join("\n");
-  const bom = "﻿"; // agar Excel membaca UTF-8 dengan benar
+  const bom = "﻿";
   res.setHeader("Content-Type", "text/csv; charset=utf-8");
-  res.setHeader("Content-Disposition", `attachment; filename="rekap-pesanan-aptirmiki-${Date.now()}.csv"`);
+  const filenameSuffix = bank ? `-${bank}` : brand ? `-${brand}` : "";
+  res.setHeader("Content-Disposition", `attachment; filename="rekap-pesanan-aptirmiki${filenameSuffix}-${Date.now()}.csv"`);
   res.send(bom + csv);
 });
 

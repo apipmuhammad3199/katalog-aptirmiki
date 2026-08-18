@@ -137,10 +137,27 @@
           </div>
         </div>
 
+        <!-- Quick Bank & Brand Filter Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-gray-100">
+          <div class="flex flex-wrap items-center gap-1.5" id="bank-quick-chips">
+            <span class="text-xs text-gray-400 font-medium mr-1">Rekening:</span>
+            <button data-quick-bank="" class="bank-chip px-3 py-1 rounded-xl text-xs font-semibold border bg-gray-900 text-white border-gray-900 shadow-2xs transition">Semua</button>
+            <button data-quick-bank="BCA" class="bank-chip px-3 py-1 rounded-xl text-xs font-medium border bg-white text-gray-700 border-gray-200 hover:border-gray-300 transition">BCA</button>
+            <button data-quick-bank="BSI" class="bank-chip px-3 py-1 rounded-xl text-xs font-medium border bg-white text-gray-700 border-gray-200 hover:border-gray-300 transition">BSI</button>
+            <button data-quick-bank="Mandiri" class="bank-chip px-3 py-1 rounded-xl text-xs font-medium border bg-white text-gray-700 border-gray-200 hover:border-gray-300 transition">Mandiri</button>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-xs text-gray-400 font-medium">Brand:</span>
+            <select id="brand-filter" class="border border-gray-200 rounded-xl px-3 py-1 text-xs bg-gray-50/70 focus:bg-white focus:border-[--color-primary] transition font-medium">
+              <option value="">Semua Brand Supplier</option>
+            </select>
+          </div>
+        </div>
+
         <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-gray-100">
           <div class="flex flex-wrap items-center gap-2">
             <button id="add-product-btn" class="bg-[--color-primary] hover:bg-blue-700 text-white rounded-xl px-3.5 py-2 text-xs sm:text-sm font-semibold whitespace-nowrap flex items-center gap-1.5 shadow-sm transition active:scale-95">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
               <span>Tambah Produk</span>
             </button>
             <button id="export-btn" class="bg-gray-900 hover:bg-black text-white rounded-xl px-3.5 py-2 text-xs sm:text-sm font-medium whitespace-nowrap flex items-center gap-1.5 shadow-sm transition active:scale-95">
@@ -157,11 +174,13 @@
             </button>
           </div>
           <div class="flex flex-wrap items-center gap-2">
-            <a href="https://drive.google.com/drive/folders/18s8OSItEOeeEcZXobeVbDEP4J8EbQe0n?usp=drive_link" target="_blank" rel="noopener noreferrer" class="border border-blue-200 text-blue-700 bg-blue-50/70 hover:bg-blue-100 rounded-xl px-3 py-2 text-xs font-semibold whitespace-nowrap flex items-center gap-1.5 shadow-sm transition" title="Buka Folder Foto Produk di Google Drive">
-              📁 <span>Drive Produk</span>
+            <a href="https://drive.google.com/drive/folders/18s8OSItEOeeEcZXobeVbDEP4J8EbQe0n?usp=drive_link" target="_blank" rel="noopener noreferrer" class="border border-gray-200 text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-xl px-3 py-2 text-xs font-medium whitespace-nowrap flex items-center gap-1.5 shadow-2xs transition" title="Buka Folder Foto Produk di Google Drive">
+              <svg class="w-3.5 h-3.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+              <span>Drive Produk</span>
             </a>
-            <a href="https://drive.google.com/drive/folders/1B3EkeyVR1ceusXoWG9QTXb1QsOGtC9f8?usp=drive_link" target="_blank" rel="noopener noreferrer" class="border border-emerald-200 text-emerald-700 bg-emerald-50/70 hover:bg-emerald-100 rounded-xl px-3 py-2 text-xs font-semibold whitespace-nowrap flex items-center gap-1.5 shadow-sm transition" title="Buka Folder Bukti Bayar di Google Drive">
-              📁 <span>Drive Bukti Bayar</span>
+            <a href="https://drive.google.com/drive/folders/1B3EkeyVR1ceusXoWG9QTXb1QsOGtC9f8?usp=drive_link" target="_blank" rel="noopener noreferrer" class="border border-gray-200 text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-xl px-3 py-2 text-xs font-medium whitespace-nowrap flex items-center gap-1.5 shadow-2xs transition" title="Buka Folder Bukti Bayar di Google Drive">
+              <svg class="w-3.5 h-3.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+              <span>Drive Bukti Bayar</span>
             </a>
           </div>
         </div>
@@ -297,7 +316,7 @@
           <div class="flex flex-wrap items-center justify-between gap-1 mt-1.5 text-[11px]">
             <span class="text-gray-400">Bisa pakai link share Google Drive (Siapa saja yang memiliki link).</span>
             <a href="https://drive.google.com/drive/folders/18s8OSItEOeeEcZXobeVbDEP4J8EbQe0n?usp=drive_link" target="_blank" rel="noopener noreferrer" class="text-[--color-primary] font-semibold hover:underline flex items-center gap-1">
-              📁 Buka Folder Drive Produk ↗
+              <span>Buka Folder Drive Produk ↗</span>
             </a>
           </div>
         </div>
@@ -309,6 +328,64 @@
           <button type="submit" id="save-product-btn" class="flex-1 bg-[--color-primary] text-white rounded-xl py-2.5 text-xs sm:text-sm font-semibold shadow-sm hover:bg-blue-700 transition">Simpan Produk</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Export Options Modal -->
+  <div id="export-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-all duration-300">
+    <div class="bg-white rounded-3xl p-5 sm:p-6 max-w-md w-full shadow-2xl border border-gray-100 anim-modal-in">
+      <div class="flex items-center justify-between mb-3 pb-3 border-b border-gray-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          </div>
+          <h3 class="font-bold text-base text-gray-900">Pilih Jenis Export Data (CSV / Excel)</h3>
+        </div>
+        <button id="close-export-modal" class="text-gray-400 hover:text-gray-600 text-lg font-bold">✕</button>
+      </div>
+      <p class="text-xs text-gray-500 mb-3.5 leading-relaxed">Unduh laporan pesanan resmi dalam format CSV untuk Microsoft Excel / Google Sheets:</p>
+      
+      <div class="space-y-2 mb-1">
+        <button data-export-opt="all" class="w-full text-left p-3 rounded-2xl border border-gray-200 hover:border-[--color-primary] hover:bg-blue-50/30 flex items-center justify-between transition group">
+          <div>
+            <p class="font-bold text-xs text-gray-900 group-hover:text-[--color-primary]">Semua Pesanan (Seluruh Rekening)</p>
+            <p class="text-[11px] text-gray-400">Seluruh data transaksi pesanan masuk secara lengkap</p>
+          </div>
+          <span class="text-xs text-[--color-primary] font-semibold">Download ↗</span>
+        </button>
+
+        <button data-export-opt="bank" data-bank="BCA" class="w-full text-left p-3 rounded-2xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50/20 flex items-center justify-between transition">
+          <div>
+            <p class="font-bold text-xs text-gray-900">Rekap Khusus Bank BCA</p>
+            <p class="text-[11px] text-gray-400">Khusus pesanan yang ditransfer ke rekening BCA panitia</p>
+          </div>
+          <span class="text-xs text-blue-600 font-semibold">Download ↗</span>
+        </button>
+
+        <button data-export-opt="bank" data-bank="BSI" class="w-full text-left p-3 rounded-2xl border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50/20 flex items-center justify-between transition">
+          <div>
+            <p class="font-bold text-xs text-gray-900">Rekap Khusus Bank BSI</p>
+            <p class="text-[11px] text-gray-400">Khusus pesanan yang ditransfer ke rekening BSI panitia</p>
+          </div>
+          <span class="text-xs text-emerald-600 font-semibold">Download ↗</span>
+        </button>
+
+        <button data-export-opt="bank" data-bank="Mandiri" class="w-full text-left p-3 rounded-2xl border border-gray-200 hover:border-amber-300 hover:bg-amber-50/20 flex items-center justify-between transition">
+          <div>
+            <p class="font-bold text-xs text-gray-900">Rekap Khusus Bank Mandiri</p>
+            <p class="text-[11px] text-gray-400">Khusus pesanan yang ditransfer ke rekening Mandiri panitia</p>
+          </div>
+          <span class="text-xs text-amber-600 font-semibold">Download ↗</span>
+        </button>
+
+        <button data-export-opt="supplier" class="w-full text-left p-3 rounded-2xl border border-gray-200 hover:border-purple-300 hover:bg-purple-50/20 flex items-center justify-between transition">
+          <div>
+            <p class="font-bold text-xs text-gray-900">Rekap PO Supplier (Rincian Produk & Modal)</p>
+            <p class="text-[11px] text-gray-400">Daftar akumulasi boks per item untuk pemesanan ke supplier</p>
+          </div>
+          <span class="text-xs text-purple-600 font-semibold">Download ↗</span>
+        </button>
+      </div>
     </div>
   </div>
 

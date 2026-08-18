@@ -108,10 +108,11 @@ async function loadAll() {
     ALL_PRODUCTS = productsData.products;
 
     populateStatusFilter();
+    populateBrandFilter();
     updateTabBadges();
     renderSummaryCards(summaryData, ALL_ORDERS);
     renderBankSummaryCards(summaryData.bankSummary || []);
-    renderBrandSummary(summaryData.brandSummary || []);
+    renderBrandSummary(summaryData.brandSummary || [], summaryData.summary || []);
     renderRestock(summaryData.summary);
     applyFilters();
     renderProductsTable();
@@ -136,6 +137,21 @@ function populateStatusFilter() {
   });
 }
 
+function populateBrandFilter() {
+  const sel = document.getElementById("brand-filter");
+  if (!sel) return;
+  const currentVal = sel.value;
+  const brands = Array.from(
+    new Set([
+      ...ALL_PRODUCTS.map((p) => p.brand || "Umum"),
+      ...ALL_ORDERS.flatMap((o) => o.items.map((i) => i.brand || "Umum")),
+    ])
+  ).filter(Boolean).sort();
+
+  sel.innerHTML = '<option value="">Semua Brand Supplier</option>' +
+    brands.map((b) => `<option value="${escapeHtml(b)}" ${b === currentVal ? "selected" : ""}>${escapeHtml(b)}</option>`).join("");
+}
+
 function updateTabBadges() {
   const countAll = ALL_ORDERS.length;
   const countActive = ALL_ORDERS.filter((o) => o.status !== "selesai").length;
@@ -155,7 +171,7 @@ function renderSummaryCards(summaryData, orders) {
       value: `${summaryData.totalOrders || 0} Transaksi`,
       sub: "Semua pesanan",
       color: "text-gray-900",
-      bg: "bg-blue-50 text-[--color-primary]",
+      bg: "bg-blue-50 text-[--color-primary] border border-blue-100",
       icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>`
     },
     {
@@ -163,23 +179,23 @@ function renderSummaryCards(summaryData, orders) {
       value: rupiah(summaryData.totalRevenue || 0),
       sub: "Penjualan kotor",
       color: "text-[--color-primary]",
-      bg: "bg-blue-50 text-[--color-primary]",
-      icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V6m0 12v-2m-9-1h18"/></svg>`
+      bg: "bg-blue-50 text-[--color-primary] border border-blue-100",
+      icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="2" y1="10" x2="22" y2="10" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="15" r="1" fill="currentColor"/></svg>`
     },
     {
       label: "Modal Supplier",
       value: rupiah(summaryData.totalCost || 0),
       sub: "Beban pokok beli",
       color: "text-amber-700",
-      bg: "bg-amber-50 text-amber-600",
-      icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>`
+      bg: "bg-amber-50 text-amber-600 border border-amber-100",
+      icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>`
     },
     {
       label: "Laba Panitia",
       value: rupiah(summaryData.totalProfit || 0),
       sub: "Keuntungan bersih",
       color: "text-emerald-700",
-      bg: "bg-emerald-50 text-emerald-600",
+      bg: "bg-emerald-50 text-emerald-600 border border-emerald-100",
       icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>`
     },
     {
@@ -187,8 +203,8 @@ function renderSummaryCards(summaryData, orders) {
       value: `${summaryData.profitMarginPercent || 0}%`,
       sub: "Persentase profit",
       color: "text-indigo-700",
-      bg: "bg-indigo-50 text-indigo-600",
-      icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>`
+      bg: "bg-indigo-50 text-indigo-600 border border-indigo-100",
+      icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>`
     },
   ];
 
@@ -200,7 +216,7 @@ function renderSummaryCards(summaryData, orders) {
           <p class="font-black text-base sm:text-xl ${c.color} leading-tight">${c.value}</p>
           <p class="text-[10px] text-gray-400 mt-0.5">${c.sub}</p>
         </div>
-        <div class="p-3 rounded-2xl ${c.bg} shrink-0 ml-2">${c.icon}</div>
+        <div class="w-11 h-11 rounded-2xl ${c.bg} shrink-0 ml-2 flex items-center justify-center shadow-2xs">${c.icon}</div>
       </div>`
     )
     .join("");
@@ -213,10 +229,10 @@ function renderBankSummaryCards(bankSummary = []) {
   const validBanks = bankSummary.filter((b) => b.bank !== "Lainnya" || b.count > 0);
 
   const colorMap = {
-    BCA: { bg: "bg-blue-50/70 border-blue-200", badge: "bg-blue-600 text-white", text: "text-blue-900" },
-    BSI: { bg: "bg-emerald-50/70 border-emerald-200", badge: "bg-emerald-600 text-white", text: "text-emerald-900" },
-    Mandiri: { bg: "bg-amber-50/70 border-amber-200", badge: "bg-amber-600 text-white", text: "text-amber-900" },
-    Lainnya: { bg: "bg-purple-50/70 border-purple-200", badge: "bg-purple-600 text-white", text: "text-purple-900" },
+    BCA: { bg: "bg-blue-50/50 border-blue-100", badge: "bg-blue-600 text-white", text: "text-blue-900" },
+    BSI: { bg: "bg-emerald-50/50 border-emerald-100", badge: "bg-emerald-600 text-white", text: "text-emerald-900" },
+    Mandiri: { bg: "bg-amber-50/50 border-amber-100", badge: "bg-amber-600 text-white", text: "text-amber-900" },
+    Lainnya: { bg: "bg-purple-50/50 border-purple-100", badge: "bg-purple-600 text-white", text: "text-purple-900" },
   };
 
   container.className = `grid grid-cols-1 sm:grid-cols-${Math.min(validBanks.length, 3)} lg:grid-cols-${validBanks.length} gap-3 mb-4`;
@@ -225,23 +241,43 @@ function renderBankSummaryCards(bankSummary = []) {
     .map((b) => {
       const theme = colorMap[b.bank] || colorMap.Lainnya;
       return `
-      <div class="bg-white rounded-2xl border ${theme.bg} p-4 shadow-sm flex items-center justify-between transition hover:shadow-md">
-        <div>
-          <div class="flex items-center gap-1.5 mb-1.5">
-            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full ${theme.badge}">${escapeHtml(b.bank)}</span>
-            <span class="text-xs text-gray-500 font-medium">${b.count} Transaksi</span>
-          </div>
-          <p class="font-extrabold text-lg sm:text-xl ${theme.text}">${rupiah(b.totalRevenue)}</p>
+      <div class="bg-white rounded-2xl border ${theme.bg} p-4 shadow-sm flex flex-col justify-between transition hover:shadow-md">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold px-2.5 py-0.5 rounded-lg ${theme.badge}">Bank ${escapeHtml(b.bank)}</span>
+          <span class="text-xs text-gray-500 font-medium">${b.count} Transaksi</span>
         </div>
-        <div class="p-2.5 bg-white/80 rounded-xl border border-gray-100 shadow-xs text-xs font-mono font-bold text-gray-500">
-          Transfer
+        <div class="mb-3">
+          <p class="text-[11px] text-gray-400 font-medium">Uang Masuk</p>
+          <p class="font-black text-xl sm:text-2xl ${theme.text} leading-tight">${rupiah(b.totalRevenue)}</p>
+        </div>
+        <div class="flex items-center gap-1.5 pt-2 border-t border-gray-100">
+          <button onclick="filterByBank('${escapeHtml(b.bank)}')" class="flex-1 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 py-1.5 rounded-xl text-xs font-medium shadow-2xs transition active:scale-95 flex items-center justify-center gap-1">
+            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Filter Pesanan</span>
+          </button>
+          <button onclick="downloadBankCsv('${escapeHtml(b.bank)}')" class="px-2.5 py-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 rounded-xl text-xs font-medium shadow-2xs transition active:scale-95 flex items-center gap-1" title="Export CSV Bank ${escapeHtml(b.bank)}">
+            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span>CSV</span>
+          </button>
         </div>
       </div>`;
     })
     .join("");
 }
 
-function renderBrandSummary(brandSummary) {
+window.filterByBank = function (bankName) {
+  const bankSelect = document.getElementById("bank-filter");
+  if (bankSelect) {
+    bankSelect.value = bankName;
+    applyFilters();
+  }
+};
+
+window.downloadBankCsv = function (bankName) {
+  downloadCsvFile(`/api/admin/orders/export.csv?bank=${encodeURIComponent(bankName)}`, `rekap-pesanan-${bankName}-${Date.now()}.csv`);
+};
+
+function renderBrandSummary(brandSummary, rawSummary = []) {
   const container = document.getElementById("brand-summary");
   if (!container) return;
 
@@ -250,38 +286,131 @@ function renderBrandSummary(brandSummary) {
     return;
   }
 
-  container.innerHTML = `
-    <div class="overflow-x-auto">
-      <table class="w-full text-xs min-w-[450px]">
-        <thead>
-          <tr class="border-b border-gray-100 text-gray-400 text-left">
-            <th class="pb-2 font-semibold">Brand / Supplier</th>
-            <th class="pb-2 font-semibold text-right">Terjual</th>
-            <th class="pb-2 font-semibold text-right">Omset</th>
-            <th class="pb-2 font-semibold text-right">Modal</th>
-            <th class="pb-2 font-semibold text-right text-emerald-700">Laba Net</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-50">
-          ${brandSummary
-            .map(
-              (bs) => `
-            <tr>
-              <td class="py-2 font-bold text-gray-800 flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-[--color-primary]"></span>
-                <span>${escapeHtml(bs.brand)}</span>
-              </td>
-              <td class="py-2 text-right font-semibold text-gray-700">${bs.totalQty} pcs</td>
-              <td class="py-2 text-right text-gray-900 font-medium">${rupiah(bs.totalRevenue)}</td>
-              <td class="py-2 text-right text-amber-700 font-medium">${rupiah(bs.totalCost)}</td>
-              <td class="py-2 text-right text-emerald-700 font-extrabold">${rupiah(bs.totalProfit)}</td>
-            </tr>`
-            )
-            .join("")}
-        </tbody>
-      </table>
-    </div>`;
+  container.innerHTML = brandSummary
+    .map((bs) => {
+      // Find items belonging to this brand
+      const brandItems = rawSummary.filter((p) => (p.brand || "Umum").toLowerCase() === bs.brand.toLowerCase() && p.totalQty > 0);
+      const itemsListHtml = brandItems.length
+        ? `<div class="bg-gray-50/70 rounded-xl p-2.5 my-2.5 space-y-1 text-xs border border-gray-100">
+            <p class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Rincian Item Terpesan:</p>
+            ${brandItems.map((item, idx) => `
+              <div class="flex justify-between items-center py-0.5 border-b border-gray-100 last:border-0">
+                <span class="text-gray-700 font-medium">${idx + 1}. ${escapeHtml(item.name)} <b class="text-gray-900">x${item.totalQty} ${escapeHtml(item.unit || "box")}</b></span>
+                <span class="text-amber-700 font-mono font-medium">${rupiah(item.totalCost)}</span>
+              </div>
+            `).join("")}
+          </div>`
+        : `<p class="text-[11px] text-gray-400 my-2">Belum ada item terpesan pada brand ini.</p>`;
+
+      return `
+      <div class="bg-white rounded-2xl border border-gray-100 p-4 shadow-xs mb-3 hover:shadow-sm transition">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-[--color-primary]"></span>
+            <h4 class="font-bold text-sm sm:text-base text-gray-900">${escapeHtml(bs.brand)}</h4>
+            <span class="text-xs bg-gray-100 text-gray-700 font-semibold px-2 py-0.5 rounded-lg border border-gray-200">${bs.totalQty} pcs</span>
+          </div>
+          <div class="text-right">
+            <span class="text-[11px] text-gray-400">Modal Supplier:</span>
+            <span class="font-bold text-sm text-amber-700 ml-1">${rupiah(bs.totalCost)}</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 bg-gray-50 p-2.5 rounded-xl text-center text-xs mb-2 border border-gray-100">
+          <div>
+            <p class="text-[10px] text-gray-500">Omset</p>
+            <p class="font-bold text-gray-900">${rupiah(bs.totalRevenue)}</p>
+          </div>
+          <div>
+            <p class="text-[10px] text-gray-500">Modal</p>
+            <p class="font-bold text-amber-700">${rupiah(bs.totalCost)}</p>
+          </div>
+          <div>
+            <p class="text-[10px] text-gray-500">Laba Panitia</p>
+            <p class="font-bold text-emerald-700">${rupiah(bs.totalProfit)}</p>
+          </div>
+        </div>
+
+        ${itemsListHtml}
+
+        <div class="flex flex-wrap items-center gap-2 pt-1">
+          <button onclick="copySupplierPo('${escapeHtml(bs.brand)}')" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white py-2 px-3 rounded-xl text-xs font-semibold shadow-xs transition active:scale-95 flex items-center justify-center gap-1.5">
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-0.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            <span>Salin Format PO Supplier</span>
+          </button>
+          <button onclick="filterByBrand('${escapeHtml(bs.brand)}')" class="bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 py-2 px-3 rounded-xl text-xs font-medium shadow-2xs transition flex items-center gap-1">
+            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Filter Pesanan</span>
+          </button>
+          <button onclick="downloadSupplierCsv('${escapeHtml(bs.brand)}')" class="bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 py-2 px-3 rounded-xl text-xs font-medium shadow-2xs transition flex items-center gap-1" title="Download Excel PO Khusus ${escapeHtml(bs.brand)}">
+            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span>Export PO (CSV)</span>
+          </button>
+        </div>
+      </div>`;
+    })
+    .join("");
 }
+
+window.filterByBrand = function (brandName) {
+  const brandSelect = document.getElementById("brand-filter");
+  if (brandSelect) {
+    brandSelect.value = brandName;
+    applyFilters();
+  }
+};
+
+window.downloadSupplierCsv = function (brandName) {
+  const param = brandName ? `&brand=${encodeURIComponent(brandName)}` : "";
+  downloadCsvFile(`/api/admin/orders/export.csv?type=supplier${param}`, `rekap-po-supplier-${brandName || "semua"}-${Date.now()}.csv`);
+};
+
+window.copySupplierPo = function (brandName) {
+  const brandOrders = ALL_ORDERS.filter((o) => o.items.some((i) => (i.brand || "Umum").toLowerCase() === brandName.toLowerCase()));
+  const itemMap = {};
+  let totalBrandQty = 0;
+  let totalBrandCost = 0;
+
+  for (const order of brandOrders) {
+    for (const item of order.items) {
+      if ((item.brand || "Umum").toLowerCase() === brandName.toLowerCase()) {
+        const prod = ALL_PRODUCTS.find((p) => p.id === item.productId) || {};
+        const suppPrice = prod.supplierPrice !== undefined ? Number(prod.supplierPrice) : Math.round(Number(item.price) * 0.7);
+        if (!itemMap[item.name]) {
+          itemMap[item.name] = { name: item.name, unit: item.unit || "box", qty: 0, suppPrice, totalCost: 0 };
+        }
+        itemMap[item.name].qty += item.qty;
+        itemMap[item.name].totalCost += suppPrice * item.qty;
+        totalBrandQty += item.qty;
+        totalBrandCost += suppPrice * item.qty;
+      }
+    }
+  }
+
+  const itemsLines = Object.values(itemMap)
+    .map((item, idx) => `${idx + 1}. *${item.name}* : ${item.qty} ${item.unit} (Modal: ${rupiah(item.totalCost)})`)
+    .join("\n");
+
+  const msg = `Halo Sales *${brandName}*,
+Berikut Rekap Pemesanan (Purchase Order / PO) dari Panitia Acara *APTIRMIKI*:
+
+📋 *DAFTAR ITEM TERPESAN:*
+${itemsLines || "Belum ada item terpesan."}
+
+📦 *TOTAL JUMLAH ITEM:* ${totalBrandQty} item
+💰 *ESTIMASI TOTAL BIAYA MODAL:* ${rupiah(totalBrandCost)}
+
+Mohon segera diproses dan dikonfirmasi untuk kesiapan pengirimannya ke lokasi acara. Terima kasih banyak! 🙏`;
+
+  navigator.clipboard.writeText(msg).then(() => {
+    showSuccessModal({
+      title: "Format WA Tersalin!",
+      message: `Format Purchase Order (PO) untuk supplier "${brandName}" berhasil disalin. Silakan paste dan kirimkan langsung ke WhatsApp Sales Supplier.`,
+    });
+  }).catch(() => {
+    alert("Gagal menyalin format WA.");
+  });
+};
 
 function renderRestock(summary) {
   const sorted = summary.filter((s) => s.totalQty > 0).sort((a, b) => b.totalQty - a.totalQty);
@@ -338,6 +467,18 @@ function applyFilters() {
   const q = document.getElementById("admin-search").value.trim().toLowerCase();
   const statusFilter = document.getElementById("status-filter").value;
   const bankFilter = document.getElementById("bank-filter") ? document.getElementById("bank-filter").value : "";
+  const brandFilter = document.getElementById("brand-filter") ? document.getElementById("brand-filter").value : "";
+
+  // Sync Bank quick chips UI
+  document.querySelectorAll(".bank-chip").forEach((btn) => {
+    const b = btn.dataset.quickBank;
+    const isActive = b === bankFilter;
+    if (isActive) {
+      btn.className = "bank-chip px-3 py-1 rounded-full text-xs font-bold border bg-[--color-primary] text-white border-[--color-primary] shadow-xs transition";
+    } else {
+      btn.className = "bank-chip px-3 py-1 rounded-full text-xs font-semibold border bg-white text-gray-600 border-gray-200 hover:border-blue-400 transition";
+    }
+  });
 
   const filtered = ALL_ORDERS.filter((o) => {
     if (currentTab === "active" && o.status === "selesai") return false;
@@ -345,12 +486,13 @@ function applyFilters() {
 
     const matchStatus = !statusFilter || o.status === statusFilter;
     const matchBank = !bankFilter || (o.customer && o.customer.targetBank === bankFilter);
+    const matchBrand = !brandFilter || o.items.some((i) => (i.brand || "Umum") === brandFilter);
 
     const itemsText = o.items.map((i) => `${i.name} ${i.brand || ""}`).join(" ");
     const haystack = `${o.id} ${o.customer.name} ${o.customer.wa} ${o.customer.instansi} ${o.customer.targetBank || ""} ${o.customer.method} ${o.customer.detail || ""} ${itemsText}`.toLowerCase();
     const matchQuery = !q || haystack.includes(q);
 
-    return matchStatus && matchBank && matchQuery;
+    return matchStatus && matchBank && matchBrand && matchQuery;
   });
 
   renderTable(filtered);
@@ -873,24 +1015,74 @@ document.getElementById("status-filter").addEventListener("change", applyFilters
 if (document.getElementById("bank-filter")) {
   document.getElementById("bank-filter").addEventListener("change", applyFilters);
 }
+if (document.getElementById("brand-filter")) {
+  document.getElementById("brand-filter").addEventListener("change", applyFilters);
+}
+
+// Bank Quick Filter Chips Click
+document.querySelectorAll(".bank-chip").forEach((chip) => {
+  chip.addEventListener("click", () => {
+    const bankVal = chip.dataset.quickBank;
+    const bankSel = document.getElementById("bank-filter");
+    if (bankSel) {
+      bankSel.value = bankVal;
+      applyFilters();
+    }
+  });
+});
+
 document.getElementById("refresh-btn").addEventListener("click", loadAll);
 
-document.getElementById("export-btn").addEventListener("click", async () => {
+// Helper for CSV downloading
+window.downloadCsvFile = async function (endpoint, fallbackFilename) {
   try {
-    const res = await fetch("/api/admin/orders/export.csv", { headers: { Authorization: `Bearer ${TOKEN}` } });
-    if (!res.ok) throw new Error("Gagal mengunduh file export.");
+    const res = await fetch(endpoint, { headers: { Authorization: `Bearer ${TOKEN}` } });
+    if (!res.ok) throw new Error("Gagal mengunduh file export CSV.");
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `rekap-pesanan-aptirmiki-${Date.now()}.csv`;
+    a.download = fallbackFilename || `rekap-aptirmiki-${Date.now()}.csv`;
     document.body.appendChild(a);
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
   } catch (err) {
-    alert(err.message);
+    alert("Download Error: " + err.message);
   }
+};
+
+// Export Modal Toggle & Options
+const exportBtn = document.getElementById("export-btn");
+const exportModal = document.getElementById("export-modal");
+const closeExportBtn = document.getElementById("close-export-modal");
+
+if (exportBtn && exportModal) {
+  exportBtn.addEventListener("click", () => {
+    exportModal.classList.remove("hidden");
+  });
+}
+if (closeExportBtn && exportModal) {
+  closeExportBtn.addEventListener("click", () => {
+    exportModal.classList.add("hidden");
+  });
+}
+
+// Export modal option clicks
+document.querySelectorAll("[data-export-opt]").forEach((btn) => {
+  btn.addEventListener("click", async () => {
+    const opt = btn.dataset.exportOpt;
+    const bank = btn.dataset.bank;
+    if (exportModal) exportModal.classList.add("hidden");
+
+    if (opt === "bank" && bank) {
+      await downloadCsvFile(`/api/admin/orders/export.csv?bank=${encodeURIComponent(bank)}`, `rekap-pesanan-${bank}-${Date.now()}.csv`);
+    } else if (opt === "supplier") {
+      await downloadCsvFile(`/api/admin/orders/export.csv?type=supplier`, `rekap-po-supplier-${Date.now()}.csv`);
+    } else {
+      await downloadCsvFile(`/api/admin/orders/export.csv`, `rekap-pesanan-semua-${Date.now()}.csv`);
+    }
+  });
 });
 
 // Init
