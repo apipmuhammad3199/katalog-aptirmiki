@@ -37,7 +37,7 @@ Dokumen ini berisi rencana aksi (*Action Plan*) untuk memastikan seluruh alur pe
 - [ ] **Rekening Resmi Pembayaran:**
   - **BCA:** `7235088592` — a.n. **AMIK Panitia APTIRMIKI**
   - **BSI:** `7360123728` — a.n. **APTIRMIKI KORWIL 3 (BSI)**
-  - **Mandiri:** `137001234567` — a.n. **Panitia APTIRMIKI (Mandiri)**
+  - **Mandiri:** `1110021969031` — a.n. **Puteri Fannya (Panitia APTIRMIKI)**
 - [ ] **Nomor WhatsApp Admin:** Pastikan nomor `6287714001014` aktif menerima pesan konfirmasi & lampiran bukti bayar.
 - [ ] **QR Code Banner / Meja Registrasi:** Siapkan QR Code yang mengarah ke link [https://aptirmiki.store](https://aptirmiki.store).
 - [ ] **Fitur Rekap & Ekspor:** Uji tombol **Export CSV** di Dashboard Admin untuk keperluan rekap pesanan ke supplier Kartika Sari Bandung.

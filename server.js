@@ -40,8 +40,8 @@ app.get("/api/config", (req, res) => {
   const finalBcaName = bcaName && bcaName !== "Panitia APTIRMIKI" ? bcaName : "AMIK Panitia APTIRMIKI";
   const finalBsiNumber = bsiNumber && bsiNumber !== "7700123456" ? bsiNumber : "7360123728";
   const finalBsiName = bsiName && bsiName !== "Panitia APTIRMIKI (BSI)" ? bsiName : "APTIRMIKI KORWIL 3 (BSI)";
-  const finalMandiriNumber = mandiriNumber || "137001234567";
-  const finalMandiriName = mandiriName || "Panitia APTIRMIKI (Mandiri)";
+  const finalMandiriNumber = mandiriNumber && mandiriNumber !== "137001234567" ? mandiriNumber : "1110021969031";
+  const finalMandiriName = mandiriName && mandiriName !== "Panitia APTIRMIKI (Mandiri)" ? mandiriName : "Puteri Fannya (Panitia APTIRMIKI)";
 
   const defaultBank = {
     name: process.env.BANK_NAME || "Bank Central Asia (BCA)",
