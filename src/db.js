@@ -118,20 +118,39 @@ function getKVConfig() {
   return { url, token };
 }
 
-function pushToKV(data) {
+let isInitialKVSynced = false;
+
+async function syncWithKV() {
   const { url, token } = getKVConfig();
   if (!url || !token) return;
   try {
-    fetch(`${url}/set/aptirmiki_db`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    }).catch((e) => console.error("KV push error:", e.message));
+    const res = await fetch(`${url}/get/aptirmiki_db`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const json = await res.json();
+    if (json && json.result) {
+      const parsed = typeof json.result === "string" ? JSON.parse(json.result) : json.result;
+      if (parsed && Array.isArray(parsed.orders)) {
+        const local = readDB();
+        let changed = false;
+        for (const o of parsed.orders) {
+          if (o && o.id && !local.orders.some((item) => item.id === o.id)) {
+            local.orders.push(o);
+            changed = true;
+          }
+        }
+        if (parsed.seq && parsed.seq > (local.seq || 0)) {
+          local.seq = parsed.seq;
+          changed = true;
+        }
+        if (changed || !isInitialKVSynced) {
+          isInitialKVSynced = true;
+          writeDB(local);
+        }
+      }
+    }
   } catch (err) {
-    console.error("KV push sync error:", err.message);
+    console.error("syncWithKV error:", err.message);
   }
 }
 
@@ -308,4 +327,5 @@ module.exports = {
   findOrderById,
   findOrdersByWa,
   nextOrderId,
+  syncWithKV,
 };

@@ -6,6 +6,13 @@ const { STATUS_FLOW, isValidStatus } = require("../status");
 
 const router = express.Router();
 
+router.use(async (req, res, next) => {
+  try {
+    await db.syncWithKV();
+  } catch (e) {}
+  next();
+});
+
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000; // 12 jam
 
 function createSession() {

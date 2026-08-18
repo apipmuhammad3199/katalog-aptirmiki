@@ -9,6 +9,13 @@ const { STATUS_FLOW } = require("../status");
 
 const router = express.Router();
 
+router.use(async (req, res, next) => {
+  try {
+    await db.syncWithKV();
+  } catch (e) {}
+  next();
+});
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, db.UPLOADS_DIR),
   filename: (req, file, cb) => {
