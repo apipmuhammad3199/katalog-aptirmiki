@@ -338,6 +338,132 @@ function renderKatalog() {
   }
 }
 
+let SELECTED_VARIANTS = {};
+
+function getMamadeeGroups(products) {
+  const groups = [
+    {
+      id: "group-kopi-ace",
+      name: "Kopi A.C.E (Aren Creamy Espresso)",
+      category: "Minuman & Kopi MAMADEE",
+      brand: "MAMADEE",
+      origin: "MAMADEE Jakarta",
+      expiryDetail: "3–4 Hari di Kulkas",
+      description: "Bold espresso berpadu sempurna dengan manisnya gula aren asli dan susu creamy yang lumer di mulut. Klasik, pas, dan anti enek! Sudah termasuk Cooler bag & ice gel.",
+      image: "/images/products/kopi-ace.jpg",
+      variants: [],
+    },
+    {
+      id: "group-kopi-bce",
+      name: "Kopi B.C.E (Butterscotch Creamy Espresso)",
+      category: "Minuman & Kopi MAMADEE",
+      brand: "MAMADEE",
+      origin: "MAMADEE Jakarta",
+      expiryDetail: "3–4 Hari di Kulkas",
+      description: "Sensasi ngopi mewah dengan aroma butterscotch yang wangi gurih dan tekstur creamy yang langsung bikin mood naik. Sudah termasuk Cooler bag & ice gel.",
+      image: "/images/products/kopi-bce.png",
+      variants: [],
+    },
+    {
+      id: "group-cendol-end-to-end",
+      name: "Cendol End-To-End",
+      category: "Minuman & Kopi MAMADEE",
+      brand: "MAMADEE",
+      origin: "MAMADEE Jakarta",
+      expiryDetail: "3–4 Hari di Kulkas",
+      description: "Cendol kekinian berbalut susu creamy, gula aren homemade, jelly kenyal, dan wangi buah nangka. Dijamin endul sampai tetesan terakhir! Sudah termasuk Cooler bag & ice gel.",
+      image: "/images/products/cendol-end-to-end.png",
+      variants: [],
+    },
+  ];
+
+  products.forEach((p) => {
+    if (p.id.includes("kopi-ace") || p.name.includes("A.C.E")) {
+      groups[0].variants.push(p);
+    } else if (p.id.includes("kopi-bce") || p.name.includes("B.C.E")) {
+      groups[1].variants.push(p);
+    } else if (p.id.includes("cendol") || p.name.includes("Cendol")) {
+      groups[2].variants.push(p);
+    }
+  });
+
+  groups.forEach((g) => {
+    g.variants.sort((a, b) => (Number(a.price) || 0) - (Number(b.price) || 0));
+    if (!SELECTED_VARIANTS[g.id] && g.variants.length > 0) {
+      SELECTED_VARIANTS[g.id] = g.variants[0].id;
+    }
+  });
+
+  return groups.filter((g) => g.variants.length > 0);
+}
+
+function renderGroupCardHtml(g, cart) {
+  const activeId = SELECTED_VARIANTS[g.id] || g.variants[0]?.id;
+  const activeProd = g.variants.find((v) => v.id === activeId) || g.variants[0];
+  const qty = cart[activeProd.id] || 0;
+  const shortOrigin = String(g.origin || "Jakarta").replace(/MAMADEE\s*/i, "").trim() || "Jakarta";
+
+  return `
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex flex-col hover:border-blue-200 transition">
+      ${productImage(activeProd, "w-full aspect-square")}
+      <div class="p-2.5 sm:p-4 flex flex-col flex-1">
+        <span class="text-[10px] sm:text-xs uppercase tracking-wider text-[--color-secondary] font-bold mb-1 truncate">${escapeHtml(g.category)}</span>
+        <h3 class="font-bold text-gray-900 leading-tight mb-1 text-xs sm:text-sm sm:min-h-[2.5rem] line-clamp-2">${escapeHtml(g.name)}</h3>
+        <p class="text-[11px] sm:text-xs text-gray-500 mb-1.5 line-clamp-2 flex-1">${escapeHtml(g.description)}</p>
+        
+        <div class="flex flex-wrap items-center gap-1.5 my-1 text-[10px] sm:text-[11px]">
+          <span class="inline-flex items-center gap-1 bg-slate-50 text-slate-700 px-2 py-0.5 rounded-lg font-medium border border-slate-200/70 truncate max-w-full">
+            <svg class="w-3 h-3 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span>${escapeHtml(shortOrigin)}</span>
+          </span>
+          <span class="inline-flex items-center gap-1 bg-amber-50/70 text-amber-800 px-2 py-0.5 rounded-lg font-medium border border-amber-200/70">
+            <svg class="w-3 h-3 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg>
+            <span>${escapeHtml(g.expiryDetail || "3–4 Hari di Kulkas")}</span>
+          </span>
+        </div>
+
+        <!-- Size Variant Switcher (500 ml vs 1 Liter) -->
+        <div class="my-2 p-1 bg-slate-100/90 border border-slate-200/80 rounded-xl flex gap-1">
+          ${g.variants
+            .map((v) => {
+              const isSel = v.id === activeProd.id;
+              const vQty = cart[v.id] || 0;
+              const sizeLabel =
+                v.unit?.includes("1L") || v.unit?.includes("1 Liter") || v.name?.includes("1 Liter")
+                  ? "1 Liter"
+                  : "500 ml";
+              return `
+              <button type="button" data-action="select-variant" data-group="${escapeHtml(g.id)}" data-vid="${escapeHtml(v.id)}"
+                class="flex-1 py-1.5 px-1 rounded-lg text-center transition-all ${
+                  isSel
+                    ? "bg-[--color-primary] text-white shadow-sm font-bold ring-1 ring-[--color-primary]"
+                    : "bg-white text-gray-700 hover:text-gray-900 border border-gray-100 font-medium"
+                }">
+                <div class="text-[11px] leading-tight font-semibold">${sizeLabel}</div>
+                <div class="text-[10px] opacity-90">${rupiah(v.price)}</div>
+                ${
+                  vQty > 0
+                    ? `<span class="inline-block mt-0.5 text-[8px] sm:text-[9px] px-1 py-0.2 rounded-full ${
+                        isSel ? "bg-white text-[--color-primary] font-bold" : "bg-blue-100 text-blue-800 font-semibold"
+                      }">x${vQty} keranjang</span>`
+                    : ""
+                }
+              </button>`;
+            })
+            .join("")}
+        </div>
+
+        <div class="flex items-baseline justify-between mt-auto pt-1.5 border-t border-gray-50">
+          <span class="font-extrabold text-[--color-primary] text-sm sm:text-lg">${rupiah(activeProd.price)}</span>
+          <span class="text-[10px] sm:text-xs text-gray-400 font-medium">/${escapeHtml(activeProd.unit)}</span>
+        </div>
+        <div class="mt-2" id="cart-ctrl-${activeProd.id}">
+          ${cartControl(activeProd.id, qty)}
+        </div>
+      </div>
+    </div>`;
+}
+
 function renderProductCardItemHtml(p, cart) {
   const qty = cart[p.id] || 0;
   const shortOrigin = String(p.origin || "Bandung").replace(/Kartika Sari\s*/i, "").trim() || "Bandung";
@@ -403,7 +529,7 @@ function renderProductGridHtml() {
   // Tampilkan dikelompokkan menjadi 2 seksi besar: Kartika Sari & UMKM MAMADEE
   if (activeCategory === "Semua" && !searchQuery) {
     const kartikaProds = filtered.filter((p) => p.brand === "Kartika Sari" || p.brand !== "MAMADEE");
-    const mamadeeProds = filtered.filter((p) => p.brand === "MAMADEE");
+    const mamadeeGroups = getMamadeeGroups(filtered);
 
     const kartikaHtml =
       kartikaProds.length > 0
@@ -429,7 +555,7 @@ function renderProductGridHtml() {
         : "";
 
     const mamadeeHtml =
-      mamadeeProds.length > 0
+      mamadeeGroups.length > 0
         ? `
       <div class="mb-12">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-4 pb-3 border-b border-gray-200">
@@ -437,15 +563,15 @@ function renderProductGridHtml() {
             <span class="w-3.5 h-3.5 rounded-full bg-emerald-600 shrink-0"></span>
             <div>
               <h3 class="font-bold text-base sm:text-xl text-gray-900 leading-tight">Kopi & Minuman UMKM (MAMADEE)</h3>
-              <p class="text-xs text-gray-500 hidden sm:block">Minuman segar kopi aren creamy, butterscotch & es cendol segar • Sudah termasuk Cooler Bag & Ice Gel</p>
+              <p class="text-xs text-gray-500 hidden sm:block">Pilihan ukuran 500 ml & 1 Liter • Sudah termasuk Cooler Bag & Ice Gel</p>
             </div>
           </div>
           <div class="flex items-center gap-2">
-            <span class="text-xs bg-emerald-50 text-emerald-700 font-semibold px-3 py-1 rounded-full border border-emerald-100">${mamadeeProds.length} Produk UMKM</span>
+            <span class="text-xs bg-emerald-50 text-emerald-700 font-semibold px-3 py-1 rounded-full border border-emerald-100">${mamadeeGroups.length} Menu Minuman (Ukuran 500ml / 1L)</span>
           </div>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
-          ${mamadeeProds.map((p) => renderProductCardItemHtml(p, cart)).join("")}
+          ${mamadeeGroups.map((g) => renderGroupCardHtml(g, cart)).join("")}
         </div>
       </div>
     `
@@ -454,7 +580,20 @@ function renderProductGridHtml() {
     return `${kartikaHtml}${mamadeeHtml}`;
   }
 
-  // Jika memilih kategori spesifik atau sedang mencari kata kunci
+  // Jika memilih kategori MAMADEE
+  if (activeCategory === "MAMADEE" && !searchQuery) {
+    const mamadeeGroups = getMamadeeGroups(filtered);
+    return `
+      <div class="mb-4 flex items-center justify-between pb-3 border-b border-gray-200">
+        <h3 class="font-bold text-base sm:text-lg text-gray-900">Koleksi Kopi & Minuman UMKM (MAMADEE)</h3>
+        <span class="text-xs bg-emerald-50 text-emerald-700 font-semibold px-3 py-1 rounded-full border border-emerald-100">${mamadeeGroups.length} Menu Minuman</span>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
+        ${mamadeeGroups.map((g) => renderGroupCardHtml(g, cart)).join("")}
+      </div>`;
+  }
+
+  // Jika memilih kategori Kartika Sari atau sedang mencari kata kunci
   const titleMap = {
     "Kartika Sari": "Koleksi Oleh-Oleh Kartika Sari Bandung",
     MAMADEE: "Koleksi Kopi & Minuman UMKM (MAMADEE)",
@@ -1403,6 +1542,14 @@ document.addEventListener("click", (e) => {
   } else if (action === "remove") {
     setQtyExact(id, 0);
     renderKeranjang();
+  } else if (action === "select-variant") {
+    const group = el.dataset.group;
+    const vid = el.dataset.vid;
+    if (group && vid) {
+      SELECTED_VARIANTS[group] = vid;
+      const gridContainer = document.getElementById("product-grid-container");
+      if (gridContainer) gridContainer.innerHTML = renderProductGridHtml();
+    }
   } else if (action === "filter-cat") {
     activeCategory = el.dataset.cat;
     renderKatalog();
