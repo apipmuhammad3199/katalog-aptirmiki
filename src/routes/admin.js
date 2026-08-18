@@ -69,22 +69,25 @@ router.get("/orders", requireAdmin, (req, res) => {
   res.json({ orders, statusFlow: STATUS_FLOW });
 });
 
-router.patch("/orders/:id/status", requireAdmin, (req, res) => {
+router.patch("/orders/:id/status", requireAdmin, async (req, res) => {
   const { status } = req.body || {};
   if (!isValidStatus(status)) {
     return res.status(400).json({ error: "Status tidak valid." });
   }
   const updated = db.updateOrder(req.params.id, (o) => {
     o.status = status;
+    o.updatedAt = new Date().toISOString();
     return o;
   });
   if (!updated) return res.status(404).json({ error: "Pesanan tidak ditemukan." });
+  await db.pushToKV(db.readDB());
   res.json({ order: updated });
 });
 
-router.delete("/orders/:id", requireAdmin, (req, res) => {
+router.delete("/orders/:id", requireAdmin, async (req, res) => {
   const deleted = db.deleteOrder(req.params.id);
   if (!deleted) return res.status(404).json({ error: "Pesanan tidak ditemukan." });
+  await db.pushToKV(db.readDB());
   res.json({ ok: true, deletedId: deleted.id });
 });
 

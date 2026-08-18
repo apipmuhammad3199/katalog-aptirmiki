@@ -764,11 +764,16 @@ document.getElementById("product-form").addEventListener("submit", async (e) => 
 async function updateOrderStatus(orderId, newStatus, targetElement) {
   if (targetElement) targetElement.disabled = true;
   try {
-    await Api.patch(`/api/admin/orders/${encodeURIComponent(orderId)}/status`, { status: newStatus }, { token: TOKEN });
-    const order = ALL_ORDERS.find((o) => o.id === orderId);
-    if (order) order.status = newStatus;
+    const res = await Api.patch(`/api/admin/orders/${encodeURIComponent(orderId)}/status`, { status: newStatus }, { token: TOKEN });
+    if (res && res.order) {
+      const order = ALL_ORDERS.find((o) => o.id === orderId);
+      if (order) {
+        order.status = res.order.status;
+        order.updatedAt = res.order.updatedAt;
+      }
+    }
+    lastKnownOrdersChecksum = ALL_ORDERS.map((o) => `${o.id}:${o.status}:${Boolean(o.proof)}`).join("|");
     updateTabBadges();
-    renderSummaryCards({ totalOrders: ALL_ORDERS.length, totalRevenue: ALL_ORDERS.reduce((s, o) => s + o.total, 0) }, ALL_ORDERS);
     applyFilters();
     showSuccessModal({ title: "Status Diperbarui!", message: `Status pesanan #${orderId} telah diperbarui.` });
   } catch (err) {

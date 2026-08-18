@@ -118,8 +118,6 @@ function getKVConfig() {
   return { url, token };
 }
 
-let isInitialKVSynced = false;
-
 async function syncWithKV() {
   const { url, token } = getKVConfig();
   if (!url || !token) return;
@@ -130,22 +128,46 @@ async function syncWithKV() {
     const json = await res.json();
     if (json && json.result) {
       const parsed = typeof json.result === "string" ? JSON.parse(json.result) : json.result;
-      if (parsed && Array.isArray(parsed.orders)) {
+      if (parsed && typeof parsed === "object") {
         const local = readDB();
-        let changed = false;
-        for (const o of parsed.orders) {
-          if (o && o.id && !local.orders.some((item) => item.id === o.id)) {
-            local.orders.push(o);
-            changed = true;
-          }
+        let shouldSaveLocal = false;
+
+        if (Array.isArray(parsed.orders) && parsed.orders.length > 0) {
+          parsed.orders.forEach((remoteOrder) => {
+            if (!remoteOrder || !remoteOrder.id) return;
+            const localIdx = local.orders.findIndex((l) => matchOrderId(l, remoteOrder.id));
+            if (localIdx === -1) {
+              local.orders.push(remoteOrder);
+              shouldSaveLocal = true;
+            } else {
+              const remoteTime = new Date(remoteOrder.updatedAt || remoteOrder.createdAt || 0).getTime();
+              const localTime = new Date(local.orders[localIdx].updatedAt || local.orders[localIdx].createdAt || 0).getTime();
+              if (remoteTime >= localTime) {
+                local.orders[localIdx] = remoteOrder;
+                shouldSaveLocal = true;
+              }
+            }
+          });
+        } else if (local.orders.length > 0) {
+          await pushToKV(local);
         }
+
         if (parsed.seq && parsed.seq > (local.seq || 0)) {
           local.seq = parsed.seq;
-          changed = true;
+          shouldSaveLocal = true;
         }
-        if (changed || !isInitialKVSynced) {
-          isInitialKVSynced = true;
-          writeDB(local);
+
+        if (Array.isArray(parsed.products) && parsed.products.length > 0) {
+          local.products = parsed.products;
+          shouldSaveLocal = true;
+        }
+
+        if (shouldSaveLocal) {
+          global.GLOBAL_DB = local;
+          try {
+            ensureDb();
+            fs.writeFileSync(DB_PATH, JSON.stringify(local, null, 2), "utf-8");
+          } catch (e) {}
         }
       }
     }
@@ -154,18 +176,18 @@ async function syncWithKV() {
   }
 }
 
-function pushToKV(data) {
+async function pushToKV(data) {
   const { url, token } = getKVConfig();
   if (!url || !token) return;
   try {
-    fetch(`${url}/set/aptirmiki_db`, {
+    await fetch(`${url}/set/aptirmiki_db`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }).catch((e) => console.error("KV push error:", e.message));
+    });
   } catch (err) {
     console.error("KV push sync error:", err.message);
   }
@@ -173,7 +195,7 @@ function pushToKV(data) {
 
 function writeDB(data) {
   global.GLOBAL_DB = data;
-  pushToKV(data);
+  pushToKV(data).catch(() => {});
   try {
     ensureDb();
     const tempPath = `${DB_PATH}.${Date.now()}.${Math.random().toString(36).slice(2)}.tmp`;
@@ -244,6 +266,8 @@ function getOrders() {
 
 function saveOrder(order) {
   const data = readDB();
+  if (!order.createdAt) order.createdAt = new Date().toISOString();
+  order.updatedAt = new Date().toISOString();
   data.orders.push(order);
   writeDB(data);
   return order;
@@ -273,6 +297,7 @@ function updateOrder(id, updater) {
   } else if (updater && typeof updater === "object") {
     data.orders[idx] = { ...data.orders[idx], ...updater };
   }
+  data.orders[idx].updatedAt = new Date().toISOString();
   writeDB(data);
   return data.orders[idx];
 }
@@ -345,4 +370,5 @@ module.exports = {
   findOrdersByWa,
   nextOrderId,
   syncWithKV,
+  pushToKV,
 };

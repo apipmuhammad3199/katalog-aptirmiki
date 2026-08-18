@@ -43,7 +43,7 @@ const DELIVERY_METHODS = [
 ];
 
 // POST /api/orders -> buat pesanan baru
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   const { customer, items } = req.body || {};
 
   const name = customer && customer.name ? String(customer.name).trim() : "";
@@ -110,6 +110,7 @@ router.post("/", (req, res) => {
   };
 
   db.saveOrder(order);
+  await db.pushToKV(db.readDB());
   res.status(201).json(order);
 });
 
@@ -151,7 +152,7 @@ router.post("/:id/proof", (req, res, next) => {
   if (!order) return res.status(404).json({ error: "Pesanan tidak ditemukan." });
   req.existingOrder = order;
   next();
-}, upload.single("proof"), (req, res) => {
+}, upload.single("proof"), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: "File bukti transfer wajib diunggah." });
   
   // Cleanup old proof file if exists
@@ -177,8 +178,10 @@ router.post("/:id/proof", (req, res, next) => {
       dataUrl,
       uploadedAt: new Date().toISOString()
     };
+    o.updatedAt = new Date().toISOString();
     return o;
   });
+  await db.pushToKV(db.readDB());
   res.json({ order: updated });
 });
 
