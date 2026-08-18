@@ -157,9 +157,20 @@ async function syncWithKV() {
           shouldSaveLocal = true;
         }
 
-        if (Array.isArray(parsed.products) && parsed.products.length > 0) {
-          local.products = parsed.products;
-          shouldSaveLocal = true;
+        if (Array.isArray(parsed.products)) {
+          const remoteProdTime = new Date(parsed.productsUpdatedAt || 0).getTime();
+          const localProdTime = new Date(local.productsUpdatedAt || 0).getTime();
+          if (remoteProdTime > localProdTime) {
+            local.products = parsed.products;
+            local.productsUpdatedAt = parsed.productsUpdatedAt;
+            shouldSaveLocal = true;
+          } else if (localProdTime > remoteProdTime) {
+            await pushToKV(local);
+          } else if (!local.products || local.products.length === 0) {
+            local.products = parsed.products;
+            local.productsUpdatedAt = parsed.productsUpdatedAt;
+            shouldSaveLocal = true;
+          }
         }
 
         if (shouldSaveLocal) {
@@ -223,6 +234,9 @@ function getProducts() {
 
 function saveProduct(product) {
   const data = readDB();
+  const now = new Date().toISOString();
+  product.updatedAt = now;
+  data.productsUpdatedAt = now;
   data.products.push(product);
   writeDB(data);
   return product;
@@ -244,6 +258,9 @@ function updateProduct(id, updater) {
   if (data.products[idx].supplierPrice !== undefined) {
     data.products[idx].supplierPrice = Number(data.products[idx].supplierPrice) || 0;
   }
+  const now = new Date().toISOString();
+  data.products[idx].updatedAt = now;
+  data.productsUpdatedAt = now;
   writeDB(data);
   return data.products[idx];
 }
@@ -254,6 +271,7 @@ function deleteProduct(id) {
   const idx = data.products.findIndex((p) => String(p.id).toLowerCase().trim() === targetId);
   if (idx === -1) return null;
   const [removed] = data.products.splice(idx, 1);
+  data.productsUpdatedAt = new Date().toISOString();
   writeDB(data);
   return removed;
 }

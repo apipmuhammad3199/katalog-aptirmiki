@@ -699,8 +699,10 @@ function renderProductsTable() {
           btn.disabled = true;
           try {
             await Api.delete(`/api/admin/products/${encodeURIComponent(id)}`, { token: TOKEN });
+            ALL_PRODUCTS = ALL_PRODUCTS.filter((p) => p.id !== id);
+            renderProductsTable();
             showSuccessModal({ title: "Produk Dihapus!", message: `Produk "${prod?.name || id}" telah berhasil dihapus.` });
-            loadAll();
+            await loadAll();
           } catch (err) {
             alert("Gagal menghapus produk: " + err.message);
             btn.disabled = false;

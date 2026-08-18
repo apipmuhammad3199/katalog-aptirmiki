@@ -111,7 +111,7 @@ router.get("/products", requireAdmin, (req, res) => {
   res.json({ products: db.getProducts() });
 });
 
-router.post("/products", requireAdmin, (req, res) => {
+router.post("/products", requireAdmin, async (req, res) => {
   const { name, brand, category, price, supplierPrice, unit, origin, expiryDetail, description, image } = req.body || {};
   if (!name || !category || !price || !unit) {
     return res.status(400).json({ error: "Nama, kategori, harga, dan satuan produk wajib diisi." });
@@ -141,10 +141,11 @@ router.post("/products", requireAdmin, (req, res) => {
   };
 
   db.saveProduct(newProduct);
+  await db.pushToKV(db.readDB());
   res.json({ ok: true, product: newProduct });
 });
 
-router.put("/products/:id", requireAdmin, (req, res) => {
+router.put("/products/:id", requireAdmin, async (req, res) => {
   const { name, brand, category, price, supplierPrice, unit, origin, expiryDetail, description, image } = req.body || {};
   const updates = {};
   if (name !== undefined) updates.name = String(name).trim();
@@ -160,12 +161,14 @@ router.put("/products/:id", requireAdmin, (req, res) => {
 
   const updated = db.updateProduct(req.params.id, updates);
   if (!updated) return res.status(404).json({ error: "Produk tidak ditemukan." });
+  await db.pushToKV(db.readDB());
   res.json({ ok: true, product: updated });
 });
 
-router.delete("/products/:id", requireAdmin, (req, res) => {
+router.delete("/products/:id", requireAdmin, async (req, res) => {
   const deleted = db.deleteProduct(req.params.id);
   if (!deleted) return res.status(404).json({ error: "Produk tidak ditemukan." });
+  await db.pushToKV(db.readDB());
   res.json({ ok: true, deletedId: deleted.id });
 });
 
