@@ -152,6 +152,8 @@ async function syncWithKV() {
   } catch (err) {
     console.error("syncWithKV error:", err.message);
   }
+}
+
 function pushToKV(data) {
   const { url, token } = getKVConfig();
   if (!url || !token) return;
