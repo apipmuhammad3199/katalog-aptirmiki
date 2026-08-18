@@ -152,6 +152,21 @@ async function syncWithKV() {
   } catch (err) {
     console.error("syncWithKV error:", err.message);
   }
+function pushToKV(data) {
+  const { url, token } = getKVConfig();
+  if (!url || !token) return;
+  try {
+    fetch(`${url}/set/aptirmiki_db`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }).catch((e) => console.error("KV push error:", e.message));
+  } catch (err) {
+    console.error("KV push sync error:", err.message);
+  }
 }
 
 function writeDB(data) {
