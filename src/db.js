@@ -89,16 +89,43 @@ function readDB() {
   return data;
 }
 
-const KV_REST_API_URL = (process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || "").trim();
-const KV_REST_API_TOKEN = (process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || "").trim();
+function getKVConfig() {
+  let url = (
+    process.env.KV_REST_API_URL ||
+    process.env.UPSTASH_REDIS_REST_URL ||
+    process.env.STORAGE_REST_API_URL ||
+    process.env.STORAGE_REST_URL ||
+    process.env.UPSTASH_REDIS_REST_API_URL ||
+    ""
+  ).trim();
+
+  let token = (
+    process.env.KV_REST_API_TOKEN ||
+    process.env.UPSTASH_REDIS_REST_TOKEN ||
+    process.env.STORAGE_REST_API_TOKEN ||
+    process.env.STORAGE_REST_TOKEN ||
+    process.env.UPSTASH_REDIS_REST_API_TOKEN ||
+    ""
+  ).trim();
+
+  if (!url || !token) {
+    const urlKey = Object.keys(process.env).find((k) => k.endsWith("_REST_API_URL") || k.endsWith("_REST_URL"));
+    const tokenKey = Object.keys(process.env).find((k) => k.endsWith("_REST_API_TOKEN") || k.endsWith("_REST_TOKEN"));
+    if (urlKey && process.env[urlKey]) url = String(process.env[urlKey]).trim();
+    if (tokenKey && process.env[tokenKey]) token = String(process.env[tokenKey]).trim();
+  }
+
+  return { url, token };
+}
 
 function pushToKV(data) {
-  if (!KV_REST_API_URL || !KV_REST_API_TOKEN) return;
+  const { url, token } = getKVConfig();
+  if (!url || !token) return;
   try {
-    fetch(`${KV_REST_API_URL}/set/aptirmiki_db`, {
+    fetch(`${url}/set/aptirmiki_db`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${KV_REST_API_TOKEN}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
