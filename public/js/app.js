@@ -285,20 +285,24 @@ function setView(html) {
 }
 
 // ===== Katalog =====
+// ===== Katalog =====
 function renderKatalog() {
-  const uniqueCats = Array.from(new Set(PRODUCTS.map((p) => p.category))).filter(Boolean);
-  const cats = ["Semua", ...uniqueCats];
+  const brandTabs = [
+    { id: "Semua", label: "Semua Produk" },
+    { id: "Kartika Sari", label: "Kartika Sari Bandung" },
+    { id: "MAMADEE", label: "Produk UMKM (MAMADEE)" },
+  ];
 
-  const chips = cats
+  const chips = brandTabs
     .map(
-      (c) => `
-      <button data-action="filter-cat" data-cat="${escapeHtml(c)}"
-        class="category-chip whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm border font-medium transition-all shrink-0 ${
-          activeCategory === c
+      (t) => `
+      <button data-action="filter-cat" data-cat="${escapeHtml(t.id)}"
+        class="category-chip whitespace-nowrap px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm border font-semibold transition-all shrink-0 ${
+          activeCategory === t.id
             ? "bg-[--color-primary] text-white border-[--color-primary] shadow-sm"
             : "bg-white text-gray-600 border-gray-200 hover:border-blue-300"
         }">
-        ${escapeHtml(c)}
+        ${escapeHtml(t.label)}
       </button>`
     )
     .join("");
@@ -307,7 +311,7 @@ function renderKatalog() {
     <div class="px-3 sm:px-6 lg:px-8 pt-3 sm:pt-4 pb-2 sticky top-14 sm:top-16 z-20 bg-[--color-cream]/95 backdrop-blur">
       <div class="max-w-screen-2xl mx-auto">
         <div class="relative mb-2.5 sm:mb-3 max-w-md">
-          <input id="search-input" type="text" placeholder="Cari oleh-oleh Kartika Sari & khas Bandung..." value="${escapeHtml(searchQuery)}"
+          <input id="search-input" type="text" placeholder="Cari oleh-oleh Kartika Sari, Kopi & Minuman..." value="${escapeHtml(searchQuery)}"
             class="w-full rounded-full border border-gray-200 bg-white pl-9 sm:pl-10 pr-4 py-2 sm:py-2.5 text-xs sm:text-sm shadow-sm focus:border-[--color-primary] focus:ring-2 focus:ring-blue-100" />
           <svg class="absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="7"></circle>
@@ -368,8 +372,18 @@ function renderProductCardItemHtml(p, cart) {
 function renderProductGridHtml() {
   const cart = getCart();
   const filtered = PRODUCTS.filter((p) => {
-    const matchCat = activeCategory === "Semua" || p.category === activeCategory;
-    const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+    let matchCat = true;
+    if (activeCategory === "Kartika Sari") {
+      matchCat = p.brand === "Kartika Sari" || p.brand !== "MAMADEE";
+    } else if (activeCategory === "MAMADEE") {
+      matchCat = p.brand === "MAMADEE";
+    } else if (activeCategory !== "Semua") {
+      matchCat = p.category === activeCategory;
+    }
+    const matchSearch =
+      (p.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.category || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.brand || "").toLowerCase().includes(searchQuery.toLowerCase());
     return matchCat && matchSearch;
   });
 
@@ -382,40 +396,78 @@ function renderProductGridHtml() {
           </svg>
         </div>
         <p class="font-bold text-gray-800 text-base">Produk tidak ditemukan</p>
-        <p class="text-xs text-gray-400 mt-1">Coba kata kunci lain atau pilih kategori lain.</p>
+        <p class="text-xs text-gray-400 mt-1">Coba kata kunci lain atau pilih tab produk lainnya.</p>
       </div>`;
   }
 
-  // Tampilkan dikelompokkan berdasarkan kategori jika memilih "Semua" tanpa pencarian
+  // Tampilkan dikelompokkan menjadi 2 seksi besar: Kartika Sari & UMKM MAMADEE
   if (activeCategory === "Semua" && !searchQuery) {
-    const grouped = {};
-    filtered.forEach((p) => {
-      if (!grouped[p.category]) grouped[p.category] = [];
-      grouped[p.category].push(p);
-    });
+    const kartikaProds = filtered.filter((p) => p.brand === "Kartika Sari" || p.brand !== "MAMADEE");
+    const mamadeeProds = filtered.filter((p) => p.brand === "MAMADEE");
 
-    return Object.entries(grouped)
-      .map(([catName, prods]) => {
-        const cards = prods.map((p) => renderProductCardItemHtml(p, cart)).join("");
-        return `
-          <div class="mb-8">
-            <div class="flex items-center gap-2 mb-3 pb-2 border-b border-gray-200">
-              <span class="w-3 h-3 rounded-full bg-[--color-primary]"></span>
-              <h3 class="font-bold text-base sm:text-lg text-gray-900">${escapeHtml(catName)}</h3>
-              <span class="text-xs bg-blue-50 text-[--color-primary] font-semibold px-2.5 py-0.5 rounded-full border border-blue-100">${prods.length} produk</span>
+    const kartikaHtml =
+      kartikaProds.length > 0
+        ? `
+      <div class="mb-12">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-4 pb-3 border-b border-gray-200">
+          <div class="flex items-center gap-2.5">
+            <span class="w-3.5 h-3.5 rounded-full bg-[--color-primary] shrink-0"></span>
+            <div>
+              <h3 class="font-bold text-base sm:text-xl text-gray-900 leading-tight">Oleh-Oleh Kartika Sari Bandung</h3>
+              <p class="text-xs text-gray-500 hidden sm:block">Koleksi bolu gulung, lapis legit, pisang bolen & brownies panggang resmi khas Bandung</p>
             </div>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">${cards}</div>
-          </div>`;
-      })
-      .join("");
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs bg-blue-50 text-[--color-primary] font-semibold px-3 py-1 rounded-full border border-blue-100">${kartikaProds.length} Produk Kartika Sari</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
+          ${kartikaProds.map((p) => renderProductCardItemHtml(p, cart)).join("")}
+        </div>
+      </div>
+    `
+        : "";
+
+    const mamadeeHtml =
+      mamadeeProds.length > 0
+        ? `
+      <div class="mb-12">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-4 pb-3 border-b border-gray-200">
+          <div class="flex items-center gap-2.5">
+            <span class="w-3.5 h-3.5 rounded-full bg-emerald-600 shrink-0"></span>
+            <div>
+              <h3 class="font-bold text-base sm:text-xl text-gray-900 leading-tight">Kopi & Minuman UMKM (MAMADEE)</h3>
+              <p class="text-xs text-gray-500 hidden sm:block">Minuman segar kopi aren creamy, butterscotch & es cendol segar • Sudah termasuk Cooler Bag & Ice Gel</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs bg-emerald-50 text-emerald-700 font-semibold px-3 py-1 rounded-full border border-emerald-100">${mamadeeProds.length} Produk UMKM</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
+          ${mamadeeProds.map((p) => renderProductCardItemHtml(p, cart)).join("")}
+        </div>
+      </div>
+    `
+        : "";
+
+    return `${kartikaHtml}${mamadeeHtml}`;
   }
 
   // Jika memilih kategori spesifik atau sedang mencari kata kunci
+  const titleMap = {
+    "Kartika Sari": "Koleksi Oleh-Oleh Kartika Sari Bandung",
+    MAMADEE: "Koleksi Kopi & Minuman UMKM (MAMADEE)",
+  };
+  const sectionTitle = searchQuery
+    ? `Hasil Pencarian untuk "${searchQuery}"`
+    : titleMap[activeCategory] || activeCategory;
+
   const cards = filtered.map((p) => renderProductCardItemHtml(p, cart)).join("");
   return `
-    <div class="mb-4 flex items-center justify-between pb-2 border-b border-gray-200">
-      <h3 class="font-bold text-base text-gray-900">${escapeHtml(activeCategory !== "Semua" ? activeCategory : "Hasil Pencarian")}</h3>
-      <span class="text-xs bg-blue-50 text-[--color-primary] font-semibold px-2.5 py-0.5 rounded-full border border-blue-100">${filtered.length} produk</span>
+    <div class="mb-4 flex items-center justify-between pb-3 border-b border-gray-200">
+      <h3 class="font-bold text-base sm:text-lg text-gray-900">${escapeHtml(sectionTitle)}</h3>
+      <span class="text-xs bg-blue-50 text-[--color-primary] font-semibold px-3 py-1 rounded-full border border-blue-100">${filtered.length} produk</span>
     </div>
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">${cards}</div>`;
 }
