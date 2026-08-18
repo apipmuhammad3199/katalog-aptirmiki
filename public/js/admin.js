@@ -669,9 +669,15 @@ function renderProductsTable() {
         <span class="font-bold text-emerald-700">${rupiah(profit)}</span>
         <span class="text-[10px] bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded font-mono font-semibold ml-1 border border-emerald-100">+${margin}%</span>
       </td>
-      <td class="px-3 py-3 text-xs text-gray-600">
-        <div>📍 ${escapeHtml(p.origin || "Betawi, Jakarta")}</div>
-        <div class="text-amber-700 text-[11px]">⏳ ${escapeHtml(p.expiryDetail || "Tahan Lama")}</div>
+      <td class="px-3 py-3 text-xs text-gray-600 space-y-1">
+        <div class="inline-flex items-center gap-1.5 font-medium text-gray-700">
+          <svg class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span>${escapeHtml(p.origin || "Bandung")}</span>
+        </div>
+        <div class="flex items-center gap-1.5 text-amber-800 text-[11px] font-medium">
+          <svg class="w-3.5 h-3.5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg>
+          <span>${escapeHtml(p.expiryDetail || "Tahan Lama")}</span>
+        </div>
       </td>
       <td class="px-3 py-3 text-right whitespace-nowrap space-x-1">
         <button data-edit-prod="${escapeHtml(p.id)}" class="edit-prod-btn text-xs bg-indigo-50 text-indigo-600 hover:bg-indigo-100 font-semibold px-2.5 py-1 rounded-lg border border-indigo-200 transition">Edit</button>

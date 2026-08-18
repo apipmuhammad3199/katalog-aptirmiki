@@ -344,9 +344,15 @@ function renderProductCardItemHtml(p, cart) {
         <span class="text-[10px] sm:text-xs uppercase tracking-wider text-[--color-secondary] font-bold mb-1 truncate">${escapeHtml(p.category)}</span>
         <h3 class="font-bold text-gray-900 leading-tight mb-1 text-xs sm:text-sm sm:min-h-[2.5rem] line-clamp-2">${escapeHtml(p.name)}</h3>
         <p class="text-[11px] sm:text-xs text-gray-500 mb-1.5 line-clamp-2 flex-1">${escapeHtml(p.description)}</p>
-        <div class="flex flex-wrap items-center gap-1 my-1 text-[10px] sm:text-[11px]">
-          <span class="bg-blue-50 text-[--color-primary] px-1.5 sm:px-2 py-0.5 rounded-full font-medium border border-blue-100 truncate max-w-full">📍 ${escapeHtml(shortOrigin)}</span>
-          <span class="bg-amber-50 text-amber-700 px-1.5 sm:px-2 py-0.5 rounded-full font-medium border border-amber-100">⏳ ${escapeHtml(p.expiryDetail || "Tahan Lama")}</span>
+        <div class="flex flex-wrap items-center gap-1.5 my-1.5 text-[10px] sm:text-[11px]">
+          <span class="inline-flex items-center gap-1 bg-slate-50 text-slate-700 px-2 py-0.5 rounded-lg font-medium border border-slate-200/70 truncate max-w-full">
+            <svg class="w-3 h-3 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span>${escapeHtml(shortOrigin)}</span>
+          </span>
+          <span class="inline-flex items-center gap-1 bg-amber-50/70 text-amber-800 px-2 py-0.5 rounded-lg font-medium border border-amber-200/70">
+            <svg class="w-3 h-3 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg>
+            <span>${escapeHtml(p.expiryDetail || "Tahan Lama")}</span>
+          </span>
         </div>
         <div class="flex items-baseline justify-between mt-auto pt-1.5 border-t border-gray-50">
           <span class="font-extrabold text-[--color-primary] text-sm sm:text-lg">${rupiah(p.price)}</span>
@@ -691,19 +697,20 @@ function showSuccessModal(orderId) {
             <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
           </svg>
         </div>
-        <h3 class="font-bold text-xl text-gray-900 mb-1">Bukti Transfer Terkirim! 🎉</h3>
+        <h3 class="font-bold text-xl text-gray-900 mb-1">Bukti Transfer Berhasil Terkirim</h3>
         <p class="text-xs text-gray-500 mb-5 leading-relaxed">
           Bukti pembayaran pesanan <b class="text-[--color-primary] font-mono font-semibold">#${escapeHtml(orderId)}</b> berhasil diunggah. Tim admin akan segera memverifikasi pesanan Anda.
         </p>
         <div class="space-y-2.5 w-full">
           <button onclick="document.getElementById('success-modal').remove(); navigate('#/tracking/${encodeURIComponent(orderId)}');"
             class="w-full bg-[--color-primary] hover:bg-[--color-primary-dark] text-white rounded-xl py-3 text-xs font-semibold shadow-md transition flex items-center justify-center gap-2">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
             <span>Lacak Status Pesanan Saya</span>
           </button>
           <button onclick="document.getElementById('success-modal').remove(); navigate('#/katalog');"
-            class="w-full border border-gray-200 text-gray-600 hover:bg-gray-50 rounded-xl py-2.5 text-xs font-semibold transition">
-            🏠 Kembali ke Beranda Katalog
+            class="w-full border border-gray-200 text-gray-700 hover:bg-gray-50 rounded-xl py-2.5 text-xs font-semibold transition flex items-center justify-center gap-1.5">
+            <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span>Kembali ke Beranda Katalog</span>
           </button>
         </div>
       </div>
