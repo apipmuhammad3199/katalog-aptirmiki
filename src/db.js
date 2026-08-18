@@ -55,17 +55,10 @@ function readDB() {
   }
 
   let shouldWrite = false;
-  if (!Array.isArray(data.products) || data.products.length === 0) {
-    data.products = defaultProductsModule.products;
+  if (!Array.isArray(data.products)) {
+    data.products = Array.isArray(defaultProductsModule.products) ? [...defaultProductsModule.products] : [];
+    data.productsUpdatedAt = new Date().toISOString();
     shouldWrite = true;
-  } else {
-    // Sync new default products into data.products if missing
-    for (const defProd of defaultProductsModule.products) {
-      if (!data.products.some((p) => p.id === defProd.id)) {
-        data.products.push(defProd);
-        shouldWrite = true;
-      }
-    }
   }
   if (!Array.isArray(data.orders)) {
     data.orders = [];
