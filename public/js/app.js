@@ -535,16 +535,11 @@ function renderProductGridHtml() {
       kartikaProds.length > 0
         ? `
       <div class="mb-12">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-4 pb-3 border-b border-gray-200">
-          <div class="flex items-center gap-2.5">
-            <span class="w-3.5 h-3.5 rounded-full bg-[--color-primary] shrink-0"></span>
-            <div>
-              <h3 class="font-bold text-base sm:text-xl text-gray-900 leading-tight">Oleh-Oleh Kartika Sari Bandung</h3>
-              <p class="text-xs text-gray-500 hidden sm:block">Koleksi bolu gulung, lapis legit, pisang bolen & brownies panggang resmi khas Bandung</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs bg-blue-50 text-[--color-primary] font-semibold px-3 py-1 rounded-full border border-blue-100">${kartikaProds.length} Produk Kartika Sari</span>
+        <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-gray-200">
+          <span class="w-3.5 h-3.5 rounded-full bg-[--color-primary] shrink-0"></span>
+          <div>
+            <h3 class="font-bold text-base sm:text-xl text-gray-900 leading-tight">Oleh-Oleh Kartika Sari Bandung</h3>
+            <p class="text-xs text-gray-500 hidden sm:block">Koleksi bolu gulung, lapis legit, pisang bolen & brownies panggang resmi khas Bandung</p>
           </div>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
@@ -558,16 +553,11 @@ function renderProductGridHtml() {
       mamadeeGroups.length > 0
         ? `
       <div class="mb-12">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-4 pb-3 border-b border-gray-200">
-          <div class="flex items-center gap-2.5">
-            <span class="w-3.5 h-3.5 rounded-full bg-emerald-600 shrink-0"></span>
-            <div>
-              <h3 class="font-bold text-base sm:text-xl text-gray-900 leading-tight">Kopi & Minuman UMKM (MAMADEE)</h3>
-              <p class="text-xs text-gray-500 hidden sm:block">Pilihan ukuran 500 ml & 1 Liter • Sudah termasuk Cooler Bag & Ice Gel</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs bg-emerald-50 text-emerald-700 font-semibold px-3 py-1 rounded-full border border-emerald-100">${mamadeeGroups.length} Menu Minuman (Ukuran 500ml / 1L)</span>
+        <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-gray-200">
+          <span class="w-3.5 h-3.5 rounded-full bg-emerald-600 shrink-0"></span>
+          <div>
+            <h3 class="font-bold text-base sm:text-xl text-gray-900 leading-tight">Kopi & Minuman UMKM (MAMADEE)</h3>
+            <p class="text-xs text-gray-500 hidden sm:block">Pilihan ukuran 500 ml & 1 Liter • Sudah termasuk Cooler Bag & Ice Gel</p>
           </div>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
@@ -584,9 +574,8 @@ function renderProductGridHtml() {
   if (activeCategory === "MAMADEE" && !searchQuery) {
     const mamadeeGroups = getMamadeeGroups(filtered);
     return `
-      <div class="mb-4 flex items-center justify-between pb-3 border-b border-gray-200">
+      <div class="mb-4 pb-3 border-b border-gray-200">
         <h3 class="font-bold text-base sm:text-lg text-gray-900">Koleksi Kopi & Minuman UMKM (MAMADEE)</h3>
-        <span class="text-xs bg-emerald-50 text-emerald-700 font-semibold px-3 py-1 rounded-full border border-emerald-100">${mamadeeGroups.length} Menu Minuman</span>
       </div>
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
         ${mamadeeGroups.map((g) => renderGroupCardHtml(g, cart)).join("")}
@@ -604,9 +593,8 @@ function renderProductGridHtml() {
 
   const cards = filtered.map((p) => renderProductCardItemHtml(p, cart)).join("");
   return `
-    <div class="mb-4 flex items-center justify-between pb-3 border-b border-gray-200">
+    <div class="mb-4 pb-3 border-b border-gray-200">
       <h3 class="font-bold text-base sm:text-lg text-gray-900">${escapeHtml(sectionTitle)}</h3>
-      <span class="text-xs bg-blue-50 text-[--color-primary] font-semibold px-3 py-1 rounded-full border border-blue-100">${filtered.length} produk</span>
     </div>
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">${cards}</div>`;
 }
