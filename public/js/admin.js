@@ -564,14 +564,16 @@ function renderTable(orders) {
         <td class="px-3 py-3">${proofCell}</td>
         <td class="px-3 py-3">${miniTrackingProgressBar(o.status)}</td>
         <td class="px-3 py-3">
+          <div class="flex flex-wrap items-center gap-1.5">
           <select data-order-id="${o.id}" class="status-select text-xs rounded-lg px-2.5 py-1.5 font-semibold cursor-pointer focus:ring-2 focus:ring-blue-200 transition ${statusBadgeClass(o.status)}">
             ${statusOptions}
           </select>
+          <button data-delete-id="${o.id}" class="delete-btn text-xs text-red-600 hover:text-red-700 font-semibold px-2.5 py-1.5 border border-red-200 rounded-lg hover:bg-red-50 transition">Hapus</button>
+          </div>
         </td>
         <td class="px-3 py-3 text-right whitespace-nowrap space-x-1">
           <button data-edit-order="${o.id}" class="edit-order-btn text-xs bg-indigo-50 text-indigo-600 hover:bg-indigo-100 font-semibold px-2.5 py-1 rounded-lg border border-indigo-200 transition">Edit</button>
           <button data-track-id="${o.id}" class="track-detail-btn text-xs bg-blue-50 text-[--color-primary] hover:bg-blue-100 font-semibold px-2.5 py-1 rounded-lg border border-blue-200 transition">Tracking</button>
-          <button data-delete-id="${o.id}" class="delete-btn text-xs text-red-500 hover:text-red-700 font-medium px-2 py-1 border border-red-200 rounded-lg hover:bg-red-50 transition">Hapus</button>
         </td>
       </tr>`;
     })
@@ -1299,174 +1301,6 @@ document.querySelectorAll("[data-export-opt]").forEach((btn) => {
       await downloadCsvFile(`/api/admin/orders/export.csv`, `rekap-pesanan-semua-${Date.now()}.csv`);
     }
   });
-});
-
-// ===== Edit Order Modal =====
-function recalcEditOrderTotal() {
-  const rows = document.querySelectorAll(".edit-item-row");
-  let total = 0;
-  rows.forEach((row) => {
-    const price = Number(row.dataset.price) || 0;
-    const qty = Number(row.querySelector(".edit-qty-input").value) || 0;
-    total += price * qty;
-  });
-  const el = document.getElementById("edit-order-total-preview");
-  if (el) el.textContent = rupiah(total);
-}
-
-function openEditOrderModal(orderId) {
-  const order = ALL_ORDERS.find((o) => o.id === orderId);
-  if (!order) return;
-
-  const modal = document.getElementById("edit-order-modal");
-  if (!modal) return;
-
-  document.getElementById("edit-order-id").value = order.id;
-  document.getElementById("edit-order-subtitle").textContent = `#${order.id}`;
-  document.getElementById("edit-order-name").value = order.customer.name || "";
-  document.getElementById("edit-order-wa").value = order.customer.wa || "";
-  document.getElementById("edit-order-instansi").value = order.customer.instansi || "";
-  document.getElementById("edit-order-detail").value = order.customer.detail || "";
-
-  // Target bank
-  const bankSel = document.getElementById("edit-order-target-bank");
-  const bankVal = order.customer.targetBank || "BCA";
-  // ensure option exists
-  const bankOpts = [...bankSel.options].map((o) => o.value);
-  if (!bankOpts.includes(bankVal)) {
-    const opt = document.createElement("option");
-    opt.value = bankVal;
-    opt.textContent = bankVal;
-    bankSel.appendChild(opt);
-  }
-  bankSel.value = bankVal;
-
-  // Method
-  const methodSel = document.getElementById("edit-order-method");
-  const methodVal = order.customer.method || "Ambil di Lokasi Acara";
-  const methodOpts = [...methodSel.options].map((o) => o.value);
-  if (!methodOpts.includes(methodVal)) {
-    const opt = document.createElement("option");
-    opt.value = methodVal;
-    opt.textContent = methodVal;
-    methodSel.appendChild(opt);
-  }
-  methodSel.value = methodVal;
-
-  // Status dropdown
-  const statusSel = document.getElementById("edit-order-status");
-  statusSel.innerHTML = STATUS_FLOW.map((s) =>
-    `<option value="${escapeHtml(s.key)}" ${order.status === s.key ? "selected" : ""}>${escapeHtml(s.label)}</option>`
-  ).join("");
-
-  // Items
-  const itemsContainer = document.getElementById("edit-order-items");
-  itemsContainer.innerHTML = (order.items || []).map((item) => {
-    const prod = ALL_PRODUCTS.find((p) => p.id === item.productId || p.name === item.name);
-    const price = prod ? (Number(prod.price) || 0) : (Number(item.price) || 0);
-    return `
-    <div class="edit-item-row flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-2 border border-gray-100"
-         data-product-id="${escapeHtml(item.productId || prod?.id || "")}"
-         data-price="${price}">
-      <span class="flex-1 text-xs font-medium text-gray-800 truncate">${escapeHtml(item.name)}</span>
-      <span class="text-xs text-gray-400 whitespace-nowrap">${rupiah(price)}</span>
-      <div class="flex items-center gap-1">
-        <button type="button" class="edit-qty-dec w-6 h-6 rounded-full bg-white border border-gray-200 hover:border-red-300 hover:text-red-500 text-sm font-bold flex items-center justify-center transition">−</button>
-        <input type="number" class="edit-qty-input w-10 text-center text-xs font-bold border border-gray-200 rounded-lg py-1 focus:border-indigo-400 outline-none"
-               min="0" max="99" value="${Number(item.qty) || 1}" />
-        <button type="button" class="edit-qty-inc w-6 h-6 rounded-full bg-white border border-gray-200 hover:border-green-400 hover:text-green-600 text-sm font-bold flex items-center justify-center transition">+</button>
-      </div>
-    </div>`;
-  }).join("");
-
-  // Wire quantity +/- buttons
-  itemsContainer.querySelectorAll(".edit-item-row").forEach((row) => {
-    const input = row.querySelector(".edit-qty-input");
-    row.querySelector(".edit-qty-inc").addEventListener("click", () => {
-      input.value = Math.min(99, (Number(input.value) || 0) + 1);
-      recalcEditOrderTotal();
-    });
-    row.querySelector(".edit-qty-dec").addEventListener("click", () => {
-      input.value = Math.max(0, (Number(input.value) || 0) - 1);
-      recalcEditOrderTotal();
-    });
-    input.addEventListener("input", recalcEditOrderTotal);
-  });
-
-  recalcEditOrderTotal();
-  modal.classList.remove("hidden");
-}
-
-// Close edit order modal
-document.getElementById("close-edit-order-modal")?.addEventListener("click", () => {
-  document.getElementById("edit-order-modal").classList.add("hidden");
-});
-document.getElementById("cancel-edit-order-modal")?.addEventListener("click", () => {
-  document.getElementById("edit-order-modal").classList.add("hidden");
-});
-
-// Submit edit order form
-document.getElementById("edit-order-form")?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const errEl = document.getElementById("edit-order-error");
-  errEl.classList.add("hidden");
-
-  const id = document.getElementById("edit-order-id").value;
-  const saveBtn = document.getElementById("save-edit-order-btn");
-
-  // Collect updated items (skip items with qty 0)
-  const rows = document.querySelectorAll(".edit-item-row");
-  const items = [];
-  rows.forEach((row) => {
-    const qty = Number(row.querySelector(".edit-qty-input").value) || 0;
-    if (qty <= 0) return;
-    const price = Number(row.dataset.price) || 0;
-    const productId = row.dataset.productId;
-    const name = row.querySelector("span.flex-1").textContent;
-    items.push({ productId, name, qty, price });
-  });
-
-  if (items.length === 0) {
-    errEl.textContent = "Pesanan harus memiliki minimal 1 item dengan kuantitas > 0.";
-    errEl.classList.remove("hidden");
-    return;
-  }
-
-  const total = items.reduce((sum, it) => sum + it.price * it.qty, 0);
-
-  const payload = {
-    customer: {
-      name: document.getElementById("edit-order-name").value.trim(),
-      wa: document.getElementById("edit-order-wa").value.trim(),
-      instansi: document.getElementById("edit-order-instansi").value.trim(),
-      targetBank: document.getElementById("edit-order-target-bank").value,
-      method: document.getElementById("edit-order-method").value,
-      detail: document.getElementById("edit-order-detail").value.trim(),
-    },
-    status: document.getElementById("edit-order-status").value,
-    items,
-    total,
-  };
-
-  saveBtn.disabled = true;
-  saveBtn.textContent = "Menyimpan...";
-
-  try {
-    const res = await Api.put(`/api/admin/orders/${encodeURIComponent(id)}`, payload, { token: TOKEN });
-    if (res && res.order) {
-      const idx = ALL_ORDERS.findIndex((o) => o.id === id);
-      if (idx !== -1) ALL_ORDERS[idx] = res.order;
-    }
-    document.getElementById("edit-order-modal").classList.add("hidden");
-    showSuccessModal({ title: "Pesanan Diperbarui!", message: `Pesanan #${id} berhasil disimpan.` });
-    await loadAll();
-  } catch (err) {
-    errEl.textContent = err.message;
-    errEl.classList.remove("hidden");
-  } finally {
-    saveBtn.disabled = false;
-    saveBtn.textContent = "Simpan Perubahan";
-  }
 });
 
 // Init

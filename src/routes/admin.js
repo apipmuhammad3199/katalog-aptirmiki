@@ -50,14 +50,7 @@ function requireAdmin(req, res, next) {
   next();
 }
 
-function requirePersistentStorage(req, res, next) {
-  if ((process.env.VERCEL || process.env.NOW_REGION) && !db.hasPersistentStorage()) {
-    return res.status(503).json({
-      error: "Penyimpanan permanen belum dikonfigurasi. Hubungkan Vercel KV/Upstash lalu isi KV_REST_API_URL dan KV_REST_API_TOKEN.",
-    });
-  }
-  next();
-}
+
 
 router.post("/login", (req, res) => {
   const { password } = req.body || {};
@@ -136,10 +129,9 @@ router.patch("/orders/:id/status", requireAdmin, async (req, res) => {
   res.json({ order: updated });
 });
 
-router.delete("/orders/:id", requireAdmin, requirePersistentStorage, async (req, res) => {
+router.delete("/orders/:id", requireAdmin, async (req, res) => {
   const deleted = db.deleteOrder(req.params.id);
   if (!deleted) return res.status(404).json({ error: "Pesanan tidak ditemukan." });
-  await db.pushToKV(db.readDB());
   res.json({ ok: true, deletedId: deleted.id });
 });
 
@@ -226,10 +218,9 @@ router.put("/products/:id", requireAdmin, async (req, res) => {
   res.json({ ok: true, product: updated });
 });
 
-router.delete("/products/:id", requireAdmin, requirePersistentStorage, async (req, res) => {
+router.delete("/products/:id", requireAdmin, async (req, res) => {
   const deleted = db.deleteProduct(req.params.id);
   if (!deleted) return res.status(404).json({ error: "Produk tidak ditemukan." });
-  await db.pushToKV(db.readDB());
   res.json({ ok: true, deletedId: deleted.id });
 });
 

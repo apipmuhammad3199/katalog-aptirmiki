@@ -142,6 +142,15 @@ function hasPersistentStorage() {
   return Boolean(url && token);
 }
 
+function normalizeRecordId(id) {
+  return String(id || "").toLowerCase().trim();
+}
+
+function hasRecordId(ids, id) {
+  const target = normalizeRecordId(id);
+  return Array.isArray(ids) && ids.some((item) => normalizeRecordId(item) === target);
+}
+
 async function syncWithKV() {
   const { url, token } = getKVConfig();
   if (!url || !token) return;
@@ -155,28 +164,31 @@ async function syncWithKV() {
       if (parsed && typeof parsed === "object") {
         const local = readDB();
         let shouldSaveLocal = false;
+        let shouldPushRemote = false;
 
         // Sync deleted order IDs from remote
-        if (Array.isArray(parsed.deletedOrderIds)) {
-          if (!Array.isArray(local.deletedOrderIds)) local.deletedOrderIds = [];
-          parsed.deletedOrderIds.forEach((delId) => {
-            if (!local.deletedOrderIds.includes(delId)) {
+        const remoteDeletedOrderIds = Array.isArray(parsed.deletedOrderIds) ? parsed.deletedOrderIds : [];
+        if (!Array.isArray(local.deletedOrderIds)) local.deletedOrderIds = [];
+        remoteDeletedOrderIds.forEach((delId) => {
+            if (!hasRecordId(local.deletedOrderIds, delId)) {
               local.deletedOrderIds.push(delId);
+              shouldSaveLocal = true;
             }
             const lIdx = local.orders.findIndex((l) => matchOrderId(l, delId));
             if (lIdx !== -1) {
               local.orders.splice(lIdx, 1);
               shouldSaveLocal = true;
             }
-          });
+        });
+        if (local.deletedOrderIds.some((delId) => !hasRecordId(remoteDeletedOrderIds, delId))) {
+          shouldPushRemote = true;
         }
 
         // Sync orders
-        const deletedOrderSet = new Set(local.deletedOrderIds || []);
         if (Array.isArray(parsed.orders) && parsed.orders.length > 0) {
           parsed.orders.forEach((remoteOrder) => {
             if (!remoteOrder || !remoteOrder.id) return;
-            if (deletedOrderSet.has(remoteOrder.id)) return; // Don't re-add deleted orders
+            if (hasRecordId(local.deletedOrderIds, remoteOrder.id)) return; // Don't re-add deleted orders
             const localIdx = local.orders.findIndex((l) => matchOrderId(l, remoteOrder.id));
             if (localIdx === -1) {
               local.orders.push(remoteOrder);
@@ -200,16 +212,21 @@ async function syncWithKV() {
         }
 
         // Sync deleted product IDs
-        if (Array.isArray(parsed.deletedProductIds)) {
-          if (!Array.isArray(local.deletedProductIds)) local.deletedProductIds = [];
-          parsed.deletedProductIds.forEach((delId) => {
-            if (!local.deletedProductIds.includes(delId)) local.deletedProductIds.push(delId);
+        const remoteDeletedProductIds = Array.isArray(parsed.deletedProductIds) ? parsed.deletedProductIds : [];
+        if (!Array.isArray(local.deletedProductIds)) local.deletedProductIds = [];
+        remoteDeletedProductIds.forEach((delId) => {
+            if (!hasRecordId(local.deletedProductIds, delId)) {
+              local.deletedProductIds.push(delId);
+              shouldSaveLocal = true;
+            }
             const pIdx = local.products.findIndex((p) => String(p.id).toLowerCase().trim() === String(delId).toLowerCase().trim());
             if (pIdx !== -1) {
               local.products.splice(pIdx, 1);
               shouldSaveLocal = true;
             }
-          });
+        });
+        if (local.deletedProductIds.some((delId) => !hasRecordId(remoteDeletedProductIds, delId))) {
+          shouldPushRemote = true;
         }
 
         // Sync products
@@ -236,6 +253,9 @@ async function syncWithKV() {
             fs.writeFileSync(DB_PATH, JSON.stringify(local, null, 2), "utf-8");
           } catch (e) {}
         }
+        if (shouldPushRemote) {
+          await pushToKV(local);
+        }
       }
     }
   } catch (err) {
@@ -246,9 +266,6 @@ async function syncWithKV() {
 async function pushToKV(data) {
   const { url, token } = getKVConfig();
   if (!url || !token) {
-    if (isVercel) {
-      throw new Error("Penyimpanan permanen belum dikonfigurasi. Tambahkan KV_REST_API_URL dan KV_REST_API_TOKEN di Vercel.");
-    }
     return;
   }
   try {
@@ -261,11 +278,10 @@ async function pushToKV(data) {
       body: JSON.stringify(data),
     });
     if (!res.ok) {
-      throw new Error(`Penyimpanan data gagal (${res.status}).`);
+      console.warn(`Penyimpanan KV gagal (${res.status}).`);
     }
   } catch (err) {
     console.error("KV push sync error:", err.message);
-    throw err;
   }
 }
 
@@ -395,7 +411,7 @@ function deleteOrder(id) {
   if (idx === -1) return null;
   const [removed] = data.orders.splice(idx, 1);
   if (!Array.isArray(data.deletedOrderIds)) data.deletedOrderIds = [];
-  if (!data.deletedOrderIds.includes(removed.id)) {
+  if (!hasRecordId(data.deletedOrderIds, removed.id)) {
     data.deletedOrderIds.push(removed.id);
   }
   if (removed.proof && removed.proof.filename) {
