@@ -327,6 +327,7 @@ function renderKatalog() {
   const brandTabs = [
     { id: "Semua", label: "Semua Produk" },
     { id: "Kartika Sari", label: "Kartika Sari Bandung" },
+    { id: "Aksesoris", label: "Aksesoris Kartika Sari" },
     { id: "MAMADEE", label: "Kopi MAMADEE" },
     { id: "Produk UMKM", label: "Kuliner & Sambal UMKM" },
   ];
@@ -577,10 +578,20 @@ function renderProductCardItemHtml(p, cart) {
 
 function renderProductGridHtml() {
   const cart = getCart();
+
+  const isAksesorisProd = (p) =>
+    p.category === "Merchandise & Aksesoris Kartika Sari" ||
+    (p.category || "").toLowerCase().includes("aksesoris") ||
+    (p.category || "").toLowerCase().includes("merchandise");
+
   const filtered = PRODUCTS.filter((p) => {
     let matchCat = true;
     if (activeCategory === "Kartika Sari") {
-      matchCat = p.brand === "Kartika Sari";
+      // Hanya makanan/kue/bolen Kartika Sari (bukan aksesoris)
+      matchCat = p.brand === "Kartika Sari" && !isAksesorisProd(p);
+    } else if (activeCategory === "Aksesoris" || activeCategory === "Merchandise & Aksesoris Kartika Sari") {
+      // Khusus Aksesoris Kartika Sari
+      matchCat = isAksesorisProd(p);
     } else if (activeCategory === "MAMADEE") {
       matchCat = p.brand === "MAMADEE";
     } else if (activeCategory === "Produk UMKM" || activeCategory === "UMKM") {
@@ -609,9 +620,10 @@ function renderProductGridHtml() {
       </div>`;
   }
 
-  // Tampilkan dikelompokkan menjadi 3 seksi: Kartika Sari, UMKM MAMADEE, dan Kuliner & Sambal UMKM
+  // Tampilkan dikelompokkan menjadi 4 seksi terpisah saat tab Semua Produk aktif
   if (activeCategory === "Semua" && !searchQuery) {
-    const kartikaProds = filtered.filter((p) => p.brand === "Kartika Sari");
+    const kartikaProds = filtered.filter((p) => p.brand === "Kartika Sari" && !isAksesorisProd(p));
+    const aksesorisProds = filtered.filter((p) => isAksesorisProd(p));
     const mamadeeGroups = getMamadeeGroups(filtered.filter((p) => p.brand === "MAMADEE"));
     const umkmProds = filtered.filter((p) => p.brand !== "Kartika Sari" && p.brand !== "MAMADEE");
 
@@ -622,12 +634,30 @@ function renderProductGridHtml() {
         <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-gray-200">
           <span class="w-3.5 h-3.5 rounded-full bg-[--color-primary] shrink-0"></span>
           <div>
-            <h3 class="font-bold text-base sm:text-xl text-gray-900 leading-tight">Oleh-Oleh Kartika Sari Bandung</h3>
-            <p class="text-xs text-gray-500 hidden sm:block">Koleksi bolu gulung, lapis legit, pisang bolen & brownies panggang resmi khas Bandung</p>
+            <h3 class="font-bold text-base sm:text-xl text-gray-900 leading-tight">Oleh-Oleh Kuliner Kartika Sari Bandung</h3>
+            <p class="text-xs text-gray-500 hidden sm:block">Koleksi bolu gulung, lapis legit, pisang bolen, brownies panggang & aneka cemilan resmi</p>
           </div>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
           ${kartikaProds.map((p) => renderProductCardItemHtml(p, cart)).join("")}
+        </div>
+      </div>
+    `
+        : "";
+
+    const aksesorisHtml =
+      aksesorisProds.length > 0
+        ? `
+      <div class="mb-12">
+        <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-purple-200">
+          <span class="w-3.5 h-3.5 rounded-full bg-purple-600 shrink-0"></span>
+          <div>
+            <h3 class="font-bold text-base sm:text-xl text-gray-900 leading-tight">Merchandise & Aksesoris Kartika Sari</h3>
+            <p class="text-xs text-gray-500 hidden sm:block">Gantungan kunci, kaos edisi spesial, tas kanvas & tumbler resmi Kartika Sari x Ayang Cempaka</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
+          ${aksesorisProds.map((p) => renderProductCardItemHtml(p, cart)).join("")}
         </div>
       </div>
     `
@@ -669,7 +699,7 @@ function renderProductGridHtml() {
     `
         : "";
 
-    return `${kartikaHtml}${mamadeeHtml}${umkmHtml}`;
+    return `${kartikaHtml}${aksesorisHtml}${mamadeeHtml}${umkmHtml}`;
   }
 
   // Jika memilih kategori MAMADEE
@@ -684,9 +714,11 @@ function renderProductGridHtml() {
       </div>`;
   }
 
-  // Jika memilih kategori Kartika Sari / UMKM atau sedang mencari kata kunci
+  // Jika memilih kategori Kartika Sari / Aksesoris / UMKM atau sedang mencari kata kunci
   const titleMap = {
-    "Kartika Sari": "Koleksi Oleh-Oleh Kartika Sari Bandung",
+    "Kartika Sari": "Koleksi Oleh-Oleh Kuliner Kartika Sari Bandung",
+    Aksesoris: "Koleksi Merchandise & Aksesoris Kartika Sari",
+    "Merchandise & Aksesoris Kartika Sari": "Koleksi Merchandise & Aksesoris Kartika Sari",
     MAMADEE: "Koleksi Kopi & Minuman UMKM (MAMADEE)",
     "Produk UMKM": "Koleksi Kuliner & Sambal UMKM",
     UMKM: "Koleksi Kuliner & Sambal UMKM",
