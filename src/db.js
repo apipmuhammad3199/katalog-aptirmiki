@@ -73,6 +73,18 @@ function readDB() {
           data.products.push({ ...defProd });
           added = true;
         } else {
+          // Update price, supplierPrice, and category if updated in products.js
+          const cur = data.products[existsIdx];
+          if (defProd.brand === "Kartika Sari") {
+            if (cur.price !== defProd.price || cur.supplierPrice !== defProd.supplierPrice || cur.category !== defProd.category) {
+              data.products[existsIdx].price = defProd.price;
+              data.products[existsIdx].supplierPrice = defProd.supplierPrice;
+              data.products[existsIdx].category = defProd.category;
+              data.products[existsIdx].unit = defProd.unit;
+              data.products[existsIdx].expiryDetail = defProd.expiryDetail;
+              added = true;
+            }
+          }
           // Upgrade external/broken URLs to local high-res webp/jpg if available
           if (defProd.image && defProd.image.startsWith("/images/") && !String(data.products[existsIdx].image || "").startsWith("/images/")) {
             data.products[existsIdx].image = defProd.image;
@@ -246,7 +258,7 @@ async function syncWithKV() {
           }
         }
 
-        // Always ensure new default products from products.js are merged if not explicitly deleted
+        // Always ensure default products from products.js are merged/updated if not explicitly deleted
         const delProdSet = new Set(local.deletedProductIds || []);
         if (Array.isArray(defaultProductsModule.products)) {
           let mergedNewDefaults = false;
@@ -258,6 +270,18 @@ async function syncWithKV() {
             if (existsIdx === -1) {
               local.products.push({ ...defProd });
               mergedNewDefaults = true;
+            } else {
+              const cur = local.products[existsIdx];
+              if (defProd.brand === "Kartika Sari") {
+                if (cur.price !== defProd.price || cur.supplierPrice !== defProd.supplierPrice || cur.category !== defProd.category) {
+                  local.products[existsIdx].price = defProd.price;
+                  local.products[existsIdx].supplierPrice = defProd.supplierPrice;
+                  local.products[existsIdx].category = defProd.category;
+                  local.products[existsIdx].unit = defProd.unit;
+                  local.products[existsIdx].expiryDetail = defProd.expiryDetail;
+                  mergedNewDefaults = true;
+                }
+              }
             }
           }
           if (mergedNewDefaults) {
