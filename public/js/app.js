@@ -951,20 +951,20 @@ async function renderKonfirmasi(orderId) {
 
   const waMessage = `Halo Admin APTIRMIKI, saya ingin konfirmasi bukti transfer pembayaran pesanan saya:
 
-📋 *DETAIL PESANAN*
+*DETAIL PESANAN*
 • ID Pesanan: *#${order.id}*
 • Nama Pemesan: *${order.customer.name}*
 • No. WhatsApp: *${order.customer.wa}*
 • Instansi: *${order.customer.instansi}*
 • Metode Pengambilan: *${order.customer.method}${order.customer.detail ? ` (${order.customer.detail})` : ""}*
 
-🛍️ *RINCIAN BARANG*
+*RINCIAN BARANG*
 ${itemsTextList}
 
-💰 *TOTAL PEMBAYARAN: ${rupiah(order.total)}*
-💳 *Transfer ke: ${targetBankInfo}*
+*TOTAL PEMBAYARAN: ${rupiah(order.total)}*
+*TRANSFER KE: ${targetBankInfo}*
 
-📸 *(Berikut saya lampirkan foto/screenshot bukti transfer pembayaran saya di pesan ini)*
+(Saya melampirkan foto atau screenshot bukti transfer pembayaran pada pesan ini.)
 
 Mohon segera diverifikasi dan diproses ya Admin. Terima kasih!`;
 
@@ -1368,20 +1368,20 @@ function renderTrackCard(order, statusFlow) {
   const waMessage = order.status === "menunggu_pembayaran"
     ? `Halo Admin APTIRMIKI, saya ingin konfirmasi bukti transfer pembayaran pesanan saya:
 
-📋 *DETAIL PESANAN*
+*DETAIL PESANAN*
 • ID Pesanan: *#${order.id}*
 • Nama Pemesan: *${order.customer.name}*
 • No. WhatsApp: *${order.customer.wa}*
 • Instansi: *${order.customer.instansi}*
 • Metode Pengambilan: *${order.customer.method}${order.customer.detail ? ` (${order.customer.detail})` : ""}*
 
-🛍️ *RINCIAN BARANG*
+*RINCIAN BARANG*
 ${itemsTextList}
 
-💰 *TOTAL PEMBAYARAN: ${rupiah(order.total)}*
-💳 *Transfer ke: ${targetBankInfo}*
+*TOTAL PEMBAYARAN: ${rupiah(order.total)}*
+*TRANSFER KE: ${targetBankInfo}*
 
-📸 *(Berikut saya lampirkan foto/screenshot bukti transfer pembayaran saya di pesan ini)*
+(Saya melampirkan foto atau screenshot bukti transfer pembayaran pada pesan ini.)
 
 Mohon segera diverifikasi dan diproses ya Admin. Terima kasih!`
     : `Halo Admin APTIRMIKI, saya ingin menanyakan status pesanan saya:
