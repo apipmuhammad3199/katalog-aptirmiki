@@ -24,7 +24,7 @@ function formatWaNumber(num) {
   if (clean.startsWith("0")) {
     clean = "62" + clean.slice(1);
   }
-  return clean || "6281234567890";
+  return clean || "6287714001014";
 }
 
 // Konfigurasi publik (nomor WA admin, info bank/QRIS, nama acara) untuk frontend.
@@ -72,7 +72,7 @@ app.get("/api/config", (req, res) => {
 
   res.json({
     eventName: process.env.EVENT_NAME || "APTIRMIKI",
-    adminWaNumber: formatWaNumber(process.env.ADMIN_WA_NUMBER || "6281234567890"),
+    adminWaNumber: formatWaNumber(process.env.ADMIN_WA_NUMBER || "6287714001014"),
     bank: defaultBank,
     banks,
     qrisImageUrl: process.env.QRIS_IMAGE_URL || "",
