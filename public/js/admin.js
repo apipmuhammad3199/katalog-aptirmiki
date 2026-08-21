@@ -1307,7 +1307,43 @@ document.querySelectorAll(".bank-chip").forEach((chip) => {
   });
 });
 
-document.getElementById("refresh-btn").addEventListener("click", loadAll);
+function showToast(message, type = "success") {
+  const existing = document.getElementById("admin-toast");
+  if (existing) existing.remove();
+
+  const toast = document.createElement("div");
+  toast.id = "admin-toast";
+  toast.className = `fixed bottom-6 right-6 z-50 flex items-center gap-2.5 bg-gray-900/95 text-white px-4 py-3 rounded-2xl shadow-xl text-xs sm:text-sm font-semibold backdrop-blur border border-white/10 transition-all duration-300 transform translate-y-3 opacity-0`;
+  toast.innerHTML = `
+    <span class="w-2 h-2 rounded-full ${type === "error" ? "bg-red-400" : "bg-emerald-400"}"></span>
+    <span>${escapeHtml(message)}</span>
+  `;
+  document.body.appendChild(toast);
+  requestAnimationFrame(() => {
+    toast.classList.remove("translate-y-3", "opacity-0");
+  });
+  setTimeout(() => {
+    toast.classList.add("opacity-0", "translate-y-3");
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}
+
+document.getElementById("refresh-btn")?.addEventListener("click", async () => {
+  const btn = document.getElementById("refresh-btn");
+  const svg = btn ? btn.querySelector("svg") : null;
+  if (svg) svg.classList.add("animate-spin", "text-[--color-primary]");
+  if (btn) btn.classList.add("opacity-75", "pointer-events-none");
+
+  try {
+    await loadAll();
+    showToast("Data pesanan & rekapitulasi berhasil diperbarui! 🔄");
+  } catch (err) {
+    showToast("Gagal memperbarui data: " + err.message, "error");
+  } finally {
+    if (svg) svg.classList.remove("animate-spin", "text-[--color-primary]");
+    if (btn) btn.classList.remove("opacity-75", "pointer-events-none");
+  }
+});
 
 document.getElementById("clear-orders-btn")?.addEventListener("click", () => {
   showConfirmModal({
