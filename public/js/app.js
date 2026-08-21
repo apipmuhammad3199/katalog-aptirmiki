@@ -113,6 +113,7 @@ function clearMyOrders() {
 }
 
 // ===== Cart helpers =====
+function getCart() {
   try {
     return JSON.parse(localStorage.getItem(CART_KEY)) || {};
   } catch (e) {
