@@ -504,6 +504,35 @@ function nextOrderId() {
   return `APT-${data.seq}`;
 }
 
+function clearAllOrders() {
+  const data = readDB();
+  const existingOrderIds = (data.orders || []).map((o) => o.id);
+  data.orders = [];
+  if (!Array.isArray(data.deletedOrderIds)) data.deletedOrderIds = [];
+  existingOrderIds.forEach((id) => {
+    if (!hasRecordId(data.deletedOrderIds, id)) {
+      data.deletedOrderIds.push(id);
+    }
+  });
+  data.seq = 8800;
+  data.ordersUpdatedAt = new Date().toISOString();
+
+  // Clean uploads directory
+  try {
+    if (fs.existsSync(UPLOADS_DIR)) {
+      const files = fs.readdirSync(UPLOADS_DIR);
+      for (const file of files) {
+        if (file !== ".gitkeep") {
+          try { fs.unlinkSync(path.join(UPLOADS_DIR, file)); } catch (e) {}
+        }
+      }
+    }
+  } catch (e) {}
+
+  writeDB(data);
+  return true;
+}
+
 module.exports = {
   DB_PATH,
   UPLOADS_DIR,
@@ -518,6 +547,7 @@ module.exports = {
   saveOrder,
   updateOrder,
   deleteOrder,
+  clearAllOrders,
   findOrderById,
   findOrdersByWa,
   nextOrderId,

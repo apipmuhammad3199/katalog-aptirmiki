@@ -1251,6 +1251,27 @@ document.querySelectorAll(".bank-chip").forEach((chip) => {
 
 document.getElementById("refresh-btn").addEventListener("click", loadAll);
 
+document.getElementById("clear-orders-btn")?.addEventListener("click", () => {
+  showConfirmModal({
+    title: "Kosongkan Semua Pesanan?",
+    message: "Apakah Anda yakin ingin MENGHAPUS SEMUA DATA PESANAN yang ada? Tindakan ini akan mengosongkan rekapitulasi agar siap menerima data pesanan asli besok.",
+    confirmText: "Ya, Kosongkan Semua Pesanan",
+    onConfirm: async () => {
+      try {
+        await Api.post("/api/admin/orders/clear-all", {}, { token: TOKEN });
+        ALL_ORDERS = [];
+        showSuccessModal({
+          title: "Rekapitulasi Dikosongkan!",
+          message: "Seluruh data pesanan telah dibersihkan. Sistem siap menerima pesanan baru!",
+        });
+        await loadAll();
+      } catch (err) {
+        alert("Gagal mengosongkan pesanan: " + err.message);
+      }
+    },
+  });
+});
+
 // Helper for CSV downloading
 window.downloadCsvFile = async function (endpoint, fallbackFilename) {
   try {

@@ -135,6 +135,12 @@ router.delete("/orders/:id", requireAdmin, async (req, res) => {
   res.json({ ok: true, deletedId: deleted.id });
 });
 
+router.post("/orders/clear-all", requireAdmin, async (req, res) => {
+  db.clearAllOrders();
+  await db.pushToKV(db.readDB());
+  res.json({ ok: true, message: "Semua data pesanan berhasil dikosongkan." });
+});
+
 router.get("/categories", requireAdmin, (req, res) => {
   const products = db.getProducts();
   const catSet = new Set();
