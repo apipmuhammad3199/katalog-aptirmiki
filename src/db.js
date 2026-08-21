@@ -196,31 +196,45 @@ async function syncWithKV() {
           shouldPushRemote = true;
         }
 
-        // Sync orders
-        if (Array.isArray(parsed.orders) && parsed.orders.length > 0) {
-          parsed.orders.forEach((remoteOrder) => {
-            if (!remoteOrder || !remoteOrder.id) return;
-            if (hasRecordId(local.deletedOrderIds, remoteOrder.id)) return; // Don't re-add deleted orders
-            const localIdx = local.orders.findIndex((l) => matchOrderId(l, remoteOrder.id));
-            if (localIdx === -1) {
-              local.orders.push(remoteOrder);
-              shouldSaveLocal = true;
-            } else {
-              const remoteTime = new Date(remoteOrder.updatedAt || remoteOrder.createdAt || 0).getTime();
-              const localTime = new Date(local.orders[localIdx].updatedAt || local.orders[localIdx].createdAt || 0).getTime();
-              if (remoteTime > localTime) {
-                local.orders[localIdx] = remoteOrder;
-                shouldSaveLocal = true;
-              }
-            }
-          });
-        } else if (local.orders.length > 0) {
-          await pushToKV(local);
-        }
+        // Sync orders based on ordersUpdatedAt timestamp
+        const remoteOrdersTime = new Date(parsed.ordersUpdatedAt || 0).getTime();
+        const localOrdersTime = new Date(local.ordersUpdatedAt || 0).getTime();
 
-        if (parsed.seq && parsed.seq > (local.seq || 0)) {
-          local.seq = parsed.seq;
+        if (localOrdersTime > remoteOrdersTime) {
+          // Local is newer (e.g. cleared orders or placed new order locally) -> push to remote KV
+          shouldPushRemote = true;
+        } else if (remoteOrdersTime > localOrdersTime) {
+          // Remote KV is newer -> adopt remote orders and sequence
+          local.orders = Array.isArray(parsed.orders) ? [...parsed.orders] : [];
+          local.ordersUpdatedAt = parsed.ordersUpdatedAt;
+          if (parsed.seq !== undefined) {
+            local.seq = parsed.seq;
+          }
           shouldSaveLocal = true;
+        } else {
+          // Timestamps match or not set -> merge non-deleted individual orders
+          if (Array.isArray(parsed.orders) && parsed.orders.length > 0) {
+            parsed.orders.forEach((remoteOrder) => {
+              if (!remoteOrder || !remoteOrder.id) return;
+              if (hasRecordId(local.deletedOrderIds, remoteOrder.id)) return;
+              const localIdx = local.orders.findIndex((l) => matchOrderId(l, remoteOrder.id));
+              if (localIdx === -1) {
+                local.orders.push(remoteOrder);
+                shouldSaveLocal = true;
+              } else {
+                const remoteTime = new Date(remoteOrder.updatedAt || remoteOrder.createdAt || 0).getTime();
+                const localTime = new Date(local.orders[localIdx].updatedAt || local.orders[localIdx].createdAt || 0).getTime();
+                if (remoteTime > localTime) {
+                  local.orders[localIdx] = remoteOrder;
+                  shouldSaveLocal = true;
+                }
+              }
+            });
+          }
+          if (parsed.seq && parsed.seq > (local.seq || 0)) {
+            local.seq = parsed.seq;
+            shouldSaveLocal = true;
+          }
         }
 
         // Sync deleted product IDs
