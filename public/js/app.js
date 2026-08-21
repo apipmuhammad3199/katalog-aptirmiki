@@ -1043,7 +1043,20 @@ async function renderKonfirmasi(orderId) {
     order = data.order;
     saveMyOrder(order.id);
   } catch (err) {
-    setView(`<div class="text-center py-24 text-gray-400">Pesanan tidak ditemukan.</div>`);
+    setView(`
+      <div class="text-center py-20 px-4 max-w-md mx-auto">
+        <div class="w-16 h-16 bg-blue-50 text-[--color-primary] rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+          </svg>
+        </div>
+        <h3 class="font-bold text-gray-800 text-base sm:text-lg mb-1">Pesanan #${escapeHtml(orderId)} Tidak Ditemukan</h3>
+        <p class="text-xs text-gray-500 mb-6">ID pesanan ini mungkin telah di-reset oleh admin panitia atau belum tersimpan.</p>
+        <button data-action="go-katalog" class="w-full bg-[--color-primary] hover:bg-[--color-primary-dark] text-white rounded-xl py-3 text-xs font-semibold shadow-sm transition flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+          <span>Pilih Produk & Belanja di Katalog</span>
+        </button>
+      </div>`);
     return;
   }
 

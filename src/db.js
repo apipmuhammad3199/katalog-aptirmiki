@@ -416,7 +416,19 @@ function saveOrder(order) {
   const data = readDB();
   if (!order.createdAt) order.createdAt = new Date().toISOString();
   order.updatedAt = new Date().toISOString();
-  data.orders.push(order);
+
+  // Ensure new order ID is NEVER in deletedOrderIds
+  if (Array.isArray(data.deletedOrderIds)) {
+    data.deletedOrderIds = data.deletedOrderIds.filter((delId) => !matchOrderId({ id: delId }, order.id));
+  }
+
+  const existingIdx = data.orders.findIndex((o) => matchOrderId(o, order.id));
+  if (existingIdx !== -1) {
+    data.orders[existingIdx] = order;
+  } else {
+    data.orders.push(order);
+  }
+  data.ordersUpdatedAt = new Date().toISOString();
   writeDB(data);
   return order;
 }
@@ -506,14 +518,8 @@ function nextOrderId() {
 
 function clearAllOrders() {
   const data = readDB();
-  const existingOrderIds = (data.orders || []).map((o) => o.id);
   data.orders = [];
-  if (!Array.isArray(data.deletedOrderIds)) data.deletedOrderIds = [];
-  existingOrderIds.forEach((id) => {
-    if (!hasRecordId(data.deletedOrderIds, id)) {
-      data.deletedOrderIds.push(id);
-    }
-  });
+  data.deletedOrderIds = [];
   data.seq = 8800;
   data.ordersUpdatedAt = new Date().toISOString();
 
