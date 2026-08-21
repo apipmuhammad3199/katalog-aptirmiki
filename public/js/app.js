@@ -108,9 +108,11 @@ function saveMyOrder(id) {
   list.unshift(id);
   localStorage.setItem(MY_ORDERS_KEY, JSON.stringify(list.slice(0, 20)));
 }
+function clearMyOrders() {
+  localStorage.removeItem(MY_ORDERS_KEY);
+}
 
 // ===== Cart helpers =====
-function getCart() {
   try {
     return JSON.parse(localStorage.getItem(CART_KEY)) || {};
   } catch (e) {
@@ -1236,8 +1238,17 @@ function renderTracking(prefillQuery, defaultTab = "tracking") {
     : "";
 
   const recentBlock = recentChips
-    ? `<div class="mb-4">
-        <p class="text-xs text-gray-400 mb-1.5 font-medium">Pesanan Terakhir Anda di Perangkat Ini:</p>
+    ? `<div class="mb-4 bg-gray-50/90 p-3 rounded-2xl border border-gray-100">
+        <div class="flex items-center justify-between gap-2 mb-2">
+          <p class="text-xs text-gray-500 font-semibold flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>Pesanan Terakhir di Perangkat Ini:</span>
+          </p>
+          <button data-action="clear-my-device-history" class="text-[11px] text-red-500 hover:text-red-700 font-medium flex items-center gap-1 transition px-2 py-0.5 rounded-lg hover:bg-red-50 cursor-pointer" title="Bersihkan chip riwayat lokal di browser ini">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            <span>Hapus Riwayat</span>
+          </button>
+        </div>
         <div class="flex flex-wrap gap-1.5">${recentChips}</div>
       </div>`
     : "";
@@ -1658,6 +1669,10 @@ document.addEventListener("click", (e) => {
     navigate(`#/tracking/${encodeURIComponent(id)}`);
   } else if (action === "quick-track") {
     renderTracking(id);
+  } else if (action === "clear-my-device-history") {
+    clearMyOrders();
+    showToast("Riwayat pesanan di perangkat ini berhasil dibersihkan.");
+    renderTracking();
   } else if (action === "copy-bank") {
     copyText(CONFIG.bank?.accountNumber || "", "Nomor Rekening");
   }
