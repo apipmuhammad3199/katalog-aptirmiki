@@ -55,7 +55,7 @@ function fallbackCopy(text, label) {
 function formatWaLink(num, message) {
   let clean = String(num || "").replace(/\D/g, "");
   if (clean.startsWith("0")) clean = "62" + clean.slice(1);
-  if (!clean) clean = "6281234567890";
+  if (!clean) clean = "6287714001014";
   return `https://wa.me/${clean}?text=${encodeURIComponent(message)}`;
 }
 
