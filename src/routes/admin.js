@@ -50,6 +50,15 @@ function requireAdmin(req, res, next) {
   next();
 }
 
+function requirePersistentStorage(req, res, next) {
+  if ((process.env.VERCEL || process.env.NOW_REGION) && !db.hasPersistentStorage()) {
+    return res.status(503).json({
+      error: "Penyimpanan permanen belum dikonfigurasi. Hubungkan Vercel KV/Upstash lalu isi KV_REST_API_URL dan KV_REST_API_TOKEN.",
+    });
+  }
+  next();
+}
+
 router.post("/login", (req, res) => {
   const { password } = req.body || {};
   const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
@@ -69,6 +78,49 @@ router.get("/orders", requireAdmin, (req, res) => {
   res.json({ orders, statusFlow: STATUS_FLOW });
 });
 
+router.put("/orders/:id", requireAdmin, async (req, res) => {
+  const { customer, items, status, total } = req.body || {};
+  const order = db.findOrderById(req.params.id);
+  if (!order) return res.status(404).json({ error: "Pesanan tidak ditemukan." });
+
+  const updated = db.updateOrder(req.params.id, (o) => {
+    if (customer && typeof customer === "object") {
+      o.customer = {
+        ...o.customer,
+        name: customer.name !== undefined ? String(customer.name).trim() : o.customer.name,
+        wa: customer.wa !== undefined ? String(customer.wa).trim() : o.customer.wa,
+        instansi: customer.instansi !== undefined ? String(customer.instansi).trim() : o.customer.instansi,
+        method: customer.method !== undefined ? String(customer.method).trim() : o.customer.method,
+        detail: customer.detail !== undefined ? String(customer.detail).trim() : o.customer.detail,
+        targetBank: customer.targetBank !== undefined ? String(customer.targetBank).trim() : o.customer.targetBank,
+      };
+    }
+    if (status && isValidStatus(status)) {
+      o.status = status;
+    }
+    if (Array.isArray(items) && items.length > 0) {
+      o.items = items.map((i) => ({
+        productId: i.productId || i.id,
+        name: i.name,
+        brand: i.brand || "Umum",
+        price: Number(i.price) || 0,
+        unit: i.unit || "pcs",
+        qty: Number(i.qty) || 1,
+        subtotal: (Number(i.price) || 0) * (Number(i.qty) || 1),
+      }));
+      o.total = o.items.reduce((s, it) => s + it.subtotal, 0);
+    } else if (total !== undefined) {
+      o.total = Number(total) || 0;
+    }
+    o.updatedAt = new Date().toISOString();
+    return o;
+  });
+
+  if (!updated) return res.status(404).json({ error: "Gagal memperbarui pesanan." });
+  await db.pushToKV(db.readDB());
+  res.json({ ok: true, order: updated });
+});
+
 router.patch("/orders/:id/status", requireAdmin, async (req, res) => {
   const { status } = req.body || {};
   if (!isValidStatus(status)) {
@@ -84,11 +136,20 @@ router.patch("/orders/:id/status", requireAdmin, async (req, res) => {
   res.json({ order: updated });
 });
 
-router.delete("/orders/:id", requireAdmin, async (req, res) => {
+router.delete("/orders/:id", requireAdmin, requirePersistentStorage, async (req, res) => {
   const deleted = db.deleteOrder(req.params.id);
   if (!deleted) return res.status(404).json({ error: "Pesanan tidak ditemukan." });
   await db.pushToKV(db.readDB());
   res.json({ ok: true, deletedId: deleted.id });
+});
+
+router.get("/categories", requireAdmin, (req, res) => {
+  const products = db.getProducts();
+  const catSet = new Set();
+  products.forEach((p) => {
+    if (p.category) catSet.add(p.category.trim());
+  });
+  res.json({ categories: Array.from(catSet) });
 });
 
 // ===== Product Management Endpoints =====
@@ -165,7 +226,7 @@ router.put("/products/:id", requireAdmin, async (req, res) => {
   res.json({ ok: true, product: updated });
 });
 
-router.delete("/products/:id", requireAdmin, async (req, res) => {
+router.delete("/products/:id", requireAdmin, requirePersistentStorage, async (req, res) => {
   const deleted = db.deleteProduct(req.params.id);
   if (!deleted) return res.status(404).json({ error: "Produk tidak ditemukan." });
   await db.pushToKV(db.readDB());

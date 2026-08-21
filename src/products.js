@@ -1,10 +1,12 @@
-// Katalog produk Resmi Kartika Sari & MAMADEE untuk Acara APTIRMIKI.
+// Katalog produk Resmi Kartika Sari, MAMADEE & UMKM untuk Acara APTIRMIKI.
 
 const CATEGORIES = [
   "Minuman & Kopi MAMADEE",
   "Bolen & Pastry Kartika Sari",
   "Bolu & Kue Kartika Sari",
   "Brownies Kartika Sari",
+  "Produk UMKM",
+  "Kuliner & Sambal UMKM",
 ];
 
 const products = [
@@ -15,11 +17,11 @@ const products = [
     name: "Kopi A.C.E (Aren Creamy Espresso) 500 ml",
     brand: "MAMADEE",
     description: "Bold espresso berpadu sempurna dengan manisnya gula aren asli dan susu creamy yang lumer di mulut. Klasik, pas, dan anti enek! Sudah termasuk Cooler bag & ice gel.",
-    price: 35000,
+    price: 45000,
     supplierPrice: 28000,
     unit: "botol 500ml",
     origin: "MAMADEE Jakarta",
-    expiryDetail: "3–4 Hari di Kulkas",
+    expiryDetail: "3-4 hari di kulkas | 6-8 jam di suhu ruang",
     image: "/images/products/kopi-ace.jpg",
   },
   {
@@ -27,12 +29,12 @@ const products = [
     category: "Minuman & Kopi MAMADEE",
     name: "Kopi A.C.E (Aren Creamy Espresso) 1 Liter",
     brand: "MAMADEE",
-    description: "Bold espresso berpadu sempurna dengan manisnya gula aren asli dan susu creamy yang lumer di mulut. Ukuran 1 Liter hemat & puas! Sudah termasuk Cooler bag & ice gel.",
-    price: 75000,
+    description: "Bold espresso berpadu sempurna dengan manisnya gula aren asli dan susu creamy yang lumer di mulut. Klasik, pas, dan anti enek! Sudah termasuk Cooler bag & ice gel.",
+    price: 80000,
     supplierPrice: 60000,
     unit: "botol 1L",
     origin: "MAMADEE Jakarta",
-    expiryDetail: "3–4 Hari di Kulkas",
+    expiryDetail: "3-4 hari di kulkas | 6-8 jam di suhu ruang",
     image: "/images/products/kopi-ace.jpg",
   },
   {
@@ -41,11 +43,11 @@ const products = [
     name: "Kopi B.C.E (Butterscotch Creamy Espresso) 500 ml",
     brand: "MAMADEE",
     description: "Sensasi ngopi mewah dengan aroma butterscotch yang wangi gurih dan tekstur creamy yang langsung bikin mood naik. Sudah termasuk Cooler bag & ice gel.",
-    price: 45000,
+    price: 50000,
     supplierPrice: 35000,
     unit: "botol 500ml",
     origin: "MAMADEE Jakarta",
-    expiryDetail: "3–4 Hari di Kulkas",
+    expiryDetail: "3-4 hari di kulkas | 6-8 jam di suhu ruang",
     image: "/images/products/kopi-bce.png",
   },
   {
@@ -53,12 +55,12 @@ const products = [
     category: "Minuman & Kopi MAMADEE",
     name: "Kopi B.C.E (Butterscotch Creamy Espresso) 1 Liter",
     brand: "MAMADEE",
-    description: "Sensasi ngopi mewah dengan aroma butterscotch yang wangi gurih dan tekstur creamy yang langsung bikin mood naik. Ukuran 1 Liter! Sudah termasuk Cooler bag & ice gel.",
-    price: 100000,
+    description: "Sensasi ngopi mewah dengan aroma butterscotch yang wangi gurih dan tekstur creamy yang langsung bikin mood naik. Sudah termasuk Cooler bag & ice gel.",
+    price: 90000,
     supplierPrice: 80000,
     unit: "botol 1L",
     origin: "MAMADEE Jakarta",
-    expiryDetail: "3–4 Hari di Kulkas",
+    expiryDetail: "3-4 hari di kulkas | 6-8 jam di suhu ruang",
     image: "/images/products/kopi-bce.png",
   },
   {
@@ -71,7 +73,7 @@ const products = [
     supplierPrice: 28000,
     unit: "botol 500ml",
     origin: "MAMADEE Jakarta",
-    expiryDetail: "3–4 Hari di Kulkas",
+    expiryDetail: "",
     image: "/images/products/cendol-end-to-end.png",
   },
   {
@@ -79,16 +81,44 @@ const products = [
     category: "Minuman & Kopi MAMADEE",
     name: "Cendol End-To-End 1 Liter",
     brand: "MAMADEE",
-    description: "Cendol kekinian berbalut susu creamy, gula aren homemade, jelly kenyal, dan wangi buah nangka. Ukuran 1 Liter! Sudah termasuk Cooler bag & ice gel.",
+    description: "Cendol kekinian berbalut susu creamy, gula aren homemade, jelly kenyal, dan wangi buah nangka. Dijamin endul sampai tetesan terakhir! Sudah termasuk Cooler bag & ice gel.",
     price: 70000,
     supplierPrice: 55000,
     unit: "botol 1L",
     origin: "MAMADEE Jakarta",
-    expiryDetail: "3–4 Hari di Kulkas",
+    expiryDetail: "",
     image: "/images/products/cendol-end-to-end.png",
   },
 
-  // ===== Produk Kartika Sari =====
+  // ===== Produk Kuliner & Sambal UMKM =====
+  {
+    id: "sambal-baby-cumi",
+    category: "Produk UMKM",
+    name: "Sambal Baby Cumi - Dapur Neng Sri",
+    brand: "Dapur Neng Sri",
+    description: "Sambal baby cumi gurih nikmat dengan pedas mantap khas Dapur Neng Sri. Penyelamat segala rasa, tanpa bahan pengawet.",
+    price: 23000,
+    supplierPrice: 19500,
+    unit: "toples",
+    origin: "Dapur Neng Sri",
+    expiryDetail: "Tahan 1-2 Bulan di Kulkas",
+    image: "/images/products/sambal-baby-cumi.jpg",
+  },
+  {
+    id: "sambel-pecel-imah-abi",
+    category: "Produk UMKM",
+    name: "Sambel Pecel - Dapur Imah Abi (50g)",
+    brand: "Dapur Imah Abi",
+    description: "Sambel pecel khas Dapur Imah Abi dengan rasa ndeso bikin nagih! 100% bahan pilihan berkualitas, higienis & tanpa pengawet.",
+    price: 7000,
+    supplierPrice: 5000,
+    unit: "pouch 50g",
+    origin: "Dapur Imah Abi",
+    expiryDetail: "Tahan 2-3 Bulan",
+    image: "/images/products/sambel-pecel-imah-abi.jpg",
+  },
+
+  // ===== Produk Kartika Sari Bandung =====
   {
     id: "banana-roll-pandan",
     category: "Bolu & Kue Kartika Sari",
@@ -100,7 +130,20 @@ const products = [
     unit: "box",
     origin: "Kartika Sari Bandung",
     expiryDetail: "4-5 Hari",
-    image: "https://omni-kartikasari.stamps.id/media/thumb/product_photo/2025/12/3/dzfjzlygpd2nfkhfq5oudc_size_800_webp_WScsAns.webp",
+    image: "/images/products/01-banana-roll-pandan.webp",
+  },
+  {
+    id: "lapis-legit-roll-original",
+    category: "Bolu & Kue Kartika Sari",
+    name: "Lapis Legit Roll Original",
+    brand: "Kartika Sari",
+    description: "Lapis legit gulung original khas Kartika Sari dengan keharuman rempah manis legit yang istimewa.",
+    price: 75000,
+    supplierPrice: 65000,
+    unit: "box",
+    origin: "Kartika Sari Bandung",
+    expiryDetail: "4-5 Hari",
+    image: "/images/products/02-lapis-legit-roll-original.webp",
   },
   {
     id: "lapis-philipine-coklat",
@@ -113,7 +156,7 @@ const products = [
     unit: "box",
     origin: "Kartika Sari Bandung",
     expiryDetail: "7 Hari",
-    image: "https://omni-kartikasari.stamps.id/media/thumb/product_photo/2025/12/3/c3jnlw6tcgr3pytmmsgrqn_size_800_webp.webp",
+    image: "/images/products/03-lapis-philipine-coklat.webp",
   },
   {
     id: "pisang-bolen-keju-special",
@@ -126,7 +169,7 @@ const products = [
     unit: "box",
     origin: "Kartika Sari Bandung",
     expiryDetail: "4 Hari",
-    image: "https://omni-kartikasari.stamps.id/media/thumb/product_photo/2025/12/8/ut36tu56efyeag8zusf3oy_size_800_webp_Si2Qdte.webp",
+    image: "/images/products/04-pisang-bolen-keju-special.webp",
   },
   {
     id: "pisang-bolen-cokelat-keju",
@@ -139,7 +182,7 @@ const products = [
     unit: "box",
     origin: "Kartika Sari Bandung",
     expiryDetail: "4 Hari",
-    image: "https://omni-kartikasari.stamps.id/media/thumb/product_photo/2025/12/3/s2u885wmhsgxfuslh5btaf_size_800_webp.webp",
+    image: "/images/products/05-pisang-bolen-cokelat-keju.webp",
   },
   {
     id: "brownies-panggang-keju",
@@ -152,7 +195,7 @@ const products = [
     unit: "box",
     origin: "Kartika Sari Bandung",
     expiryDetail: "7-10 Hari",
-    image: "https://omni-kartikasari.stamps.id/media/thumb/product_photo/2025/12/3/jsruv64ktdqylerzgzatdx_size_800_webp_VrU7CCe.webp",
+    image: "/images/products/06-brownies-panggang-keju.webp",
   },
   {
     id: "brownies-panggang-choco-chips",
@@ -165,7 +208,7 @@ const products = [
     unit: "box",
     origin: "Kartika Sari Bandung",
     expiryDetail: "7-10 Hari",
-    image: "https://omni-kartikasari.stamps.id/media/thumb/product_photo/2025/12/3/55e8hplyvwcdcvpwzxaxv2_size_800_webp_p7VKtXG.webp",
+    image: "/images/products/07-brownies-panggang-choco-chips.webp",
   },
   {
     id: "brownies-panggang-original",
@@ -178,7 +221,7 @@ const products = [
     unit: "box",
     origin: "Kartika Sari Bandung",
     expiryDetail: "7-10 Hari",
-    image: "https://omni-kartikasari.stamps.id/media/thumb/product_photo/2025/12/3/lojmb5ts8qnb6x3y4cmm3j_size_800_webp_Z6W2Cko.webp",
+    image: "/images/products/08-brownies-panggang-original.webp",
   },
 ];
 

@@ -59,23 +59,49 @@ function readDB() {
     data.products = Array.isArray(defaultProductsModule.products) ? [...defaultProductsModule.products] : [];
     data.productsUpdatedAt = new Date().toISOString();
     shouldWrite = true;
+  } else {
+    // Auto-merge new default products from products.js if not yet in data.products and not explicitly deleted
+    const deletedProdSet = new Set(data.deletedProductIds || []);
+    let added = false;
+    if (Array.isArray(defaultProductsModule.products)) {
+      for (const defProd of defaultProductsModule.products) {
+        if (!defProd || !defProd.id || deletedProdSet.has(defProd.id)) continue;
+        const existsIdx = data.products.findIndex(
+          (p) => String(p.id).toLowerCase().trim() === String(defProd.id).toLowerCase().trim()
+        );
+        if (existsIdx === -1) {
+          data.products.push({ ...defProd });
+          added = true;
+        } else {
+          // Upgrade external/broken URLs to local high-res webp/jpg if available
+          if (defProd.image && defProd.image.startsWith("/images/") && !String(data.products[existsIdx].image || "").startsWith("/images/")) {
+            data.products[existsIdx].image = defProd.image;
+            added = true;
+          }
+        }
+      }
+    }
+    if (added) {
+      data.productsUpdatedAt = new Date().toISOString();
+      shouldWrite = true;
+    }
   }
+
   if (!Array.isArray(data.orders)) {
     data.orders = [];
     shouldWrite = true;
   }
 
-  if (shouldWrite) {
-    writeDB(data);
+  if (!Array.isArray(data.deletedOrderIds)) {
+    data.deletedOrderIds = [];
   }
 
-  // Merge with global memory cache if global cache has more orders
-  if (global.GLOBAL_DB && Array.isArray(global.GLOBAL_DB.orders)) {
-    for (const o of global.GLOBAL_DB.orders) {
-      if (o && o.id && !data.orders.some((item) => item.id === o.id)) {
-        data.orders.push(o);
-      }
-    }
+  if (!Array.isArray(data.deletedProductIds)) {
+    data.deletedProductIds = [];
+  }
+
+  if (shouldWrite) {
+    writeDB(data);
   }
 
   global.GLOBAL_DB = data;
@@ -111,6 +137,11 @@ function getKVConfig() {
   return { url, token };
 }
 
+function hasPersistentStorage() {
+  const { url, token } = getKVConfig();
+  return Boolean(url && token);
+}
+
 async function syncWithKV() {
   const { url, token } = getKVConfig();
   if (!url || !token) return;
@@ -125,9 +156,27 @@ async function syncWithKV() {
         const local = readDB();
         let shouldSaveLocal = false;
 
+        // Sync deleted order IDs from remote
+        if (Array.isArray(parsed.deletedOrderIds)) {
+          if (!Array.isArray(local.deletedOrderIds)) local.deletedOrderIds = [];
+          parsed.deletedOrderIds.forEach((delId) => {
+            if (!local.deletedOrderIds.includes(delId)) {
+              local.deletedOrderIds.push(delId);
+            }
+            const lIdx = local.orders.findIndex((l) => matchOrderId(l, delId));
+            if (lIdx !== -1) {
+              local.orders.splice(lIdx, 1);
+              shouldSaveLocal = true;
+            }
+          });
+        }
+
+        // Sync orders
+        const deletedOrderSet = new Set(local.deletedOrderIds || []);
         if (Array.isArray(parsed.orders) && parsed.orders.length > 0) {
           parsed.orders.forEach((remoteOrder) => {
             if (!remoteOrder || !remoteOrder.id) return;
+            if (deletedOrderSet.has(remoteOrder.id)) return; // Don't re-add deleted orders
             const localIdx = local.orders.findIndex((l) => matchOrderId(l, remoteOrder.id));
             if (localIdx === -1) {
               local.orders.push(remoteOrder);
@@ -135,7 +184,7 @@ async function syncWithKV() {
             } else {
               const remoteTime = new Date(remoteOrder.updatedAt || remoteOrder.createdAt || 0).getTime();
               const localTime = new Date(local.orders[localIdx].updatedAt || local.orders[localIdx].createdAt || 0).getTime();
-              if (remoteTime >= localTime) {
+              if (remoteTime > localTime) {
                 local.orders[localIdx] = remoteOrder;
                 shouldSaveLocal = true;
               }
@@ -150,6 +199,20 @@ async function syncWithKV() {
           shouldSaveLocal = true;
         }
 
+        // Sync deleted product IDs
+        if (Array.isArray(parsed.deletedProductIds)) {
+          if (!Array.isArray(local.deletedProductIds)) local.deletedProductIds = [];
+          parsed.deletedProductIds.forEach((delId) => {
+            if (!local.deletedProductIds.includes(delId)) local.deletedProductIds.push(delId);
+            const pIdx = local.products.findIndex((p) => String(p.id).toLowerCase().trim() === String(delId).toLowerCase().trim());
+            if (pIdx !== -1) {
+              local.products.splice(pIdx, 1);
+              shouldSaveLocal = true;
+            }
+          });
+        }
+
+        // Sync products
         if (Array.isArray(parsed.products)) {
           const remoteProdTime = new Date(parsed.productsUpdatedAt || 0).getTime();
           const localProdTime = new Date(local.productsUpdatedAt || 0).getTime();
@@ -182,9 +245,14 @@ async function syncWithKV() {
 
 async function pushToKV(data) {
   const { url, token } = getKVConfig();
-  if (!url || !token) return;
+  if (!url || !token) {
+    if (isVercel) {
+      throw new Error("Penyimpanan permanen belum dikonfigurasi. Tambahkan KV_REST_API_URL dan KV_REST_API_TOKEN di Vercel.");
+    }
+    return;
+  }
   try {
-    await fetch(`${url}/set/aptirmiki_db`, {
+    const res = await fetch(`${url}/set/aptirmiki_db`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -192,14 +260,18 @@ async function pushToKV(data) {
       },
       body: JSON.stringify(data),
     });
+    if (!res.ok) {
+      throw new Error(`Penyimpanan data gagal (${res.status}).`);
+    }
   } catch (err) {
     console.error("KV push sync error:", err.message);
+    throw err;
   }
 }
 
 function writeDB(data) {
   global.GLOBAL_DB = data;
-  pushToKV(data).catch(() => {});
+  pushToKV(data).catch((err) => console.error("writeDB KV sync error:", err.message));
   try {
     ensureDb();
     const tempPath = `${DB_PATH}.${Date.now()}.${Math.random().toString(36).slice(2)}.tmp`;
@@ -264,6 +336,10 @@ function deleteProduct(id) {
   const idx = data.products.findIndex((p) => String(p.id).toLowerCase().trim() === targetId);
   if (idx === -1) return null;
   const [removed] = data.products.splice(idx, 1);
+  if (!Array.isArray(data.deletedProductIds)) data.deletedProductIds = [];
+  if (!data.deletedProductIds.includes(removed.id)) {
+    data.deletedProductIds.push(removed.id);
+  }
   data.productsUpdatedAt = new Date().toISOString();
   writeDB(data);
   return removed;
@@ -288,7 +364,7 @@ function matchOrderId(o, targetId) {
   if (!o || !o.id) return false;
   const rawTarget = String(targetId || "").toLowerCase().trim();
   const cleanTargetNum = rawTarget.replace(/\D/g, "");
-  const itemRaw = String(o.id).toLowerCase();
+  const itemRaw = String(o.id).toLowerCase().trim();
   const itemNum = itemRaw.replace(/\D/g, "");
 
   return (
@@ -318,6 +394,10 @@ function deleteOrder(id) {
   const idx = data.orders.findIndex((o) => matchOrderId(o, id));
   if (idx === -1) return null;
   const [removed] = data.orders.splice(idx, 1);
+  if (!Array.isArray(data.deletedOrderIds)) data.deletedOrderIds = [];
+  if (!data.deletedOrderIds.includes(removed.id)) {
+    data.deletedOrderIds.push(removed.id);
+  }
   if (removed.proof && removed.proof.filename) {
     const proofPath = path.join(UPLOADS_DIR, removed.proof.filename);
     if (fs.existsSync(proofPath)) {
@@ -382,4 +462,5 @@ module.exports = {
   nextOrderId,
   syncWithKV,
   pushToKV,
+  hasPersistentStorage,
 };

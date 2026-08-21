@@ -55,7 +55,7 @@ function fallbackCopy(text, label) {
 function formatWaLink(num, message) {
   let clean = String(num || "").replace(/\D/g, "");
   if (clean.startsWith("0")) clean = "62" + clean.slice(1);
-  if (!clean) clean = "6287714001014";
+  if (!clean) clean = "6287714001013";
   return `https://wa.me/${clean}?text=${encodeURIComponent(message)}`;
 }
 
@@ -285,12 +285,12 @@ function setView(html) {
 }
 
 // ===== Katalog =====
-// ===== Katalog =====
 function renderKatalog() {
   const brandTabs = [
     { id: "Semua", label: "Semua Produk" },
     { id: "Kartika Sari", label: "Kartika Sari Bandung" },
-    { id: "MAMADEE", label: "Produk UMKM (MAMADEE)" },
+    { id: "MAMADEE", label: "Kopi MAMADEE" },
+    { id: "Produk UMKM", label: "Kuliner & Sambal UMKM" },
   ];
 
   const chips = brandTabs
@@ -311,7 +311,7 @@ function renderKatalog() {
     <div class="px-3 sm:px-6 lg:px-8 pt-3 sm:pt-4 pb-2 sticky top-14 sm:top-16 z-20 bg-[--color-cream]/95 backdrop-blur">
       <div class="max-w-screen-2xl mx-auto">
         <div class="relative mb-2.5 sm:mb-3 max-w-md">
-          <input id="search-input" type="text" placeholder="Cari oleh-oleh Kartika Sari, Kopi & Minuman..." value="${escapeHtml(searchQuery)}"
+          <input id="search-input" type="text" placeholder="Cari oleh-oleh Kartika Sari, Kopi & Sambal UMKM..." value="${escapeHtml(searchQuery)}"
             class="w-full rounded-full border border-gray-200 bg-white pl-9 sm:pl-10 pr-4 py-2 sm:py-2.5 text-xs sm:text-sm shadow-sm focus:border-[--color-primary] focus:ring-2 focus:ring-blue-100" />
           <svg class="absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="7"></circle>
@@ -348,7 +348,7 @@ function getMamadeeGroups(products) {
       category: "Minuman & Kopi MAMADEE",
       brand: "MAMADEE",
       origin: "MAMADEE Jakarta",
-      expiryDetail: "3–4 Hari di Kulkas",
+      expiryDetail: "3-4 hari di kulkas | 6-8 jam di suhu ruang",
       description: "Bold espresso berpadu sempurna dengan manisnya gula aren asli dan susu creamy yang lumer di mulut. Klasik, pas, dan anti enek! Sudah termasuk Cooler bag & ice gel.",
       image: "/images/products/kopi-ace.jpg",
       variants: [],
@@ -359,7 +359,7 @@ function getMamadeeGroups(products) {
       category: "Minuman & Kopi MAMADEE",
       brand: "MAMADEE",
       origin: "MAMADEE Jakarta",
-      expiryDetail: "3–4 Hari di Kulkas",
+      expiryDetail: "3-4 hari di kulkas | 6-8 jam di suhu ruang",
       description: "Sensasi ngopi mewah dengan aroma butterscotch yang wangi gurih dan tekstur creamy yang langsung bikin mood naik. Sudah termasuk Cooler bag & ice gel.",
       image: "/images/products/kopi-bce.png",
       variants: [],
@@ -370,7 +370,7 @@ function getMamadeeGroups(products) {
       category: "Minuman & Kopi MAMADEE",
       brand: "MAMADEE",
       origin: "MAMADEE Jakarta",
-      expiryDetail: "3–4 Hari di Kulkas",
+      expiryDetail: "",
       description: "Cendol kekinian berbalut susu creamy, gula aren homemade, jelly kenyal, dan wangi buah nangka. Dijamin endul sampai tetesan terakhir! Sudah termasuk Cooler bag & ice gel.",
       image: "/images/products/cendol-end-to-end.png",
       variants: [],
@@ -416,10 +416,10 @@ function renderGroupCardHtml(g, cart) {
             <svg class="w-3 h-3 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             <span>${escapeHtml(shortOrigin)}</span>
           </span>
-          <span class="inline-flex items-center gap-1 bg-amber-50/70 text-amber-800 px-2 py-0.5 rounded-lg font-medium border border-amber-200/70">
+          ${g.expiryDetail ? `<span class="inline-flex items-center gap-1 bg-amber-50/70 text-amber-800 px-2 py-0.5 rounded-lg font-medium border border-amber-200/70">
             <svg class="w-3 h-3 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg>
-            <span>${escapeHtml(g.expiryDetail || "3–4 Hari di Kulkas")}</span>
-          </span>
+            <span>${escapeHtml(g.expiryDetail)}</span>
+          </span>` : ""}
         </div>
 
         <!-- Size Variant Switcher (500 ml vs 1 Liter) -->
@@ -466,7 +466,7 @@ function renderGroupCardHtml(g, cart) {
 
 function renderProductCardItemHtml(p, cart) {
   const qty = cart[p.id] || 0;
-  const shortOrigin = String(p.origin || "Bandung").replace(/Kartika Sari\s*/i, "").trim() || "Bandung";
+  const shortOrigin = String(p.origin || (p.brand === "Kartika Sari" ? "Bandung" : p.brand || "Lokal")).replace(/Kartika Sari\s*/i, "").trim() || "Bandung";
   return `
     <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex flex-col hover:border-blue-200 transition">
       ${productImage(p, "w-full aspect-square")}
@@ -500,16 +500,19 @@ function renderProductGridHtml() {
   const filtered = PRODUCTS.filter((p) => {
     let matchCat = true;
     if (activeCategory === "Kartika Sari") {
-      matchCat = p.brand === "Kartika Sari" || p.brand !== "MAMADEE";
+      matchCat = p.brand === "Kartika Sari";
     } else if (activeCategory === "MAMADEE") {
       matchCat = p.brand === "MAMADEE";
+    } else if (activeCategory === "Produk UMKM" || activeCategory === "UMKM") {
+      matchCat = p.category === "Produk UMKM" || (p.brand !== "Kartika Sari" && p.brand !== "MAMADEE");
     } else if (activeCategory !== "Semua") {
-      matchCat = p.category === activeCategory;
+      matchCat = p.category === activeCategory || p.brand === activeCategory;
     }
     const matchSearch =
       (p.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
       (p.category || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (p.brand || "").toLowerCase().includes(searchQuery.toLowerCase());
+      (p.brand || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.description || "").toLowerCase().includes(searchQuery.toLowerCase());
     return matchCat && matchSearch;
   });
 
@@ -526,10 +529,11 @@ function renderProductGridHtml() {
       </div>`;
   }
 
-  // Tampilkan dikelompokkan menjadi 2 seksi besar: Kartika Sari & UMKM MAMADEE
+  // Tampilkan dikelompokkan menjadi 3 seksi: Kartika Sari, UMKM MAMADEE, dan Kuliner & Sambal UMKM
   if (activeCategory === "Semua" && !searchQuery) {
-    const kartikaProds = filtered.filter((p) => p.brand === "Kartika Sari" || p.brand !== "MAMADEE");
-    const mamadeeGroups = getMamadeeGroups(filtered);
+    const kartikaProds = filtered.filter((p) => p.brand === "Kartika Sari");
+    const mamadeeGroups = getMamadeeGroups(filtered.filter((p) => p.brand === "MAMADEE"));
+    const umkmProds = filtered.filter((p) => p.brand !== "Kartika Sari" && p.brand !== "MAMADEE");
 
     const kartikaHtml =
       kartikaProds.length > 0
@@ -567,7 +571,25 @@ function renderProductGridHtml() {
     `
         : "";
 
-    return `${kartikaHtml}${mamadeeHtml}`;
+    const umkmHtml =
+      umkmProds.length > 0
+        ? `
+      <div class="mb-12">
+        <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-gray-200">
+          <span class="w-3.5 h-3.5 rounded-full bg-orange-500 shrink-0"></span>
+          <div>
+            <h3 class="font-bold text-base sm:text-xl text-gray-900 leading-tight">Kuliner & Sambal UMKM</h3>
+            <p class="text-xs text-gray-500 hidden sm:block">Produk olahan sambal & bumbu pecel istimewa khas UMKM lokal</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
+          ${umkmProds.map((p) => renderProductCardItemHtml(p, cart)).join("")}
+        </div>
+      </div>
+    `
+        : "";
+
+    return `${kartikaHtml}${mamadeeHtml}${umkmHtml}`;
   }
 
   // Jika memilih kategori MAMADEE
@@ -582,10 +604,12 @@ function renderProductGridHtml() {
       </div>`;
   }
 
-  // Jika memilih kategori Kartika Sari atau sedang mencari kata kunci
+  // Jika memilih kategori Kartika Sari / UMKM atau sedang mencari kata kunci
   const titleMap = {
     "Kartika Sari": "Koleksi Oleh-Oleh Kartika Sari Bandung",
     MAMADEE: "Koleksi Kopi & Minuman UMKM (MAMADEE)",
+    "Produk UMKM": "Koleksi Kuliner & Sambal UMKM",
+    UMKM: "Koleksi Kuliner & Sambal UMKM",
   };
   const sectionTitle = searchQuery
     ? `Hasil Pencarian untuk "${searchQuery}"`

@@ -538,12 +538,6 @@ function renderTable(orders) {
       const statusOptions = STATUS_FLOW.map(
         (s) => `<option value="${s.key}" ${s.key === o.status ? "selected" : ""}>${escapeHtml(s.label)}</option>`
       ).join("");
-function getProofSrc(proof) {
-  if (!proof) return "";
-  if (proof.dataUrl) return proof.dataUrl;
-  if (proof.filename) return `/uploads/${encodeURIComponent(proof.filename)}`;
-  return "";
-}
 
       const proofCell = o.proof
         ? `<img data-src="${getProofSrc(o.proof)}" class="proof-thumb w-10 h-10 object-cover rounded cursor-pointer border border-gray-200 shadow-sm hover:scale-105 transition" src="${getProofSrc(o.proof)}" title="Klik untuk memperbesar" />`
@@ -575,6 +569,7 @@ function getProofSrc(proof) {
           </select>
         </td>
         <td class="px-3 py-3 text-right whitespace-nowrap space-x-1">
+          <button data-edit-order="${o.id}" class="edit-order-btn text-xs bg-indigo-50 text-indigo-600 hover:bg-indigo-100 font-semibold px-2.5 py-1 rounded-lg border border-indigo-200 transition">Edit</button>
           <button data-track-id="${o.id}" class="track-detail-btn text-xs bg-blue-50 text-[--color-primary] hover:bg-blue-100 font-semibold px-2.5 py-1 rounded-lg border border-blue-200 transition">Tracking</button>
           <button data-delete-id="${o.id}" class="delete-btn text-xs text-red-500 hover:text-red-700 font-medium px-2 py-1 border border-red-200 rounded-lg hover:bg-red-50 transition">Hapus</button>
         </td>
@@ -587,6 +582,12 @@ function getProofSrc(proof) {
       const id = e.target.dataset.orderId;
       const newStatus = e.target.value;
       await updateOrderStatus(id, newStatus, e.target);
+    });
+  });
+
+  tbody.querySelectorAll(".edit-order-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      openEditOrderModal(btn.dataset.editOrder);
     });
   });
 
@@ -609,7 +610,7 @@ function getProofSrc(proof) {
             await Api.delete(`/api/admin/orders/${encodeURIComponent(id)}`, { token: TOKEN });
             ALL_ORDERS = ALL_ORDERS.filter((o) => o.id !== id);
             showSuccessModal({ title: "Pesanan Dihapus!", message: `Pesanan #${id} telah berhasil dihapus.` });
-            loadAll();
+            await loadAll();
           } catch (err) {
             alert("Gagal menghapus pesanan: " + err.message);
             btn.disabled = false;
@@ -625,6 +626,13 @@ function getProofSrc(proof) {
       document.getElementById("lightbox").classList.remove("hidden");
     });
   });
+}
+
+function getProofSrc(proof) {
+  if (!proof) return "";
+  if (proof.dataUrl) return proof.dataUrl;
+  if (proof.filename) return `/uploads/${encodeURIComponent(proof.filename)}`;
+  return "";
 }
 
 function convertDriveUrl(url) {
@@ -815,6 +823,16 @@ function openProductModal(productId = null) {
   const errEl = document.getElementById("product-form-error");
   errEl.classList.add("hidden");
 
+  // Populate dynamic category datalist from current products
+  const datalist = document.getElementById("category-datalist");
+  if (datalist && ALL_PRODUCTS.length > 0) {
+    const catSet = new Set(ALL_PRODUCTS.map((p) => p.category).filter(Boolean));
+    datalist.innerHTML = Array.from(catSet)
+      .sort()
+      .map((c) => `<option value="${escapeHtml(c)}"></option>`)
+      .join("");
+  }
+
   if (productId) {
     const p = ALL_PRODUCTS.find((item) => item.id === productId);
     if (!p) return;
@@ -932,6 +950,196 @@ async function updateOrderStatus(orderId, newStatus, targetElement) {
     if (targetElement) targetElement.disabled = false;
   }
 }
+
+// ===== Edit Order Modal =====
+function calcEditOrderTotal() {
+  const itemsContainer = document.getElementById("edit-order-items");
+  if (!itemsContainer) return 0;
+  let total = 0;
+  itemsContainer.querySelectorAll(".edit-item-row").forEach((row) => {
+    const price = Number(row.dataset.price) || 0;
+    const qty = Number(row.querySelector(".edit-item-qty")?.value) || 0;
+    total += price * qty;
+  });
+  const previewEl = document.getElementById("edit-order-total-preview");
+  if (previewEl) previewEl.textContent = rupiah(total);
+  return total;
+}
+
+function openEditOrderModal(orderId) {
+  const order = ALL_ORDERS.find((o) => o.id === orderId);
+  if (!order) return;
+
+  const modal = document.getElementById("edit-order-modal");
+  if (!modal) return;
+
+  // Subtitle
+  const subtitle = document.getElementById("edit-order-subtitle");
+  if (subtitle) subtitle.textContent = `#${order.id}`;
+
+  // Hidden ID
+  document.getElementById("edit-order-id").value = order.id;
+
+  // Customer fields
+  document.getElementById("edit-order-name").value = order.customer?.name || "";
+  document.getElementById("edit-order-wa").value = order.customer?.wa || "";
+  document.getElementById("edit-order-instansi").value = order.customer?.instansi || "";
+  document.getElementById("edit-order-detail").value = order.customer?.detail || "";
+
+  // Bank select
+  const bankSel = document.getElementById("edit-order-target-bank");
+  if (bankSel) bankSel.value = order.customer?.targetBank || "BCA";
+
+  // Method select
+  const methodSel = document.getElementById("edit-order-method");
+  if (methodSel) {
+    const methodVal = order.customer?.method || "Ambil di Booth";
+    // Try to set; if option not found, add it temporarily
+    methodSel.value = methodVal;
+    if (methodSel.value !== methodVal) {
+      const opt = document.createElement("option");
+      opt.value = methodVal;
+      opt.textContent = methodVal;
+      methodSel.appendChild(opt);
+      methodSel.value = methodVal;
+    }
+  }
+
+  // Status select — populate from STATUS_FLOW
+  const statusSel = document.getElementById("edit-order-status");
+  if (statusSel) {
+    statusSel.innerHTML = STATUS_FLOW.map(
+      (s) => `<option value="${s.key}" ${s.key === order.status ? "selected" : ""}>${escapeHtml(s.label)}</option>`
+    ).join("");
+  }
+
+  // Items list
+  const itemsContainer = document.getElementById("edit-order-items");
+  if (itemsContainer) {
+    itemsContainer.innerHTML = order.items.map((item, idx) => `
+      <div class="edit-item-row flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-2 border border-gray-100" data-price="${Number(item.price) || 0}" data-idx="${idx}">
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-semibold text-gray-800 truncate">${escapeHtml(item.name)}</p>
+          <p class="text-[11px] text-gray-400">${escapeHtml(item.brand || "Umum")} · ${rupiah(Number(item.price) || 0)} / ${escapeHtml(item.unit || "pcs")}</p>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button type="button" class="edit-item-dec w-6 h-6 rounded-lg bg-white border border-gray-200 hover:bg-red-50 hover:border-red-300 text-gray-600 font-bold text-sm flex items-center justify-center transition">−</button>
+          <input type="number" min="1" max="99" value="${Number(item.qty) || 1}" class="edit-item-qty w-12 text-center border border-gray-200 rounded-lg py-1 text-sm font-bold focus:border-[--color-primary] outline-none" />
+          <button type="button" class="edit-item-inc w-6 h-6 rounded-lg bg-white border border-gray-200 hover:bg-green-50 hover:border-green-300 text-gray-600 font-bold text-sm flex items-center justify-center transition">+</button>
+        </div>
+        <span class="edit-item-subtotal text-xs font-bold text-[--color-primary] w-20 text-right shrink-0">${rupiah((Number(item.price) || 0) * (Number(item.qty) || 1))}</span>
+      </div>
+    `).join("");
+
+    // Bind +/- buttons and qty input
+    itemsContainer.querySelectorAll(".edit-item-row").forEach((row) => {
+      const qtyInput = row.querySelector(".edit-item-qty");
+      const subtotalEl = row.querySelector(".edit-item-subtotal");
+      const price = Number(row.dataset.price) || 0;
+
+      const refreshSubtotal = () => {
+        const qty = Math.max(1, Number(qtyInput.value) || 1);
+        qtyInput.value = qty;
+        subtotalEl.textContent = rupiah(price * qty);
+        calcEditOrderTotal();
+      };
+
+      row.querySelector(".edit-item-dec").addEventListener("click", () => {
+        qtyInput.value = Math.max(1, (Number(qtyInput.value) || 1) - 1);
+        refreshSubtotal();
+      });
+      row.querySelector(".edit-item-inc").addEventListener("click", () => {
+        qtyInput.value = Math.min(99, (Number(qtyInput.value) || 1) + 1);
+        refreshSubtotal();
+      });
+      qtyInput.addEventListener("input", refreshSubtotal);
+    });
+  }
+
+  calcEditOrderTotal();
+
+  // Error reset
+  const errEl = document.getElementById("edit-order-error");
+  if (errEl) errEl.classList.add("hidden");
+
+  modal.classList.remove("hidden");
+}
+
+// Submit handler for Edit Order form
+document.getElementById("edit-order-form")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById("edit-order-error");
+  if (errEl) errEl.classList.add("hidden");
+
+  const orderId = document.getElementById("edit-order-id").value;
+  const order = ALL_ORDERS.find((o) => o.id === orderId);
+  if (!order) return;
+
+  // Collect updated items with quantities
+  const itemsContainer = document.getElementById("edit-order-items");
+  const updatedItems = [];
+  itemsContainer?.querySelectorAll(".edit-item-row").forEach((row, idx) => {
+    const origItem = order.items[idx];
+    if (!origItem) return;
+    const qty = Math.max(1, Number(row.querySelector(".edit-item-qty")?.value) || 1);
+    updatedItems.push({
+      productId: origItem.productId || origItem.id,
+      name: origItem.name,
+      brand: origItem.brand || "Umum",
+      price: origItem.price,
+      unit: origItem.unit || "pcs",
+      qty,
+      subtotal: (Number(origItem.price) || 0) * qty,
+    });
+  });
+
+  const payload = {
+    customer: {
+      name: document.getElementById("edit-order-name").value.trim(),
+      wa: document.getElementById("edit-order-wa").value.trim(),
+      instansi: document.getElementById("edit-order-instansi").value.trim(),
+      method: document.getElementById("edit-order-method").value,
+      detail: document.getElementById("edit-order-detail").value.trim(),
+      targetBank: document.getElementById("edit-order-target-bank").value,
+    },
+    status: document.getElementById("edit-order-status").value,
+    items: updatedItems,
+  };
+
+  const saveBtn = document.getElementById("save-edit-order-btn");
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "Menyimpan..."; }
+
+  try {
+    const res = await Api.put(`/api/admin/orders/${encodeURIComponent(orderId)}`, payload, { token: TOKEN });
+    if (res && res.order) {
+      const idx = ALL_ORDERS.findIndex((o) => o.id === orderId);
+      if (idx !== -1) ALL_ORDERS[idx] = res.order;
+    }
+    document.getElementById("edit-order-modal").classList.add("hidden");
+    lastKnownOrdersChecksum = ALL_ORDERS.map((o) => `${o.id}:${o.status}:${Boolean(o.proof)}`).join("|");
+    updateTabBadges();
+    applyFilters();
+    showSuccessModal({ title: "Pesanan Diperbarui!", message: `Data pesanan #${orderId} berhasil disimpan.` });
+    await loadAll();
+  } catch (err) {
+    if (errEl) {
+      errEl.textContent = err.message;
+      errEl.classList.remove("hidden");
+    } else {
+      alert("Gagal menyimpan: " + err.message);
+    }
+  } finally {
+    if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "Simpan Perubahan"; }
+  }
+});
+
+// Close & Cancel Edit Order Modal
+document.getElementById("close-edit-order-modal")?.addEventListener("click", () => {
+  document.getElementById("edit-order-modal")?.classList.add("hidden");
+});
+document.getElementById("cancel-edit-order-modal")?.addEventListener("click", () => {
+  document.getElementById("edit-order-modal")?.classList.add("hidden");
+});
 
 function openTrackingModal(orderId) {
   const order = ALL_ORDERS.find((o) => o.id === orderId);
@@ -1091,6 +1299,174 @@ document.querySelectorAll("[data-export-opt]").forEach((btn) => {
       await downloadCsvFile(`/api/admin/orders/export.csv`, `rekap-pesanan-semua-${Date.now()}.csv`);
     }
   });
+});
+
+// ===== Edit Order Modal =====
+function recalcEditOrderTotal() {
+  const rows = document.querySelectorAll(".edit-item-row");
+  let total = 0;
+  rows.forEach((row) => {
+    const price = Number(row.dataset.price) || 0;
+    const qty = Number(row.querySelector(".edit-qty-input").value) || 0;
+    total += price * qty;
+  });
+  const el = document.getElementById("edit-order-total-preview");
+  if (el) el.textContent = rupiah(total);
+}
+
+function openEditOrderModal(orderId) {
+  const order = ALL_ORDERS.find((o) => o.id === orderId);
+  if (!order) return;
+
+  const modal = document.getElementById("edit-order-modal");
+  if (!modal) return;
+
+  document.getElementById("edit-order-id").value = order.id;
+  document.getElementById("edit-order-subtitle").textContent = `#${order.id}`;
+  document.getElementById("edit-order-name").value = order.customer.name || "";
+  document.getElementById("edit-order-wa").value = order.customer.wa || "";
+  document.getElementById("edit-order-instansi").value = order.customer.instansi || "";
+  document.getElementById("edit-order-detail").value = order.customer.detail || "";
+
+  // Target bank
+  const bankSel = document.getElementById("edit-order-target-bank");
+  const bankVal = order.customer.targetBank || "BCA";
+  // ensure option exists
+  const bankOpts = [...bankSel.options].map((o) => o.value);
+  if (!bankOpts.includes(bankVal)) {
+    const opt = document.createElement("option");
+    opt.value = bankVal;
+    opt.textContent = bankVal;
+    bankSel.appendChild(opt);
+  }
+  bankSel.value = bankVal;
+
+  // Method
+  const methodSel = document.getElementById("edit-order-method");
+  const methodVal = order.customer.method || "Ambil di Lokasi Acara";
+  const methodOpts = [...methodSel.options].map((o) => o.value);
+  if (!methodOpts.includes(methodVal)) {
+    const opt = document.createElement("option");
+    opt.value = methodVal;
+    opt.textContent = methodVal;
+    methodSel.appendChild(opt);
+  }
+  methodSel.value = methodVal;
+
+  // Status dropdown
+  const statusSel = document.getElementById("edit-order-status");
+  statusSel.innerHTML = STATUS_FLOW.map((s) =>
+    `<option value="${escapeHtml(s.key)}" ${order.status === s.key ? "selected" : ""}>${escapeHtml(s.label)}</option>`
+  ).join("");
+
+  // Items
+  const itemsContainer = document.getElementById("edit-order-items");
+  itemsContainer.innerHTML = (order.items || []).map((item) => {
+    const prod = ALL_PRODUCTS.find((p) => p.id === item.productId || p.name === item.name);
+    const price = prod ? (Number(prod.price) || 0) : (Number(item.price) || 0);
+    return `
+    <div class="edit-item-row flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-2 border border-gray-100"
+         data-product-id="${escapeHtml(item.productId || prod?.id || "")}"
+         data-price="${price}">
+      <span class="flex-1 text-xs font-medium text-gray-800 truncate">${escapeHtml(item.name)}</span>
+      <span class="text-xs text-gray-400 whitespace-nowrap">${rupiah(price)}</span>
+      <div class="flex items-center gap-1">
+        <button type="button" class="edit-qty-dec w-6 h-6 rounded-full bg-white border border-gray-200 hover:border-red-300 hover:text-red-500 text-sm font-bold flex items-center justify-center transition">−</button>
+        <input type="number" class="edit-qty-input w-10 text-center text-xs font-bold border border-gray-200 rounded-lg py-1 focus:border-indigo-400 outline-none"
+               min="0" max="99" value="${Number(item.qty) || 1}" />
+        <button type="button" class="edit-qty-inc w-6 h-6 rounded-full bg-white border border-gray-200 hover:border-green-400 hover:text-green-600 text-sm font-bold flex items-center justify-center transition">+</button>
+      </div>
+    </div>`;
+  }).join("");
+
+  // Wire quantity +/- buttons
+  itemsContainer.querySelectorAll(".edit-item-row").forEach((row) => {
+    const input = row.querySelector(".edit-qty-input");
+    row.querySelector(".edit-qty-inc").addEventListener("click", () => {
+      input.value = Math.min(99, (Number(input.value) || 0) + 1);
+      recalcEditOrderTotal();
+    });
+    row.querySelector(".edit-qty-dec").addEventListener("click", () => {
+      input.value = Math.max(0, (Number(input.value) || 0) - 1);
+      recalcEditOrderTotal();
+    });
+    input.addEventListener("input", recalcEditOrderTotal);
+  });
+
+  recalcEditOrderTotal();
+  modal.classList.remove("hidden");
+}
+
+// Close edit order modal
+document.getElementById("close-edit-order-modal")?.addEventListener("click", () => {
+  document.getElementById("edit-order-modal").classList.add("hidden");
+});
+document.getElementById("cancel-edit-order-modal")?.addEventListener("click", () => {
+  document.getElementById("edit-order-modal").classList.add("hidden");
+});
+
+// Submit edit order form
+document.getElementById("edit-order-form")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById("edit-order-error");
+  errEl.classList.add("hidden");
+
+  const id = document.getElementById("edit-order-id").value;
+  const saveBtn = document.getElementById("save-edit-order-btn");
+
+  // Collect updated items (skip items with qty 0)
+  const rows = document.querySelectorAll(".edit-item-row");
+  const items = [];
+  rows.forEach((row) => {
+    const qty = Number(row.querySelector(".edit-qty-input").value) || 0;
+    if (qty <= 0) return;
+    const price = Number(row.dataset.price) || 0;
+    const productId = row.dataset.productId;
+    const name = row.querySelector("span.flex-1").textContent;
+    items.push({ productId, name, qty, price });
+  });
+
+  if (items.length === 0) {
+    errEl.textContent = "Pesanan harus memiliki minimal 1 item dengan kuantitas > 0.";
+    errEl.classList.remove("hidden");
+    return;
+  }
+
+  const total = items.reduce((sum, it) => sum + it.price * it.qty, 0);
+
+  const payload = {
+    customer: {
+      name: document.getElementById("edit-order-name").value.trim(),
+      wa: document.getElementById("edit-order-wa").value.trim(),
+      instansi: document.getElementById("edit-order-instansi").value.trim(),
+      targetBank: document.getElementById("edit-order-target-bank").value,
+      method: document.getElementById("edit-order-method").value,
+      detail: document.getElementById("edit-order-detail").value.trim(),
+    },
+    status: document.getElementById("edit-order-status").value,
+    items,
+    total,
+  };
+
+  saveBtn.disabled = true;
+  saveBtn.textContent = "Menyimpan...";
+
+  try {
+    const res = await Api.put(`/api/admin/orders/${encodeURIComponent(id)}`, payload, { token: TOKEN });
+    if (res && res.order) {
+      const idx = ALL_ORDERS.findIndex((o) => o.id === id);
+      if (idx !== -1) ALL_ORDERS[idx] = res.order;
+    }
+    document.getElementById("edit-order-modal").classList.add("hidden");
+    showSuccessModal({ title: "Pesanan Diperbarui!", message: `Pesanan #${id} berhasil disimpan.` });
+    await loadAll();
+  } catch (err) {
+    errEl.textContent = err.message;
+    errEl.classList.remove("hidden");
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = "Simpan Perubahan";
+  }
 });
 
 // Init

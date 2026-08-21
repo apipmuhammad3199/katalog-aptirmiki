@@ -243,6 +243,8 @@
     </div>
   </div>
 
+
+
   <!-- Product Modal (Add & Edit) -->
   <div id="product-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4">
     <div class="bg-white rounded-3xl max-w-xl w-full p-5 sm:p-7 shadow-2xl border border-gray-100 relative max-h-[92vh] overflow-y-auto anim-modal-in">
@@ -265,16 +267,19 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
           <div>
             <label class="text-xs font-semibold text-gray-700">Kategori *</label>
-            <select required id="prod-category" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-xs sm:text-sm mt-1 focus:border-[--color-primary] bg-gray-50/50 focus:bg-white">
-              <option value="Bolen & Pastry Kartika Sari">Bolen & Pastry Kartika Sari</option>
-              <option value="Bolu & Kue Kartika Sari">Bolu & Kue Kartika Sari</option>
-              <option value="Brownies Kartika Sari">Brownies Kartika Sari</option>
-              <option value="Makanan & Minuman Khas">Makanan & Minuman Khas</option>
-            </select>
+            <input list="category-datalist" required id="prod-category" placeholder="Pilih atau ketik kategori..." class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-xs sm:text-sm mt-1 focus:border-[--color-primary] bg-gray-50/50 focus:bg-white" />
+            <datalist id="category-datalist">
+              <option value="Minuman & Kopi MAMADEE"></option>
+              <option value="Bolen & Pastry Kartika Sari"></option>
+              <option value="Bolu & Kue Kartika Sari"></option>
+              <option value="Brownies Kartika Sari"></option>
+              <option value="Produk UMKM"></option>
+              <option value="Kuliner & Sambal UMKM"></option>
+            </datalist>
           </div>
           <div>
             <label class="text-xs font-semibold text-gray-700">Satuan *</label>
-            <input required id="prod-unit" type="text" placeholder="box / pack / pcs" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-xs sm:text-sm mt-1 focus:border-[--color-primary] bg-gray-50/50 focus:bg-white" />
+            <input required id="prod-unit" type="text" placeholder="box / pack / botol / toples" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-xs sm:text-sm mt-1 focus:border-[--color-primary] bg-gray-50/50 focus:bg-white" />
           </div>
         </div>
 
@@ -312,9 +317,9 @@
 
         <div>
           <label class="text-xs font-semibold text-gray-700">URL Foto Gambar / Link Google Drive</label>
-          <input id="prod-image" type="url" placeholder="Paste link Google Drive (https://drive.google.com/file/d/...) atau URL Foto" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-xs sm:text-sm mt-1 focus:border-[--color-primary] bg-gray-50/50 focus:bg-white" />
+          <input id="prod-image" type="text" placeholder="Contoh: /images/products/sambal-baby-cumi.jpg atau link Google Drive" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-xs sm:text-sm mt-1 focus:border-[--color-primary] bg-gray-50/50 focus:bg-white" />
           <div class="flex flex-wrap items-center justify-between gap-1 mt-1.5 text-[11px]">
-            <span class="text-gray-400">Bisa pakai link share Google Drive (Siapa saja yang memiliki link).</span>
+            <span class="text-gray-400">Bisa pakai link foto produk, link Google Drive, atau path internal.</span>
             <a href="https://drive.google.com/drive/folders/18s8OSItEOeeEcZXobeVbDEP4J8EbQe0n?usp=drive_link" target="_blank" rel="noopener noreferrer" class="text-[--color-primary] font-semibold hover:underline flex items-center gap-1">
               <span>Buka Folder Drive Produk ↗</span>
             </a>
@@ -385,6 +390,76 @@
           </div>
           <span class="text-xs text-purple-600 font-semibold">Download ↗</span>
         </button>
+      </di  <!-- Edit Order Modal (satu-satunya, clean version) -->
+  <div id="edit-order-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl shadow-2xl border border-gray-100 w-full max-w-xl max-h-[92vh] flex flex-col anim-modal-in">
+      <div class="flex items-center justify-between px-6 pt-6 pb-4 border-b border-gray-100">
+        <div>
+          <h2 class="text-base font-bold text-gray-900">Edit Data Pesanan</h2>
+          <p id="edit-order-subtitle" class="text-xs text-gray-400 font-mono mt-0.5">#—</p>
+        </div>
+        <button id="close-edit-order-modal" class="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-700 transition text-lg font-bold">&times;</button>
+      </div>
+      <form id="edit-order-form" class="flex-1 overflow-y-auto px-6 py-4 space-y-3">
+        <input type="hidden" id="edit-order-id" />
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Nama Pemesan *</label>
+            <input type="text" id="edit-order-name" required class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:border-[--color-primary] outline-none bg-gray-50/50 focus:bg-white transition" placeholder="Nama lengkap" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">No. WhatsApp *</label>
+            <input type="text" id="edit-order-wa" required class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:border-[--color-primary] outline-none bg-gray-50/50 focus:bg-white transition" placeholder="08xxxxxxxxxx" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Instansi / Asal Daerah</label>
+            <input type="text" id="edit-order-instansi" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:border-[--color-primary] outline-none bg-gray-50/50 focus:bg-white transition" placeholder="Instansi / asal daerah" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Bank Tujuan Pembayaran</label>
+            <select id="edit-order-target-bank" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:border-[--color-primary] outline-none bg-white transition">
+              <option value="BCA">BCA</option>
+              <option value="BSI">BSI</option>
+              <option value="Mandiri">Mandiri</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Metode Pengambilan</label>
+            <select id="edit-order-method" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:border-[--color-primary] outline-none bg-white transition">
+              <option value="Antar ke Kamar Hotel">Antar ke Kamar Hotel</option>
+              <option value="Ambil di Booth">Ambil di Booth</option>
+              <option value="Antar ke Lokasi RTA">Antar ke Lokasi RTA</option>
+              <option value="Ambil di Lokasi Acara">Ambil di Lokasi Acara</option>
+              <option value="Dikirim">Dikirim</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Detail / Nomor Kamar</label>
+            <input type="text" id="edit-order-detail" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:border-[--color-primary] outline-none bg-gray-50/50 focus:bg-white transition" placeholder="Contoh: Kamar 312 Lantai 3" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Status Pesanan</label>
+          <select id="edit-order-status" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:border-[--color-primary] outline-none bg-white transition"></select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-2">Item Pesanan &amp; Kuantitas</label>
+          <div id="edit-order-items" class="space-y-2"></div>
+        </div>
+        <div class="bg-gray-50 rounded-xl px-4 py-3 flex items-center justify-between border border-gray-100">
+          <span class="text-xs font-semibold text-gray-500">Total Pembayaran Baru</span>
+          <span id="edit-order-total-preview" class="text-base font-bold text-[--color-primary]">Rp 0</span>
+        </div>
+        <p id="edit-order-error" class="hidden text-xs text-red-500 font-medium pt-1"></p>
+      </form>
+      <div class="px-6 pb-6 pt-3 border-t border-gray-100 flex gap-3">
+        <button type="button" id="cancel-edit-order-modal" class="flex-1 py-2.5 px-4 border border-gray-200 text-gray-600 hover:bg-gray-50 font-semibold rounded-xl text-sm transition">Batal</button>
+        <button type="submit" form="edit-order-form" id="save-edit-order-btn" class="flex-1 py-2.5 px-4 bg-[--color-primary] hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-blue-500/20">Simpan Perubahan</button>
       </div>
     </div>
   </div>
