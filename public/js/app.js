@@ -59,6 +59,33 @@ function fallbackCopy(text, label) {
   }
 }
 
+async function prepareProofFile(file) {
+  if (!file || !file.type.startsWith("image/") || file.size <= 900 * 1024) return file;
+
+  const imageUrl = URL.createObjectURL(file);
+  try {
+    const image = new Image();
+    image.src = imageUrl;
+    await new Promise((resolve, reject) => {
+      image.onload = resolve;
+      image.onerror = reject;
+    });
+
+    const maxDimension = 1600;
+    const scale = Math.min(1, maxDimension / Math.max(image.naturalWidth, image.naturalHeight));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+    canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+    canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
+
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.72));
+    if (!blob || blob.size >= file.size) return file;
+    return new File([blob], "bukti-transfer.jpg", { type: "image/jpeg", lastModified: Date.now() });
+  } finally {
+    URL.revokeObjectURL(imageUrl);
+  }
+}
+
 // ===== WhatsApp Link Helper =====
 function formatWaLink(num, message) {
   let clean = String(num || "").replace(/\D/g, "");
@@ -1156,12 +1183,14 @@ Mohon segera diverifikasi dan diproses ya Admin. Terima kasih!`;
       errEl.classList.remove("hidden");
       return;
     }
-    const fd = new FormData();
-    fd.append("proof", fileInput.files[0]);
     const btn = document.getElementById("proof-submit");
     btn.disabled = true;
-    btn.textContent = "Mengunggah Bukti...";
+    btn.textContent = "Menyiapkan Foto...";
     try {
+      const proofFile = await prepareProofFile(fileInput.files[0]);
+      const fd = new FormData();
+      fd.append("proof", proofFile);
+      btn.textContent = "Mengunggah Bukti...";
       await Api.postForm(`/api/orders/${encodeURIComponent(order.id)}/proof`, fd);
       showSuccessModal(order.id);
     } catch (err) {
@@ -1547,11 +1576,13 @@ function attachTrackCardHandlers(resultEl, refresh) {
         errEl.classList.remove("hidden");
         return;
       }
-      const fd = new FormData();
-      fd.append("proof", fileInput.files[0]);
       btn.disabled = true;
-      btn.textContent = "Mengunggah...";
+      btn.textContent = "Menyiapkan Foto...";
       try {
+        const proofFile = await prepareProofFile(fileInput.files[0]);
+        const fd = new FormData();
+        fd.append("proof", proofFile);
+        btn.textContent = "Mengunggah...";
         await Api.postForm(`/api/orders/${encodeURIComponent(orderId)}/proof`, fd);
         showSuccessModal(orderId);
         refresh();
