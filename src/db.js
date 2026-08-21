@@ -238,11 +238,32 @@ async function syncWithKV() {
             local.productsUpdatedAt = parsed.productsUpdatedAt;
             shouldSaveLocal = true;
           } else if (localProdTime > remoteProdTime) {
-            await pushToKV(local);
+            shouldPushRemote = true;
           } else if (!local.products || local.products.length === 0) {
             local.products = parsed.products;
             local.productsUpdatedAt = parsed.productsUpdatedAt;
             shouldSaveLocal = true;
+          }
+        }
+
+        // Always ensure new default products from products.js are merged if not explicitly deleted
+        const delProdSet = new Set(local.deletedProductIds || []);
+        if (Array.isArray(defaultProductsModule.products)) {
+          let mergedNewDefaults = false;
+          for (const defProd of defaultProductsModule.products) {
+            if (!defProd || !defProd.id || delProdSet.has(defProd.id)) continue;
+            const existsIdx = local.products.findIndex(
+              (p) => String(p.id).toLowerCase().trim() === String(defProd.id).toLowerCase().trim()
+            );
+            if (existsIdx === -1) {
+              local.products.push({ ...defProd });
+              mergedNewDefaults = true;
+            }
+          }
+          if (mergedNewDefaults) {
+            local.productsUpdatedAt = new Date().toISOString();
+            shouldSaveLocal = true;
+            shouldPushRemote = true;
           }
         }
 
