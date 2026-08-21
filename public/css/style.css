@@ -231,3 +231,15 @@ input:focus, select:focus, textarea:focus {
   }
 }
 
+/* Privacy Mode for Admin Dashboard */
+.privacy-mode .privacy-mask {
+  filter: blur(7px);
+  user-select: none;
+  cursor: pointer;
+  transition: filter 0.2s ease, opacity 0.2s ease;
+}
+.privacy-mode .privacy-mask:hover {
+  filter: blur(0px);
+}
+
+

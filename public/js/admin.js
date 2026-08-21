@@ -56,6 +56,8 @@ function startAdminLiveSync() {
 function showDashboard() {
   loginScreen.classList.add("hidden");
   dashboardScreen.classList.remove("hidden");
+  updatePrivacyModeUI();
+  updateOverviewPanelUI();
   loadAll();
   startAdminLiveSync();
 }
@@ -172,7 +174,8 @@ function renderSummaryCards(summaryData, orders) {
       sub: "Semua pesanan",
       color: "text-gray-900",
       bg: "bg-blue-50 text-[--color-primary] border border-blue-100",
-      icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>`
+      icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>`,
+      isMoney: false,
     },
     {
       label: "Total Omset",
@@ -180,7 +183,8 @@ function renderSummaryCards(summaryData, orders) {
       sub: "Penjualan kotor",
       color: "text-[--color-primary]",
       bg: "bg-blue-50 text-[--color-primary] border border-blue-100",
-      icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="2" y1="10" x2="22" y2="10" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="15" r="1" fill="currentColor"/></svg>`
+      icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="2" y1="10" x2="22" y2="10" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="15" r="1" fill="currentColor"/></svg>`,
+      isMoney: true,
     },
     {
       label: "Modal Supplier",
@@ -188,7 +192,8 @@ function renderSummaryCards(summaryData, orders) {
       sub: "Beban pokok beli",
       color: "text-amber-700",
       bg: "bg-amber-50 text-amber-600 border border-amber-100",
-      icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>`
+      icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>`,
+      isMoney: true,
     },
     {
       label: "Laba Panitia",
@@ -196,7 +201,8 @@ function renderSummaryCards(summaryData, orders) {
       sub: "Keuntungan bersih",
       color: "text-emerald-700",
       bg: "bg-emerald-50 text-emerald-600 border border-emerald-100",
-      icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>`
+      icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>`,
+      isMoney: true,
     },
     {
       label: "Margin Laba",
@@ -204,7 +210,8 @@ function renderSummaryCards(summaryData, orders) {
       sub: "Persentase profit",
       color: "text-indigo-700",
       bg: "bg-indigo-50 text-indigo-600 border border-indigo-100",
-      icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>`
+      icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>`,
+      isMoney: true,
     },
   ];
 
@@ -213,7 +220,7 @@ function renderSummaryCards(summaryData, orders) {
       (c) => `<div class="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm flex items-center justify-between hover:shadow-md transition">
         <div>
           <p class="text-xs text-gray-500 font-medium mb-1">${c.label}</p>
-          <p class="font-black text-base sm:text-xl ${c.color} leading-tight">${c.value}</p>
+          <p class="font-black text-base sm:text-xl ${c.color} leading-tight ${c.isMoney ? "privacy-mask" : ""}">${c.value}</p>
           <p class="text-[10px] text-gray-400 mt-0.5">${c.sub}</p>
         </div>
         <div class="w-11 h-11 rounded-2xl ${c.bg} shrink-0 ml-2 flex items-center justify-center shadow-2xs">${c.icon}</div>
@@ -248,7 +255,7 @@ function renderBankSummaryCards(bankSummary = []) {
         </div>
         <div class="mb-3">
           <p class="text-[11px] text-gray-400 font-medium">Uang Masuk</p>
-          <p class="font-black text-xl sm:text-2xl ${theme.text} leading-tight">${rupiah(b.totalRevenue)}</p>
+          <p class="font-black text-xl sm:text-2xl ${theme.text} leading-tight privacy-mask">${rupiah(b.totalRevenue)}</p>
         </div>
         <div class="flex items-center gap-1.5 pt-2 border-t border-gray-100">
           <button onclick="filterByBank('${escapeHtml(b.bank)}')" class="flex-1 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 py-1.5 rounded-xl text-xs font-medium shadow-2xs transition active:scale-95 flex items-center justify-center gap-1">
@@ -321,7 +328,7 @@ function renderBrandSummary(brandSummary, rawSummary = []) {
             ${brandItems.map((item, idx) => `
               <div class="flex justify-between items-center py-0.5 border-b border-gray-100 last:border-0">
                 <span class="text-gray-700 font-medium">${idx + 1}. ${escapeHtml(item.name)} <b class="text-gray-900">x${item.totalQty} ${escapeHtml(item.unit || "box")}</b></span>
-                <span class="text-amber-700 font-mono font-medium">${rupiah(item.totalCost)}</span>
+                <span class="text-amber-700 font-mono font-medium privacy-mask">${rupiah(item.totalCost)}</span>
               </div>
             `).join("")}
           </div>`
@@ -345,22 +352,22 @@ function renderBrandSummary(brandSummary, rawSummary = []) {
           </div>
           <div class="text-right">
             <span class="text-[11px] text-gray-400">Modal Supplier:</span>
-            <span class="font-bold text-sm text-amber-700 ml-1">${rupiah(bs.totalCost)}</span>
+            <span class="font-bold text-sm text-amber-700 ml-1 privacy-mask">${rupiah(bs.totalCost)}</span>
           </div>
         </div>
 
         <div class="grid grid-cols-3 gap-2 bg-gray-50 p-2.5 rounded-xl text-center text-xs mb-2 border border-gray-100">
           <div>
             <p class="text-[10px] text-gray-500">Omset</p>
-            <p class="font-bold text-gray-900">${rupiah(bs.totalRevenue)}</p>
+            <p class="font-bold text-gray-900 privacy-mask">${rupiah(bs.totalRevenue)}</p>
           </div>
           <div>
             <p class="text-[10px] text-gray-500">Modal</p>
-            <p class="font-bold text-amber-700">${rupiah(bs.totalCost)}</p>
+            <p class="font-bold text-amber-700 privacy-mask">${rupiah(bs.totalCost)}</p>
           </div>
           <div>
             <p class="text-[10px] text-gray-500">Laba Panitia</p>
-            <p class="font-bold text-emerald-700">${rupiah(bs.totalProfit)}</p>
+            <p class="font-bold text-emerald-700 privacy-mask">${rupiah(bs.totalProfit)}</p>
           </div>
         </div>
 
@@ -486,8 +493,8 @@ function renderRestock(summary) {
         <div class="bg-[--color-primary] h-full rounded-full transition-all" style="width:${(s.totalQty / max) * 100}%"></div>
       </div>
       <span class="w-20 text-right font-bold text-gray-900">${s.totalQty} ${escapeHtml(s.unit)}</span>
-      <span class="w-28 text-right text-gray-500 font-medium">Modal: ${rupiah(s.totalCost || 0)}</span>
-      <span class="w-28 text-right text-emerald-600 font-bold">Laba: ${rupiah(s.totalProfit || 0)}</span>
+      <span class="w-28 text-right text-gray-500 font-medium">Modal: <span class="privacy-mask font-semibold text-gray-700">${rupiah(s.totalCost || 0)}</span></span>
+      <span class="w-28 text-right text-emerald-600 font-bold">Laba: <span class="privacy-mask">${rupiah(s.totalProfit || 0)}</span></span>
     </div>`
     )
     .join("");
@@ -618,7 +625,7 @@ function renderTable(orders) {
         </td>
         <td class="px-3 py-3 text-xs text-gray-600 font-medium">${escapeHtml(o.customer.instansi)}</td>
         <td class="px-3 py-3 text-xs max-w-[200px] text-gray-700">${escapeHtml(itemsText)}</td>
-        <td class="px-3 py-3 font-bold whitespace-nowrap text-gray-900">${rupiah(o.total)}</td>
+        <td class="px-3 py-3 font-bold whitespace-nowrap text-gray-900 privacy-mask">${rupiah(o.total)}</td>
         <td class="px-3 py-3">${proofCell}</td>
         <td class="px-3 py-3">${miniTrackingProgressBar(o.status)}</td>
         <td class="px-3 py-3">
@@ -1415,7 +1422,61 @@ document.querySelectorAll("[data-export-opt]").forEach((btn) => {
   });
 });
 
+// ===== Privacy Mode & Overview Panel Toggle =====
+let IS_PRIVACY_MODE = localStorage.getItem("admin_privacy_mode") === "1";
+let IS_OVERVIEW_HIDDEN = localStorage.getItem("admin_overview_hidden") === "1";
+
+function updatePrivacyModeUI() {
+  document.body.classList.toggle("privacy-mode", IS_PRIVACY_MODE);
+  const label = document.getElementById("privacy-btn-label");
+  const btn = document.getElementById("toggle-privacy-btn");
+  if (label) label.textContent = IS_PRIVACY_MODE ? "Buka Sensor" : "Sensor Nominal";
+  if (btn) {
+    btn.classList.toggle("bg-amber-50", IS_PRIVACY_MODE);
+    btn.classList.toggle("text-amber-800", IS_PRIVACY_MODE);
+    btn.classList.toggle("border-amber-200", IS_PRIVACY_MODE);
+  }
+}
+
+function updateOverviewPanelUI() {
+  const panel = document.getElementById("financial-overview-section");
+  const label = document.getElementById("overview-btn-label");
+  const icon = document.getElementById("overview-icon");
+  const btn = document.getElementById("toggle-overview-btn");
+  if (panel) {
+    if (IS_OVERVIEW_HIDDEN) {
+      panel.classList.add("hidden");
+    } else {
+      panel.classList.remove("hidden");
+    }
+  }
+  if (label) label.textContent = IS_OVERVIEW_HIDDEN ? "Buka Ringkasan" : "Tutup Ringkasan";
+  if (icon) icon.classList.toggle("rotate-180", IS_OVERVIEW_HIDDEN);
+  if (btn) {
+    btn.classList.toggle("bg-blue-50", IS_OVERVIEW_HIDDEN);
+    btn.classList.toggle("text-[--color-primary]", IS_OVERVIEW_HIDDEN);
+    btn.classList.toggle("border-blue-200", IS_OVERVIEW_HIDDEN);
+  }
+}
+
+document.getElementById("toggle-privacy-btn")?.addEventListener("click", () => {
+  IS_PRIVACY_MODE = !IS_PRIVACY_MODE;
+  localStorage.setItem("admin_privacy_mode", IS_PRIVACY_MODE ? "1" : "0");
+  updatePrivacyModeUI();
+  showToast(IS_PRIVACY_MODE ? "Mode privasi aktif (nominal disensor)" : "Mode privasi nonaktif (nominal ditampilkan)");
+});
+
+document.getElementById("toggle-overview-btn")?.addEventListener("click", () => {
+  IS_OVERVIEW_HIDDEN = !IS_OVERVIEW_HIDDEN;
+  localStorage.setItem("admin_overview_hidden", IS_OVERVIEW_HIDDEN ? "1" : "0");
+  updateOverviewPanelUI();
+  showToast(IS_OVERVIEW_HIDDEN ? "Panel ringkasan disembunyikan" : "Panel ringkasan ditampilkan");
+});
+
 // Init
+updatePrivacyModeUI();
+updateOverviewPanelUI();
+
 if (TOKEN) {
   showDashboard();
 } else {
