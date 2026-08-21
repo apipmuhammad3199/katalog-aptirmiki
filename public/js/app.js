@@ -8,9 +8,17 @@ let activeCategory = "Semua";
 const CART_KEY = "aptirmiki_cart";
 const MY_ORDERS_KEY = "aptirmiki_my_orders";
 const app = document.getElementById("app");
+let deadlineNoticeVisible = false;
 
 const rupiah = (n) =>
   new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(n);
+
+function isSundayWib() {
+  return new Intl.DateTimeFormat("en-US", {
+    weekday: "short",
+    timeZone: "Asia/Jakarta",
+  }).format(new Date()) === "Sun";
+}
 
 // ===== Toast Notification =====
 function showToast(msg) {
@@ -308,6 +316,38 @@ function renderKatalog() {
     .join("");
 
   setView(`
+    ${deadlineNoticeVisible ? `<div class="px-3 sm:px-6 lg:px-8 pt-3 sm:pt-4">
+      <div class="deadline-notice max-w-screen-2xl mx-auto overflow-hidden rounded-2xl border border-blue-200 bg-gradient-to-r from-[#0047ab] via-[#075ed2] to-[#1477e8] text-white shadow-lg shadow-blue-200/60" role="status">
+        <div class="flex flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
+          <div class="flex items-start gap-3.5">
+            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/25 backdrop-blur-sm">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M10.3 3.5h3.4L21 17.2a1.5 1.5 0 01-1.3 2.3H4.3A1.5 1.5 0 013 17.2L10.3 3.5z" />
+              </svg>
+            </div>
+            <div class="min-w-0">
+              <div class="mb-1 flex flex-wrap items-center gap-2">
+                <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-blue-100">Pemberitahuan penting</p>
+                <span class="rounded-full bg-red-500 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide shadow-sm">Segera ditutup</span>
+              </div>
+              <p class="text-sm font-bold leading-snug sm:text-base">Batas akhir pemesanan oleh-oleh</p>
+              <p class="mt-1 text-xs leading-relaxed text-blue-100 sm:text-sm">Pastikan pesanan Anda masuk sebelum batas waktu.</p>
+            </div>
+          </div>
+          <div class="flex shrink-0 items-center gap-3 rounded-xl border border-white/20 bg-white/10 px-3.5 py-2.5 backdrop-blur-sm sm:min-w-[220px] sm:justify-center">
+            <svg class="h-5 w-5 shrink-0 text-blue-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path stroke-linecap="round" d="M12 7v5l3 2" />
+            </svg>
+            <div>
+              <p class="text-[10px] font-medium uppercase tracking-wider text-blue-100">Ditutup pada</p>
+              <p class="text-sm font-bold leading-tight sm:text-base">Minggu, 23 Agustus</p>
+              <p class="mt-0.5 text-xs font-semibold text-white">09.00 WIB</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>` : ""}
     <div class="px-3 sm:px-6 lg:px-8 pt-3 sm:pt-4 pb-2 sticky top-14 sm:top-16 z-20 bg-[--color-cream]/95 backdrop-blur">
       <div class="max-w-screen-2xl mx-auto">
         <div class="relative mb-2.5 sm:mb-3 max-w-md">
@@ -389,6 +429,16 @@ function getMamadeeGroups(products) {
 
   groups.forEach((g) => {
     g.variants.sort((a, b) => (Number(a.price) || 0) - (Number(b.price) || 0));
+    const uniqueSizes = new Map();
+    g.variants = g.variants.filter((variant) => {
+      const sizeKey =
+        variant.unit?.includes("1L") || variant.unit?.includes("1 Liter") || variant.name?.includes("1 Liter")
+          ? "1-liter"
+          : "500-ml";
+      if (uniqueSizes.has(sizeKey)) return false;
+      uniqueSizes.set(sizeKey, variant.id);
+      return true;
+    });
     if (!SELECTED_VARIANTS[g.id] && g.variants.length > 0) {
       SELECTED_VARIANTS[g.id] = g.variants[0].id;
     }
@@ -1601,7 +1651,15 @@ async function init() {
     if (waBottom) waBottom.href = waUrl;
 
     updateCartBadge();
+    deadlineNoticeVisible = isSundayWib();
     render();
+    window.setInterval(() => {
+      const shouldShow = isSundayWib();
+      if (shouldShow !== deadlineNoticeVisible) {
+        deadlineNoticeVisible = shouldShow;
+        if (currentRoute().path === "katalog") renderKatalog();
+      }
+    }, 60000);
   } catch (err) {
     app.innerHTML = `<div class="text-center py-24 text-gray-400 px-6">Gagal memuat data. Pastikan server backend berjalan.<br><span class="text-xs">${escapeHtml(err.message)}</span></div>`;
   }
