@@ -147,17 +147,24 @@ router.get("/:id", (req, res) => {
 });
 
 // POST /api/orders/:id/proof -> upload bukti transfer
-router.post("/:id/proof", (req, res, next) => {
-  const order = db.findOrderById(req.params.id);
-  if (!order) return res.status(404).json({ error: "Pesanan tidak ditemukan." });
-  req.existingOrder = order;
-  next();
-}, upload.single("proof"), async (req, res) => {
+router.post("/:id/proof", upload.single("proof"), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: "File bukti transfer wajib diunggah." });
   
+  try {
+    await db.syncWithKV();
+  } catch (e) {}
+
+  const order = db.findOrderById(req.params.id);
+  if (!order) {
+    if (req.file && req.file.path) {
+      try { fs.unlinkSync(req.file.path); } catch (e) {}
+    }
+    return res.status(404).json({ error: "Pesanan tidak ditemukan." });
+  }
+
   // Cleanup old proof file if exists
-  if (req.existingOrder && req.existingOrder.proof && req.existingOrder.proof.filename) {
-    const oldPath = path.join(db.UPLOADS_DIR, req.existingOrder.proof.filename);
+  if (order.proof && order.proof.filename) {
+    const oldPath = path.join(db.UPLOADS_DIR, order.proof.filename);
     if (fs.existsSync(oldPath)) {
       try { fs.unlinkSync(oldPath); } catch (e) {}
     }
@@ -176,7 +183,7 @@ router.post("/:id/proof", (req, res, next) => {
     o.proof = {
       filename: req.file.filename,
       dataUrl,
-      uploadedAt: new Date().toISOString()
+      uploadedAt: new Date().toISOString(),
     };
     o.updatedAt = new Date().toISOString();
     return o;
