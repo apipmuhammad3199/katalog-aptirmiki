@@ -731,7 +731,7 @@ function renderProductsTable() {
     return `
     <tr class="border-t border-gray-100 align-middle hover:bg-gray-50/60 transition">
       <td class="px-3 py-3">
-        <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(p.name)}" class="w-12 h-12 object-cover rounded-lg border border-gray-200 shadow-sm" onerror="this.src='https://via.placeholder.com/100?text=Foto+Produk'" />
+        <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(p.name)}" class="w-12 h-12 object-cover rounded-lg border border-gray-200 shadow-sm" referrerpolicy="no-referrer" onerror="this.src='https://via.placeholder.com/100?text=Foto+Produk'" />
       </td>
       <td class="px-3 py-3">
         <p class="font-semibold text-gray-900">${escapeHtml(p.name)}</p>

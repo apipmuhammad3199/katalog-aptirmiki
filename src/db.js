@@ -266,6 +266,9 @@ async function syncWithKV() {
             if (existsIdx === -1) {
               local.products.push({ ...defProd });
               mergedNewDefaults = true;
+            } else if (defProd.brand === "Oleh-Oleh Sowan" || (defProd.category || "").includes("Sowan")) {
+              local.products[existsIdx] = { ...local.products[existsIdx], ...defProd };
+              mergedNewDefaults = true;
             }
           }
           if (mergedNewDefaults) {

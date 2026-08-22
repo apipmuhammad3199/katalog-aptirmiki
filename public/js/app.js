@@ -244,7 +244,7 @@ function productImage(p, wrapperClass) {
   const src = convertDriveUrl(p.image);
   return `
     <div class="${wrapperClass} overflow-hidden bg-gray-100 shrink-0">
-      <img src="${escapeHtml(src)}" alt="${escapeHtml(p.name)}" loading="lazy"
+      <img src="${escapeHtml(src)}" alt="${escapeHtml(p.name)}" loading="lazy" referrerpolicy="no-referrer"
         class="w-full h-full object-cover"
         onerror="handleImgError(this)" />
     </div>`;
@@ -366,6 +366,7 @@ function renderKatalog() {
     { id: "Semua", label: "Semua Produk" },
     { id: "Buku", label: "Buku Rekam Medis & Audit" },
     { id: "Kartika Sari", label: "Kartika Sari Bandung" },
+    { id: "Sowan", label: "Oleh-Oleh Sowan" },
     { id: "Aksesoris", label: "Aksesoris Kartika Sari" },
     { id: "MAMADEE", label: "Kopi MAMADEE" },
     { id: "Produk UMKM", label: "Kuliner & Sambal UMKM" },
@@ -660,6 +661,9 @@ function renderProductGridHtml() {
     if (activeCategory === "Kartika Sari") {
       // Hanya makanan/kue/bolen Kartika Sari (bukan aksesoris)
       matchCat = p.brand === "Kartika Sari" && !isAksesorisProd(p);
+    } else if (activeCategory === "Sowan" || activeCategory === "Oleh-Oleh Sowan") {
+      // Khusus Oleh-Oleh Sowan
+      matchCat = p.brand === "Oleh-Oleh Sowan" || (p.category || "").includes("Sowan");
     } else if (activeCategory === "Aksesoris" || activeCategory === "Merchandise & Aksesoris Kartika Sari") {
       // Khusus Aksesoris Kartika Sari
       matchCat = isAksesorisProd(p);
@@ -668,7 +672,7 @@ function renderProductGridHtml() {
     } else if (activeCategory === "MAMADEE") {
       matchCat = p.brand === "MAMADEE";
     } else if (activeCategory === "Produk UMKM" || activeCategory === "UMKM") {
-      matchCat = p.category === "Produk UMKM" || (p.brand !== "Kartika Sari" && p.brand !== "MAMADEE" && p.brand !== "APTIRMIKI" && p.category !== "Buku & Referensi");
+      matchCat = (p.category === "Produk UMKM" || (p.brand !== "Kartika Sari" && p.brand !== "Oleh-Oleh Sowan" && p.brand !== "MAMADEE" && p.brand !== "APTIRMIKI" && p.category !== "Buku & Referensi")) && !((p.category || "").includes("Sowan"));
     } else if (activeCategory !== "Semua") {
       matchCat = p.category === activeCategory || p.brand === activeCategory;
     }
@@ -693,13 +697,14 @@ function renderProductGridHtml() {
       </div>`;
   }
 
-  // Tampilkan dikelompokkan menjadi 5 seksi terpisah saat tab Semua Produk aktif
+  // Tampilkan dikelompokkan menjadi seksi-seksi terpisah saat tab Semua Produk aktif
   if (activeCategory === "Semua" && !searchQuery) {
     const bukuProds = filtered.filter((p) => p.category === "Buku & Referensi" || p.brand === "APTIRMIKI" || (p.name || "").toLowerCase().includes("buku"));
     const kartikaProds = filtered.filter((p) => p.brand === "Kartika Sari" && !isAksesorisProd(p));
+    const sowanProds = filtered.filter((p) => p.brand === "Oleh-Oleh Sowan" || (p.category || "").includes("Sowan"));
     const aksesorisProds = filtered.filter((p) => isAksesorisProd(p));
     const mamadeeGroups = getMamadeeGroups(filtered.filter((p) => p.brand === "MAMADEE"));
-    const umkmProds = filtered.filter((p) => p.brand !== "Kartika Sari" && p.brand !== "MAMADEE" && p.brand !== "APTIRMIKI" && p.category !== "Buku & Referensi" && !(p.name || "").toLowerCase().includes("buku"));
+    const umkmProds = filtered.filter((p) => p.brand !== "Kartika Sari" && p.brand !== "Oleh-Oleh Sowan" && p.brand !== "MAMADEE" && p.brand !== "APTIRMIKI" && p.category !== "Buku & Referensi" && !(p.category || "").includes("Sowan") && !(p.name || "").toLowerCase().includes("buku"));
 
     const bukuHtml =
       bukuProds.length > 0
@@ -732,6 +737,24 @@ function renderProductGridHtml() {
         </div>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
           ${kartikaProds.map((p) => renderProductCardItemHtml(p, cart)).join("")}
+        </div>
+      </div>
+    `
+        : "";
+
+    const sowanHtml =
+      sowanProds.length > 0
+        ? `
+      <div class="mb-12">
+        <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-amber-200">
+          <span class="w-3.5 h-3.5 rounded-full bg-amber-600 shrink-0"></span>
+          <div>
+            <h3 class="font-bold text-base sm:text-xl text-gray-900 leading-tight">Pusat Oleh-Oleh Sowan (Sunter & Nusantara)</h3>
+            <p class="text-xs text-gray-500 hidden sm:block">Aneka Lapis Legit Wijsman, Brownies Manon, Bakpia 53, Pie Susu & Camilan Tradisional Otentik Sowan</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
+          ${sowanProds.map((p) => renderProductCardItemHtml(p, cart)).join("")}
         </div>
       </div>
     `
@@ -791,7 +814,7 @@ function renderProductGridHtml() {
     `
         : "";
 
-    return `${bukuHtml}${kartikaHtml}${aksesorisHtml}${mamadeeHtml}${umkmHtml}`;
+    return `${bukuHtml}${kartikaHtml}${sowanHtml}${aksesorisHtml}${mamadeeHtml}${umkmHtml}`;
   }
 
   // Jika memilih kategori MAMADEE
