@@ -66,7 +66,8 @@ router.post("/logout", requireAdmin, (req, res) => {
   res.json({ ok: true });
 });
 
-router.get("/orders", requireAdmin, (req, res) => {
+router.get("/orders", requireAdmin, async (req, res) => {
+  await db.syncWithKV();
   const orders = db.getOrders().slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   res.json({ orders, statusFlow: STATUS_FLOW });
 });
@@ -166,11 +167,13 @@ function convertDriveUrl(url) {
 }
 
 // ===== Product Management Endpoints =====
-router.get("/products", requireAdmin, (req, res) => {
+router.get("/products", requireAdmin, async (req, res) => {
+  await db.syncWithKV();
   res.json({ products: db.getProducts() });
 });
 
 router.post("/products", requireAdmin, async (req, res) => {
+  await db.syncWithKV();
   const { name, brand, category, price, supplierPrice, unit, origin, expiryDetail, description, image, stock } = req.body || {};
   if (!name || !category || !price || !unit) {
     return res.status(400).json({ error: "Nama, kategori, harga, dan satuan produk wajib diisi." });
@@ -206,6 +209,7 @@ router.post("/products", requireAdmin, async (req, res) => {
 });
 
 router.put("/products/:id", requireAdmin, async (req, res) => {
+  await db.syncWithKV();
   const { name, brand, category, price, supplierPrice, unit, origin, expiryDetail, description, image, stock } = req.body || {};
   const updates = {};
   if (name !== undefined) updates.name = String(name).trim();
@@ -227,12 +231,15 @@ router.put("/products/:id", requireAdmin, async (req, res) => {
 });
 
 router.delete("/products/:id", requireAdmin, async (req, res) => {
+  await db.syncWithKV();
   const deleted = db.deleteProduct(req.params.id);
   if (!deleted) return res.status(404).json({ error: "Produk tidak ditemukan." });
+  await db.pushToKV(db.readDB());
   res.json({ ok: true, deletedId: deleted.id });
 });
 
-router.get("/summary", requireAdmin, (req, res) => {
+router.get("/summary", requireAdmin, async (req, res) => {
+  await db.syncWithKV();
   const orders = db.getOrders();
   const allProducts = db.getProducts();
 
