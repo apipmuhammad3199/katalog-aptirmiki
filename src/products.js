@@ -20,6 +20,7 @@ const products = [
     "price": 91000,
     "supplierPrice": 82000,
     "unit": "buku",
+    "stock": 8,
     "origin": "DPP APTIRMIKI",
     "expiryDetail": "Edisi Resmi Original",
     "description": "Buku 'Metodologi Audit Koding Klinis: Prinsip, Metodologi, Kode Etik dan Kompetensi Auditor'. Karya: Husni Abdul Muchlis, A.Md., S.Tr., M.K.M., CPB. & Mohammad Yusuf Setiawan, S.Tr., M.P.H. Panduan komprehensif bagi praktisi perekam medis & auditor koding klinis.",

@@ -78,6 +78,22 @@ router.post("/", async (req, res) => {
     if (!Number.isInteger(qty) || qty <= 0) {
       return res.status(400).json({ error: `Jumlah tidak valid untuk ${product.name}` });
     }
+
+    if (typeof product.stock === "number") {
+      const allOrders = db.getOrders() || [];
+      const totalBooked = allOrders
+        .filter((o) => o.status !== "dibatalkan")
+        .reduce((sum, o) => {
+          const found = (o.items || []).find((it) => String(it.productId).toLowerCase().trim() === String(product.id).toLowerCase().trim());
+          return sum + (found ? (Number(found.qty) || 0) : 0);
+        }, 0);
+      const remainingStock = product.stock - totalBooked;
+      if (qty > remainingStock) {
+        return res.status(400).json({
+          error: `Mohon maaf, stok '${product.name}' hanya tersisa ${Math.max(0, remainingStock)} ${product.unit || "buku"}.`,
+        });
+      }
+    }
     lineItems.push({
       productId: product.id,
       name: product.name,

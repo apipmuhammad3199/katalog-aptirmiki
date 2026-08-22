@@ -735,7 +735,10 @@ function renderProductsTable() {
       </td>
       <td class="px-3 py-3">
         <p class="font-semibold text-gray-900">${escapeHtml(p.name)}</p>
-        <span class="text-[10px] bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full font-bold border border-purple-100">${escapeHtml(p.brand || "Betawi Asli")}</span>
+        <div class="flex items-center gap-1.5 mt-0.5">
+          <span class="text-[10px] bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full font-bold border border-purple-100">${escapeHtml(p.brand || "Betawi Asli")}</span>
+          ${typeof p.stock === "number" ? `<span class="text-[10px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded-full font-bold border border-amber-200">Stok: ${p.stock}</span>` : ""}
+        </div>
       </td>
       <td class="px-3 py-3 text-xs"><span class="bg-blue-50 text-[--color-primary] px-2 py-1 rounded-full font-semibold border border-blue-100">${escapeHtml(p.category)}</span></td>
       <td class="px-3 py-3 font-semibold text-amber-700 whitespace-nowrap">${rupiah(suppPrice)}</td>

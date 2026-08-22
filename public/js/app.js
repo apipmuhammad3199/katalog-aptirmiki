@@ -126,7 +126,17 @@ function setCart(cart) {
 }
 function addToCart(productId, delta = 1) {
   const cart = getCart();
-  const nextQty = (cart[productId] || 0) + delta;
+  const prod = PRODUCTS.find((p) => p.id === productId);
+  const currentQty = cart[productId] || 0;
+  const nextQty = currentQty + delta;
+
+  if (prod && typeof prod.stock === "number" && delta > 0) {
+    if (nextQty > prod.stock) {
+      showToast(`⚠️ Stok ${prod.name} terbatas! Tersisa ${prod.stock} ${prod.unit || 'buku'}.`);
+      return currentQty;
+    }
+  }
+
   if (nextQty <= 0) {
     delete cart[productId];
   } else {
@@ -570,6 +580,22 @@ function renderProductCardItemHtml(p, cart) {
       <div class="p-2.5 sm:p-4 flex flex-col flex-1">
         <span class="text-[10px] sm:text-xs uppercase tracking-wider text-[--color-secondary] font-bold mb-1 truncate">${escapeHtml(p.category)}</span>
         <h3 class="font-bold text-gray-900 leading-tight mb-1 text-xs sm:text-sm sm:min-h-[2.5rem] line-clamp-2">${escapeHtml(p.name)}</h3>
+        ${
+          typeof p.stock === "number"
+            ? `<div class="mb-1.5">
+                ${
+                  p.stock > 0
+                    ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 animate-pulse">
+                        <svg class="w-3 h-3 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        <span>Sisa ${p.stock} ${escapeHtml(p.unit || "buku")} (Stok Terbatas)</span>
+                      </span>`
+                    : `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700 border border-red-200">
+                        <span>Stok Habis</span>
+                      </span>`
+                }
+              </div>`
+            : ""
+        }
         <p class="text-[11px] sm:text-xs text-gray-500 mb-1.5 line-clamp-2 flex-1">${escapeHtml(p.description)}</p>
         <div class="flex flex-wrap items-center gap-1.5 my-1.5 text-[10px] sm:text-[11px]">
           <span class="inline-flex items-center gap-1 bg-slate-50 text-slate-700 px-2 py-0.5 rounded-lg font-medium border border-slate-200/70 truncate max-w-full">
@@ -773,6 +799,15 @@ function renderProductGridHtml() {
 }
 
 function cartControl(productId, qty) {
+  const prod = PRODUCTS.find((p) => p.id === productId);
+  const isOutOfStock = prod && typeof prod.stock === "number" && prod.stock <= 0;
+
+  if (isOutOfStock) {
+    return `<button disabled class="w-full bg-gray-100 text-gray-400 text-xs sm:text-sm font-semibold py-2 rounded-xl cursor-not-allowed border border-gray-200">
+      Stok Habis
+    </button>`;
+  }
+
   if (qty === 0) {
     return `<button data-action="add" data-id="${productId}"
       class="w-full bg-[--color-primary] hover:bg-[--color-primary-dark] text-white text-sm font-semibold py-2 rounded-xl active:scale-95 transition flex items-center justify-center gap-1.5 shadow-sm">
