@@ -132,7 +132,7 @@ function addToCart(productId, delta = 1) {
 
   if (prod && typeof prod.stock === "number" && delta > 0) {
     if (nextQty > prod.stock) {
-      showToast(`⚠️ Stok ${prod.name} terbatas! Tersisa ${prod.stock} ${prod.unit || 'buku'}.`);
+      showToast(`Stok ${prod.name} terbatas: tersisa ${prod.stock} ${prod.unit || 'buku'}.`);
       return currentQty;
     }
   }
@@ -143,7 +143,7 @@ function addToCart(productId, delta = 1) {
     cart[productId] = nextQty;
   }
   setCart(cart);
-  showToast(delta > 0 ? "Ditambahkan ke keranjang 🛒" : "Keranjang diperbarui");
+  showToast(delta > 0 ? "Ditambahkan ke keranjang" : "Keranjang diperbarui");
   return cart[productId] || 0;
 }
 function setQtyExact(productId, qty) {
@@ -582,14 +582,15 @@ function renderProductCardItemHtml(p, cart) {
         <h3 class="font-bold text-gray-900 leading-tight mb-1 text-xs sm:text-sm sm:min-h-[2.5rem] line-clamp-2">${escapeHtml(p.name)}</h3>
         ${
           typeof p.stock === "number"
-            ? `<div class="mb-1.5">
+            ? `<div class="mb-1.5 flex items-center">
                 ${
                   p.stock > 0
-                    ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 animate-pulse">
-                        <svg class="w-3 h-3 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        <span>Sisa ${p.stock} ${escapeHtml(p.unit || "buku")} (Stok Terbatas)</span>
+                    ? `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-rose-50 text-rose-700 border border-rose-200/80">
+                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                        <span>Sisa ${p.stock} ${escapeHtml(p.unit || "buku")}</span>
                       </span>`
-                    : `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700 border border-red-200">
+                    : `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-gray-100 text-gray-500 border border-gray-200">
+                        <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
                         <span>Stok Habis</span>
                       </span>`
                 }
