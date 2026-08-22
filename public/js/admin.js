@@ -728,6 +728,14 @@ function renderProductsTable() {
     const profit = sellPrice - suppPrice;
     const margin = sellPrice > 0 ? ((profit / sellPrice) * 100).toFixed(0) : 0;
 
+    const booked = ALL_ORDERS
+      .filter((o) => o.status !== "dibatalkan")
+      .reduce((sum, o) => {
+        const found = (o.items || []).find((it) => String(it.productId || it.id).toLowerCase().trim() === String(p.id).toLowerCase().trim());
+        return sum + (found ? Number(found.qty) || 0 : 0);
+      }, 0);
+    const remaining = typeof p.stock === "number" ? Math.max(0, p.stock - booked) : null;
+
     return `
     <tr class="border-t border-gray-100 align-middle hover:bg-gray-50/60 transition">
       <td class="px-3 py-3">
@@ -735,9 +743,9 @@ function renderProductsTable() {
       </td>
       <td class="px-3 py-3">
         <p class="font-semibold text-gray-900">${escapeHtml(p.name)}</p>
-        <div class="flex items-center gap-1.5 mt-0.5">
+        <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
           <span class="text-[10px] bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full font-bold border border-purple-100">${escapeHtml(p.brand || "Betawi Asli")}</span>
-          ${typeof p.stock === "number" ? `<span class="text-[10px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded-full font-bold border border-amber-200">Stok: ${p.stock}</span>` : ""}
+          ${typeof p.stock === "number" ? `<span class="text-[10px] bg-rose-50 text-rose-700 px-2 py-0.5 rounded-md font-bold border border-rose-200">Sisa: ${remaining} buku (Terpesan: ${booked})</span>` : ""}
         </div>
       </td>
       <td class="px-3 py-3 text-xs"><span class="bg-blue-50 text-[--color-primary] px-2 py-1 rounded-full font-semibold border border-blue-100">${escapeHtml(p.category)}</span></td>
