@@ -80,22 +80,14 @@ router.post("/", async (req, res) => {
     }
 
     if (typeof product.stock === "number") {
-      const allOrders = db.getOrders() || [];
-      const totalBooked = allOrders
-        .filter((o) => o.status !== "dibatalkan")
-        .reduce((sum, o) => {
-          const found = (o.items || []).find((it) => String(it.productId).toLowerCase().trim() === String(product.id).toLowerCase().trim());
-          return sum + (found ? (Number(found.qty) || 0) : 0);
-        }, 0);
-      const remainingStock = Math.max(0, product.stock - totalBooked);
-      if (qty > remainingStock) {
-        if (remainingStock <= 0) {
-          return res.status(400).json({
-            error: `Mohon maaf, produk '${product.name}' sudah Sold Out (Habis Terjual).`,
-          });
-        }
+      if (product.stock <= 0) {
         return res.status(400).json({
-          error: `Mohon maaf, stok '${product.name}' hanya tersisa ${remainingStock} ${product.unit || "buku"}.`,
+          error: `Mohon maaf, produk '${product.name}' sudah Sold Out (Habis Terjual).`,
+        });
+      }
+      if (qty > product.stock) {
+        return res.status(400).json({
+          error: `Mohon maaf, stok '${product.name}' hanya tersisa ${product.stock} ${product.unit || "buku"}.`,
         });
       }
     }
@@ -129,6 +121,14 @@ router.post("/", async (req, res) => {
     status: STATUS_FLOW[0].key,
     proof: null,
   };
+
+  // Decrement product stock directly in database
+  for (const li of lineItems) {
+    const prod = db.findProductById(li.productId);
+    if (prod && typeof prod.stock === "number") {
+      db.updateProduct(prod.id, { stock: Math.max(0, prod.stock - li.qty) });
+    }
+  }
 
   db.saveOrder(order);
   await db.pushToKV(db.readDB());
