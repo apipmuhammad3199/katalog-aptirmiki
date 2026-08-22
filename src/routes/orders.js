@@ -44,95 +44,100 @@ const DELIVERY_METHODS = [
 
 // POST /api/orders -> buat pesanan baru
 router.post("/", async (req, res) => {
-  const { customer, items } = req.body || {};
+  try {
+    const { customer, items } = req.body || {};
 
-  const name = customer && customer.name ? String(customer.name).trim() : "";
-  const wa = customer && customer.wa ? String(customer.wa).trim() : "";
-  const instansi = customer && customer.instansi ? String(customer.instansi).trim() : "";
-  const method = customer && customer.method ? customer.method : "";
-  const detail = customer && customer.detail ? String(customer.detail).trim() : "";
-  const targetBank = customer && customer.targetBank ? String(customer.targetBank).trim() : "BCA";
+    const name = customer && customer.name ? String(customer.name).trim() : "";
+    const wa = customer && customer.wa ? String(customer.wa).trim() : "";
+    const instansi = customer && customer.instansi ? String(customer.instansi).trim() : "";
+    const method = customer && customer.method ? customer.method : "";
+    const detail = customer && customer.detail ? String(customer.detail).trim() : "";
+    const targetBank = customer && customer.targetBank ? String(customer.targetBank).trim() : "BCA";
 
-  if (!name || !wa || !instansi || !method) {
-    return res.status(400).json({ error: "Data pemesan belum lengkap." });
-  }
-  if (!DELIVERY_METHODS.includes(method)) {
-    return res.status(400).json({ error: "Metode pengambilan tidak valid." });
-  }
-  if (method !== "Ambil di Booth" && !detail) {
-    return res.status(400).json({ error: "Mohon isi detail lokasi pengiriman (nomor kamar / titik lokasi)." });
-  }
-  if (!Array.isArray(items) || items.length === 0) {
-    return res.status(400).json({ error: "Keranjang masih kosong." });
-  }
-
-  const dbProducts = db.getProducts();
-
-  const lineItems = [];
-  for (const item of items) {
-    const product = dbProducts.find((p) => p.id === item.productId) || products.find((p) => p.id === item.productId);
-    if (!product) {
-      return res.status(400).json({ error: `Produk tidak ditemukan: ${item.productId}` });
+    if (!name || !wa || !instansi || !method) {
+      return res.status(400).json({ error: "Data pemesan belum lengkap." });
     }
-    const qty = Number(item.qty);
-    if (!Number.isInteger(qty) || qty <= 0) {
-      return res.status(400).json({ error: `Jumlah tidak valid untuk ${product.name}` });
+    if (!DELIVERY_METHODS.includes(method)) {
+      return res.status(400).json({ error: "Metode pengambilan tidak valid." });
+    }
+    if (method !== "Ambil di Booth" && !detail) {
+      return res.status(400).json({ error: "Mohon isi detail lokasi pengiriman (nomor kamar / titik lokasi)." });
+    }
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ error: "Keranjang masih kosong." });
     }
 
-    if (typeof product.stock === "number") {
-      if (product.stock <= 0) {
-        return res.status(400).json({
-          error: `Mohon maaf, produk '${product.name}' sudah Sold Out (Habis Terjual).`,
-        });
+    const dbProducts = db.getProducts();
+
+    const lineItems = [];
+    for (const item of items) {
+      const product = dbProducts.find((p) => p.id === item.productId) || products.find((p) => p.id === item.productId);
+      if (!product) {
+        return res.status(400).json({ error: `Produk tidak ditemukan: ${item.productId}` });
       }
-      if (qty > product.stock) {
-        return res.status(400).json({
-          error: `Mohon maaf, stok '${product.name}' hanya tersisa ${product.stock} ${product.unit || "buku"}.`,
-        });
+      const qty = Number(item.qty);
+      if (!Number.isInteger(qty) || qty <= 0) {
+        return res.status(400).json({ error: `Jumlah tidak valid untuk ${product.name}` });
+      }
+
+      if (typeof product.stock === "number") {
+        if (product.stock <= 0) {
+          return res.status(400).json({
+            error: `Mohon maaf, produk '${product.name}' sudah Sold Out (Habis Terjual).`,
+          });
+        }
+        if (qty > product.stock) {
+          return res.status(400).json({
+            error: `Mohon maaf, stok '${product.name}' hanya tersisa ${product.stock} ${product.unit || "buku"}.`,
+          });
+        }
+      }
+      lineItems.push({
+        productId: product.id,
+        name: product.name,
+        brand: product.brand || "Umum",
+        price: product.price,
+        unit: product.unit,
+        qty,
+        subtotal: product.price * qty,
+      });
+    }
+
+    const total = lineItems.reduce((sum, li) => sum + li.subtotal, 0);
+    const id = db.nextOrderId();
+
+    const order = {
+      id,
+      createdAt: new Date().toISOString(),
+      customer: {
+        name,
+        wa,
+        instansi,
+        method,
+        detail,
+        targetBank,
+      },
+      items: lineItems,
+      total,
+      status: STATUS_FLOW[0].key,
+      proof: null,
+    };
+
+    // Decrement product stock directly in database
+    for (const li of lineItems) {
+      const prod = db.findProductById(li.productId);
+      if (prod && typeof prod.stock === "number") {
+        db.updateProduct(prod.id, { stock: Math.max(0, prod.stock - li.qty) });
       }
     }
-    lineItems.push({
-      productId: product.id,
-      name: product.name,
-      brand: product.brand || "Umum",
-      price: product.price,
-      unit: product.unit,
-      qty,
-      subtotal: product.price * qty,
-    });
+
+    db.saveOrder(order);
+    await db.pushToKV(db.readDB());
+    res.status(201).json(order);
+  } catch (err) {
+    console.error("Error creating order:", err);
+    res.status(500).json({ error: "Terjadi kesalahan pada server saat memproses pesanan: " + err.message });
   }
-
-  const total = lineItems.reduce((sum, li) => sum + li.subtotal, 0);
-  const id = db.nextOrderId();
-
-  const order = {
-    id,
-    createdAt: new Date().toISOString(),
-    customer: {
-      name,
-      wa,
-      instansi,
-      method,
-      detail,
-      targetBank,
-    },
-    items: lineItems,
-    total,
-    status: STATUS_FLOW[0].key,
-    proof: null,
-  };
-
-  // Decrement product stock directly in database
-  for (const li of lineItems) {
-    const prod = db.findProductById(li.productId);
-    if (prod && typeof prod.stock === "number") {
-      db.updateProduct(prod.id, { stock: Math.max(0, prod.stock - li.qty) });
-    }
-  }
-
-  db.saveOrder(order);
-  await db.pushToKV(db.readDB());
-  res.status(201).json(order);
 });
 
 // GET /api/orders/track?query=APT-8821 atau nomor WA

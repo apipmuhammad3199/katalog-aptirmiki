@@ -523,6 +523,12 @@ function clearAllOrders() {
   return true;
 }
 
+function findProductById(id) {
+  const data = readDB();
+  const targetId = String(id || "").toLowerCase().trim();
+  return (data.products || []).find((p) => String(p.id).toLowerCase().trim() === targetId);
+}
+
 module.exports = {
   DB_PATH,
   UPLOADS_DIR,
@@ -530,6 +536,7 @@ module.exports = {
   readDB,
   writeDB,
   getProducts,
+  findProductById,
   saveProduct,
   updateProduct,
   deleteProduct,
