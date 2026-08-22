@@ -1939,7 +1939,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "2-4 Bulan",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/fdc7c4b0-7cdd-46f8-af81-c5c9ad80ef5d.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=xPQgghRIgUYCHfITcUzFLG47jI0%3D&x-signature-webp=b3cw8Olr5T7%2B%2Fj24Lae7m5A0jM4%3D",
+    "image": "/images/products/sowan/sowan-103669625998.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/sekoteng-cemara-organik-isi-10bungkus-1736820675494315236?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -1953,7 +1953,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/9e6e092cd0f74fd1be92e6605e843339~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=bJDYUgPXLGKYwUcc1mAsjbjEKvQ%3D&x-signature-webp=JF5NmJ5NGJU%2FfMunGnpIbUEuzEI%3D",
+    "image": "/images/products/sowan/sowan-103075874546.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/kareem-package-ramadhan-kareem-edition-1734483102696703204?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -1967,7 +1967,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/0b98815ed18246438cfcd72109de9d91~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=JU%2BjzP2k%2B0LKx394L4cCSTn3Plc%3D&x-signature-webp=klck4TX49ggK5VRweOq7eAWDXDg%3D",
+    "image": "/images/products/sowan/sowan-103075873151.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/the-eid-package-ramadhan-kareem-edition-1734483047837369572?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -1981,7 +1981,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/525dafac0ce740f18959277b34567676~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=tqCt%2BbqhQULzDdN1lqp6xCaJMFM%3D&x-signature-webp=DJZm2Fh0fVbyXJ0qedJQMAcFpXw%3D",
+    "image": "/images/products/sowan/sowan-103075872336.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/ar-rumi-package-ramadhan-kareem-edition-1734483063081108708?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -1995,7 +1995,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "5-10 Hari",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/201ddd93bc974d56bf9473f1820f8db8~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=Neub5XBg9itgDGke6VEWIpXGoIk%3D&x-signature-webp=7p9Ok6QWtFSsfsBP5syCslnZDOg%3D",
+    "image": "/images/products/sowan/sowan-102074796605.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/manon-gassett-new-variant-brownies-pouch-1732173715713721572?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2009,7 +2009,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "5-10 Hari",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/0235305f4dac47658b8dc42905bdb712~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=LoBSPqdkDuIji0sAdmY1qCW%2Fuus%3D&x-signature-webp=oU5ZirmyOJb2D9womlPQ0yH0N2k%3D",
+    "image": "/images/products/sowan/sowan-102074784491.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/manon-brownies-gassett-pouch-1732173623284630756?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2023,7 +2023,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "14 Hari - 1 Bulan",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p19-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2025/3/17/be4ddea8-8c47-4c7b-ba72-11cf7c54fa84.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=Tccb2Qgy08no4gToBPq3WUdx9ps%3D&x-signature-webp=hrUn%2FCBhqOQkyGleABV2a6cIrTM%3D",
+    "image": "/images/products/sowan/sowan-16463254695.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/crepes-susu-lembang-semprong-1731029116246197476?extParam=whid%3D387005%26src%3Dshop"
   },
   {
@@ -2037,7 +2037,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2025/2/22/ad9a9ac1-d3ee-4225-8e02-4e299f45919d.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=QqI4R7ihndzK9bPq5rZDzQQ7ZAg%3D&x-signature-webp=mf5dSS6GkpKzhB3UvX7m6hGrupo%3D",
+    "image": "/images/products/sowan/sowan-16303214859.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/stick-kentang-pedas-jeruk-nipis-camilan-kekinian-1730900143371355364?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2051,7 +2051,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2025/2/22/306e9c8d-0062-4b8f-9d8d-70ba45650afc.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=fGpFxZyUuTV5we0rKNtSsxEaLLM%3D&x-signature-webp=%2Fs3Qet3Ee%2BqZqcqXgI53xU00Ejo%3D",
+    "image": "/images/products/sowan/sowan-16303193572.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/stick-singkong-kari-ayam-camilan-kekinian-1730900138046227684?extParam=whid%3D387005%26src%3Dshop"
   },
   {
@@ -2065,7 +2065,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2025/2/22/df782248-bde1-4fe7-ad28-f902828a8306.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=e79joH8Z99Pqf2l4gH5TI%2FxpSsk%3D&x-signature-webp=T6r1AzGHq8d%2FT094uo5eUSHQETI%3D",
+    "image": "/images/products/sowan/sowan-16303142615.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/egg-roll-delanggu-berat-240gr-1730900087780115684?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2079,7 +2079,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2025/2/22/b3eef657-e591-4a27-b4ad-e70a0ac362e9.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=gq2m%2FW9wPc%2FNR29dGhXBfG9PboY%3D&x-signature-webp=LWaNY8r9SFOIAZLD61pKWFNuEVk%3D",
+    "image": "/images/products/sowan/sowan-16303090664.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/monas-manis-oleh-oleh-jakarta-225gr-1730900071394215140?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2093,7 +2093,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "2-4 Bulan",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p19-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2025/2/22/921f5586-cec6-45b6-99fe-c2cc5e395320.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=w7on8qZCyBr4xUYRjJ63%2BgFyl8o%3D&x-signature-webp=FgYZ3cPa04tuRIndpOhvpjOpKXo%3D",
+    "image": "/images/products/sowan/sowan-16302775922.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/picnic-dodol-dol-coc117gr-1730899889042326756?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2107,7 +2107,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "5-10 Hari",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2023/2/8/a878a1ef-e58e-4aa1-a9dd-4f92355f5bec.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=NPVnceBDTL7I76%2FtdWH9VBxjoGQ%3D&x-signature-webp=uzJZuLukdUxGoKXLbivDBqmwoPM%3D",
+    "image": "/images/products/sowan/sowan-7863985403.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/manon-brownies-gasset-new-variant-hokkaido-milk?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2121,7 +2121,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "14 Hari - 1 Bulan",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/29/94cb1f5b-9d35-4d95-8943-13c6d2b97f58.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=fQx7wkeuIzOLHQ8mJ6ZAZmR464s%3D&x-signature-webp=ITgcI3yDSogl%2B3DqnAcO6LpF0cE%3D",
+    "image": "/images/products/sowan/sowan-7352566432.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/pie-susu-khas-lembang-original?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2135,7 +2135,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/d6ad864c-5e16-4b3f-a3dd-c523980e274c.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=1WcQUZzg6q4QHMZZOsZJTgsE3ig%3D&x-signature-webp=TDCgJ1DMKHebNDV%2B%2BlR0gLWo99E%3D",
+    "image": "/images/products/sowan/sowan-3691437800.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/dus-sowan-ukuran-s?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2149,7 +2149,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/12bded4d-3b4d-4ca2-8630-8b18258ee883.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=DkgdU%2BxwYmrdmmLQj0AkUvRlLos%3D&x-signature-webp=%2Fl8j1S0HfJ6FlyXn6z8OleJ5rTk%3D",
+    "image": "/images/products/sowan/sowan-3598182317.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/soponyono-tempe-daun-jeruk?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2163,7 +2163,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "2-4 Bulan",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/10cbe462-2e71-4ac8-a940-5ac92c8f8b9d.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=RKfEgfWNL20MgnVtAxltK9YNlek%3D&x-signature-webp=RRz%2FRGuiH0Jdt6Y4uHo8%2FI%2BKLi0%3D",
+    "image": "/images/products/sowan/sowan-3494087207.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/debby-kerupuk-palembang-kemplang-getas-bangka-ultra-kemplang-bakar?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2177,7 +2177,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "2-4 Bulan",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/f8bff23e-8bc6-4e79-9352-c3a74d14faa1.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=NOtnUWalujZ%2BuER316Zv1GK1WsY%3D&x-signature-webp=xrI5CoNTIqy1sBtyeBUqDI9%2Bm7I%3D",
+    "image": "/images/products/sowan/sowan-3322711802.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/keripik-singkong-soponyono?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2191,7 +2191,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "5-10 Hari",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p19-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/cad72e26-e42f-4f8f-b0d7-e65339734330.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=TnKSEcEWoq6P%2BqhOFh532HtlkS4%3D&x-signature-webp=prjUQxIaJprlr4dSWyRLyL4AimE%3D",
+    "image": "/images/products/sowan/sowan-2084891078.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/bakpia-pathok-53-cokelat?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2205,7 +2205,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "2-4 Bulan",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/3/8/ef6dcc30-0699-46c4-bd11-de628338dfdd.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=PZV1omr0Z53gFjSGOZrOF3%2BfW8M%3D&x-signature-webp=AkaRylDFNeqUlHkBIkcRVWtVS%2BY%3D",
+    "image": "/images/products/sowan/sowan-1491010288.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/dodol-picnic-garut-klasik-500-gr-sowan?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2219,7 +2219,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "5-10 Hari",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/237af791-e401-4b29-8bf1-d40d7b85ebd2.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=Hg1qe4%2BHjQ%2Fs0kqsalapxsMZ6NU%3D&x-signature-webp=SdSrPxy4iqas9FgSlyHmANruno4%3D",
+    "image": "/images/products/sowan/sowan-1316958691.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/manon-brownies-sunkist-gusset?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2233,7 +2233,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "5-10 Hari",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/b7e86684-eb70-4680-96cb-e1bef05d6b38.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=x9eDdgLxzxn%2F83b0%2Bw%2F6HbbvqFg%3D&x-signature-webp=erGi6cziMoESxG2MN7w%2F%2Fg4Fjj8%3D",
+    "image": "/images/products/sowan/sowan-1316955022.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/manon-brownies-double-almond-gusset?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2247,7 +2247,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "5-10 Hari",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/89e8cda9-1fbe-4f1d-8696-7d82bc641f70.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=3lpQPRf2h4af7sc9kBg1RpbfpjQ%3D&x-signature-webp=bDHeIsYjOYlSZ%2BlfEch0Ndt1sjY%3D",
+    "image": "/images/products/sowan/sowan-854577947.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/lapis-legit-mini-sowan-dengan-wijsman-butter?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2261,7 +2261,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/91ea71a2-0787-493c-9a22-3f89c078de77.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=Tjd1fICHU%2FyQEnhWVS0qkYTUes0%3D&x-signature-webp=M5Srad1CXP5THDgxCjCVvakTQKE%3D",
+    "image": "/images/products/sowan/sowan-3323118445.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/marina-bandeng-presto-cabut-tulang?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2275,7 +2275,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/25613206-8c6b-4639-a6db-3a33aecc00a9.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=dMooz8zWKSlc%2BnKU8GMhugFXG18%3D&x-signature-webp=vPzpEl1cBuomn6JAOMbx42OkiRo%3D",
+    "image": "/images/products/sowan/sowan-609587074.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/getas-bangka?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2289,7 +2289,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/d124fd4e-2d08-469d-84f8-2bd286045598.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=X0y0q6X84ohxfGR5%2FTU5UYdvUiY%3D&x-signature-webp=vtXP3fwTJ0KL1I9bhR%2FyhAhHPzw%3D",
+    "image": "/images/products/sowan/sowan-7360887426.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/manisan-buah-pala?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2303,7 +2303,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/3c5c79f8-af32-4ebf-9fd8-ecb5d001b899.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=RIn%2FUDICJCGImvE8MsDtJLjUDq8%3D&x-signature-webp=CuYleWfZvd%2FF%2BJId7fZTM7k4Tic%3D",
+    "image": "/images/products/sowan/sowan-609563922.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/food-luck-salted-egg?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2317,7 +2317,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/44bf50d9-6085-4ddb-9f93-4890e208c876.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=%2BWPFiG47EscSKZtsW7Zmt9h%2Bd%2FI%3D&x-signature-webp=Y2JkeRfe%2Fne8prWUihaKFXrE%2Fic%3D",
+    "image": "/images/products/sowan/sowan-2074096253.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/food-luck-original?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2331,7 +2331,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "2-4 Bulan",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/fdc7c4b0-7cdd-46f8-af81-c5c9ad80ef5d.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=xPQgghRIgUYCHfITcUzFLG47jI0%3D&x-signature-webp=b3cw8Olr5T7%2B%2Fj24Lae7m5A0jM4%3D",
+    "image": "/images/products/sowan/sowan-589843177.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/sekoteng?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2345,7 +2345,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2025/3/17/a1e82f28-5756-4d79-a32c-49a3affbd515.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=QVjblzmwqjYNNeY2wCsBTgeTuEA%3D&x-signature-webp=YSbX33h2e9zLoyaWTM79FNVtrlw%3D",
+    "image": "/images/products/sowan/sowan-589838532.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/ting-ting-gepuk?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2359,7 +2359,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/ef739e3f-6792-48b3-b553-afbd419f2848.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=xP%2BEfiViLQMrel8IG9xE1TN24w8%3D&x-signature-webp=xerTNpX8cXUolfiEFipj9f9UmzU%3D",
+    "image": "/images/products/sowan/sowan-568000362.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/enting-enting-geti?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2373,7 +2373,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "5-10 Hari",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/5382c07c-89f3-4d23-bcab-77f98c64e5fb.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=PDtMNDTUfVRy8gFJUflqpt5T1Jo%3D&x-signature-webp=4pIyiBaWKiYUYu4vdhA9ME7mO4s%3D",
+    "image": "/images/products/sowan/sowan-529605427.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/brownies-bito?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2387,7 +2387,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "5-10 Hari",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/694aa736-be97-422c-af28-72ace67edf90.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=PfS2tF%2FGKtTgHfdN5zyQGoneOw0%3D&x-signature-webp=DMhdn1ZktrMZFZi9vFGPBSW2Zo8%3D",
+    "image": "/images/products/sowan/sowan-525275101.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/manon-brownies-original-gusset?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2401,7 +2401,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "5-10 Hari",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/e02bfef5-e86b-43b0-8321-7ba8dc4baa2e.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=nYHskBIe9KSPZ6jsirAfsNRmu6A%3D&x-signature-webp=Nj5Ix7t03N8BWwr6SWt47aHLuSI%3D",
+    "image": "/images/products/sowan/sowan-6994123432.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/lapis-legit-sowan-original?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2415,7 +2415,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "2-4 Bulan",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/5910fe08-ac19-4588-9e00-44bf97409175.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=hvBEVWwniilEdVgyK%2BYKKXyhRPI%3D&x-signature-webp=AWGttB8nR4OzZJmiFA2r%2Bd9JP28%3D",
+    "image": "/images/products/sowan/sowan-3157202713.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/dodol-picnic-gift-cokelat?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2429,7 +2429,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/66a6701f-8cf1-4b72-844a-278788784345.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=pyVATsy8UEGaMZ2Wpexvp2hnqFM%3D&x-signature-webp=oXS3zCaJ5Nb3pPKekIzMq22Gyrk%3D",
+    "image": "/images/products/sowan/sowan-466423476.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/nastar-manon?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2443,7 +2443,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p19-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/fc62a6bc-de77-45ed-9bf0-00df0614b4ba.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=sAQNR9RML4CWV9A0TyV%2FhdfYtNw%3D&x-signature-webp=stBt9TQLdqBcD6OHCsO36KVucsc%3D",
+    "image": "/images/products/sowan/sowan-335629413.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/gudeg-bagong-sayap-ayam-tahu?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2457,7 +2457,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/product-1/2017/11/9/5492430/5492430_c3a9b334-bcb7-4f2c-a01e-464203d0bd9e_1500_1500.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=HoGId3X8fD1Vljb9jHtky1frQvA%3D&x-signature-webp=zuhiKQC91xejhFr4momwps6p1JM%3D",
+    "image": "/images/products/sowan/sowan-334467657.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/tambahan-plastik-bubble-wrap-untuk-packing-1?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2471,7 +2471,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "2-4 Bulan",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p19-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/774a4bbf-f089-469e-8cb8-bb56f0f670f5.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=THEJayPf%2Fr%2BgENlG1MBhaJnz%2FsY%3D&x-signature-webp=3oNfSrev6%2BP%2FKPNBdZJe3vjQgGo%3D",
+    "image": "/images/products/sowan/sowan-297023715.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/dodol-picnic-classic?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2485,7 +2485,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/product-1/2018/4/27/5492430/5492430_13aa40cb-7704-4b17-8a3a-cdb4ad3322e6_650_433.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=7fOq2YwEBkd3avFOx23BPsdmNRY%3D&x-signature-webp=UD2%2FReCdqxw1DpXAOlvQc3uqerw%3D",
+    "image": "/images/products/sowan/sowan-284203051.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/ayam-ungkep-asli-jogja-frozen?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2499,7 +2499,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/2/8/7673a0ce-4cc8-4804-9b83-06d6e6ff6e25.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=RZrU5qJGLsd5IZe4evzTwVFZDhM%3D&x-signature-webp=SKY4hbhtI0x%2BbYQ%2FlRw%2BAM9flOw%3D",
+    "image": "/images/products/sowan/sowan-262277866.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/sundo-klopo-akar-kelapa-khas-jakarta?extParam=whid%3D387005%26src%3Dshop"
   },
   {
@@ -2513,7 +2513,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/2/8/0615f911-5804-416d-bc81-f85f68936d8d.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=ShM1KO1d1XyhA7Jv5TYHsNTiJMk%3D&x-signature-webp=PDLKblcvA7s7rBozKDMTabSinQw%3D",
+    "image": "/images/products/sowan/sowan-262276667.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/sundo-klopo-kembang-goyang-khas-jakarta?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2527,7 +2527,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/f0139c33-c3bb-437d-bb1a-51343d125cfa.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=wM7EwVeMwud9fxl0oYpK6u59G3s%3D&x-signature-webp=G26A9v%2FZEokEpyRLF96sIHQOUtU%3D",
+    "image": "/images/products/sowan/sowan-262276138.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/sundo-klopo-biji-ketapang-khas-jakarta?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2541,7 +2541,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/67499845-e988-4a0a-990c-f8930ce9b9b1.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=q0IdGLR445lNX56FWO%2Bk0jabYJU%3D&x-signature-webp=oyOo9T5rS3Ja%2ByriFGx5nr4gca4%3D",
+    "image": "/images/products/sowan/sowan-258109229.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/kacang-matahari-asin?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2555,7 +2555,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/9645593f-2eab-4777-9383-2abc26a19827.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=HNYu5MwHhZtwsmngVSTXT9GeMBs%3D&x-signature-webp=fYGR2nI2XUmuPlv3RxDmreLavlc%3D",
+    "image": "/images/products/sowan/sowan-258108949.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/kacang-matahari-manis?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2569,7 +2569,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2024/3/16/2aa040ce-a9c9-41a6-b926-efd1547d0a52.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=BqSwUZpYcCkV34hBKnaRaDft1Hs%3D&x-signature-webp=966vNsC4GBYUtHiEo6fBYZ1CK%2BQ%3D",
+    "image": "/images/products/sowan/sowan-258107527.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/lanting-kebumen?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2583,7 +2583,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/ea51f7da-356b-4f8b-b039-3139f4d39f41.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=CcvQFF3qdCHqswiOthRV8fKX2%2BE%3D&x-signature-webp=3YXnqfcS8%2BlL67VqCNo2o0GKlJY%3D",
+    "image": "/images/products/sowan/sowan-241391700.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/manisan-mangga-basah-cirebon?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2597,7 +2597,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/3694a30d-f2aa-4ef5-ab8e-ac1cd32888cc.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=EjMuMn06ndzJOW%2Buag4IINlsmno%3D&x-signature-webp=NQ39JxC3rZEOZiXrN3%2B%2FBKeGrPw%3D",
+    "image": "/images/products/sowan/sowan-2073747943.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/sambal-pecel-khas-kediri-gopeng-pedas?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2611,7 +2611,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "5-10 Hari",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/product-1/2017/11/27/5492430/5492430_469e70d6-e6ad-4518-a31f-e3138d258ed9_640_480.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=kg3nHELQxTjS1P6XOndyAMfC28E%3D&x-signature-webp=QkSg7Wy67ctA2gCV%2Fq%2FdWjsuJF4%3D",
+    "image": "/images/products/sowan/sowan-236498096.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/bakpia-pathok-53-crispy?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2625,7 +2625,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/ed355e02-f1cb-4bc8-987c-2e52c74dd69c.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=HpXuXJC278fHl8RtQVdZckZi94E%3D&x-signature-webp=AY3y3yvNGmMNvyRPvYiI0jscWeA%3D",
+    "image": "/images/products/sowan/sowan-230924760.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/ledre-pisang?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2639,7 +2639,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/product-1/2017/11/9/5492430/5492430_c3a9b334-bcb7-4f2c-a01e-464203d0bd9e_1500_1500.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=HoGId3X8fD1Vljb9jHtky1frQvA%3D&x-signature-webp=zuhiKQC91xejhFr4momwps6p1JM%3D",
+    "image": "/images/products/sowan/sowan-226895722.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/tambahan-plastik-bubble-wrap-untuk-packing?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2653,7 +2653,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/4994af15-614b-436f-b80d-f1c510c6380c.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=J1PoSgN7gfEoz1Ak7JTADvFU5Hg%3D&x-signature-webp=nelkwkXkTVIxF55U3MZixFvq%2BHA%3D",
+    "image": "/images/products/sowan/sowan-223775326.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/emping-melinjo-manis?extParam=whid%3D387005%26src%3Dshop"
   },
   {
@@ -2667,7 +2667,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p19-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/product-1/2017/10/11/5492430/5492430_831caef9-b52e-44fc-9859-d00e7d6d6773_480_640.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=XA7Dkne8GgLyld9CXJl0EO2M3YQ%3D&x-signature-webp=B%2Bjz9DBhMAE30SeS6I1v90ch%2FpE%3D",
+    "image": "/images/products/sowan/sowan-216964023.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/cahaya-telur-gabus-keju?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2681,7 +2681,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "2-4 Bulan",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/89213182-b97a-465d-b61c-4951552a87b8.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=1kNegKbZ65KWIhHfo6FkrIIIw4k%3D&x-signature-webp=U%2B860BabfPdJ9Ro4GZDR%2FOco%2BQk%3D",
+    "image": "/images/products/sowan/sowan-2249630260.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/dodol-picnic-garut-cocopandan?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2695,7 +2695,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2024/3/14/cc3cea40-8adc-45b9-abfa-04cfeaa2132c.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=fvdVTDMkEJtfy5rECFqsiUcjp78%3D&x-signature-webp=fiiESf6%2FcOAsRHtJs%2BVdxgL3S5w%3D",
+    "image": "/images/products/sowan/sowan-12929191745.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/wedang-uwuh-original-lemon-28f74?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2709,7 +2709,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/188b146d-86c6-4c05-b5cc-4e1ca19d198c.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=KaV1zdkLLMKq5NwLIfiQuB18mt4%3D&x-signature-webp=Key0iAhEVuCkDjCQEaeGqMmxPdM%3D",
+    "image": "/images/products/sowan/sowan-2072431572.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/picnic-nasi-liwet-instan-original?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2723,7 +2723,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/3240ff54-a56a-41ae-b699-0eb87a4807eb.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=%2F6lx%2FgNn4b15HJFGS85k4mEadW8%3D&x-signature-webp=%2BxU36skxQXggxlDBy7DPPHeoFBE%3D",
+    "image": "/images/products/sowan/sowan-209866613.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/picnic-nasi-kuning-original?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2737,7 +2737,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/a60edfec-b428-4d06-8357-69712006bd84.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=j4czU20BnB89P2njiaykCc%2FnxjE%3D&x-signature-webp=Qxdkd%2BmdsDNs30smDkwp85CaJ6Y%3D",
+    "image": "/images/products/sowan/sowan-209234997.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/tempe-bulat?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2751,7 +2751,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "5-10 Hari",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/af882c3f-f2a9-4e27-a6c4-44876d5891cd.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=S8f1Ae7y5QDhTBub1vT0AlsucWM%3D&x-signature-webp=%2BXhGdRT%2FKo5x3pCTRjt1Na%2FKGJs%3D",
+    "image": "/images/products/sowan/sowan-208244863.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/brownies-manon-almond-choco-chunks?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2765,7 +2765,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "5-10 Hari",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/cb12ad0d-1ce1-4ee1-a72f-8d6cf23a7a0d.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=Sab%2Bv%2BsnvxOD9uTP%2BfCSu69XGsI%3D&x-signature-webp=LEHYCQSEJ%2FQ%2BbfOGjPrRz%2FPArPM%3D",
+    "image": "/images/products/sowan/sowan-208244400.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/brownies-manon-almond?extParam=whid%3D387005%26src%3Dshop"
   },
   {
@@ -2779,7 +2779,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "5-10 Hari",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/a5053f90-4e64-4b37-bd08-fcfb5d04eeac.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=wQPu9eFmwDMCbIh9WysBuofJuiA%3D&x-signature-webp=a92EFvQAKnYKwb%2FtzH6%2FbWEJI0E%3D",
+    "image": "/images/products/sowan/sowan-208244009.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/brownies-manon-original?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2793,7 +2793,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/653e04e1-f8e7-4ef7-956b-cede8024a7b1.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=KyumnI7OaXblAGtMnkLEbgpxO7g%3D&x-signature-webp=lLt3G7YR2mrOho5Uv8ydHayClbA%3D",
+    "image": "/images/products/sowan/sowan-208218150.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/ikan-jambal-toples?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2807,7 +2807,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "2-4 Bulan",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/ada5ced0-f0ad-48e0-ae8d-0f22cb974230.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=UqEIZL367EEL5nncSwo88wcpmNs%3D&x-signature-webp=OWcS4bK7Pm6WfSh5l7IdtVafopA%3D",
+    "image": "/images/products/sowan/sowan-207515356.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/manisan-mangga-kering-cirebon?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2821,7 +2821,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "2-4 Bulan",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/108772e7-0d68-4a75-bc39-754fc8a2964b.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=MeP89ZU2R9YOfLWsPs2NYadACFo%3D&x-signature-webp=P2qCv%2F%2BPem%2Fwq3wQBT5WoLWPH0Y%3D",
+    "image": "/images/products/sowan/sowan-207502596.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/dodol-picnic-garut-besar?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2835,7 +2835,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/cd0b99e9-3bc2-41d7-891a-94ee26088589.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=BhumYZax4TXH%2BrBb6SzfYOp89%2BY%3D&x-signature-webp=F39ragYLN2rIzGKHXOeokbKOe2g%3D",
+    "image": "/images/products/sowan/sowan-207127064.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/blinjo-pedas-soponyono?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2849,7 +2849,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/efab5c0c-be21-477c-b2b8-5d627b15e3d9.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=g5aPdxrGv6FmFczGaS8jdy7NSsc%3D&x-signature-webp=4jolPDVsZngS3WMOkQPN%2ByT7W1s%3D",
+    "image": "/images/products/sowan/sowan-7091961471.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/brem-cap-suling-gading-aneka-kecil?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2863,7 +2863,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/7dad9d97-6734-4354-822e-d5d98ef96ba5.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=mRks50vckLednJp24UMKQD%2BlyRY%3D&x-signature-webp=wdHO1Tmb5hPS7oOLptLdUOtfY%2BM%3D",
+    "image": "/images/products/sowan/sowan-203611113.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/brem-cap-suling-gading-aneka?extParam=whid%3D387005%26src%3Dshop"
   },
   {
@@ -2877,7 +2877,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "2-4 Bulan",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/3/8/992f2d48-6185-4421-9815-f1e807610484.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=to9ATd9CClfkVZp5EceJ9aBufKg%3D&x-signature-webp=wrSHgobKkuOqsgVqFibtYoBzaWI%3D",
+    "image": "/images/products/sowan/sowan-202809090.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/dodol-garut-picnic-biru?extParam=whid%3D387005%26src%3Dshop"
   },
   {
@@ -2891,7 +2891,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "2-4 Bulan",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/f0437d7e-b223-4c49-904d-4d53dba28708.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=GGEAkz4w%2BgiQFEmBrCNl%2BQzIuCg%3D&x-signature-webp=Uxa7CJ7DvIKitVNi6%2B6yeCB2Y98%3D",
+    "image": "/images/products/sowan/sowan-7089709587.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/dodol-picnic-aneka-rasa-box-hijau?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2905,7 +2905,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "2-4 Bulan",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p19-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/0cf89f56-96e8-45b9-81fa-88fb6e846361.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=R%2Foq3sNuywVTW8zLfQZP36uxL5Q%3D&x-signature-webp=4Gxb5kou6%2FeQolTBw4QGaLXhxik%3D",
+    "image": "/images/products/sowan/sowan-7089718981.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/dodol-picnic-aneka-rasa-box-coklat?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2919,7 +2919,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/d71d6d00-83f5-4758-ac42-c7af82dac597.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=OaCj16M8HHoE3k0KIX6cLfnief4%3D&x-signature-webp=JvzzXwNXctqvY%2Fh4INjEAC1IcdU%3D",
+    "image": "/images/products/sowan/sowan-201928287.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/kremes-ubi-ungu?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2933,7 +2933,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/d23dfc7a-10de-4262-9a4e-666bd78be411.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=QnA%2F8Deha6uwI7h9W0btFRLGCSs%3D&x-signature-webp=bGHReP9Ghx40iP9eCZ1cuwfi5rk%3D",
+    "image": "/images/products/sowan/sowan-201919705.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/kemriuk-sale-pisang?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2947,7 +2947,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/product-1/2017/8/15/5492430/5492430_5a97556b-1f8d-4bd4-bb8e-6b8388baee86_1000_1000.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=Rva7C2vldUwnF9LIVQYaBsHkjAE%3D&x-signature-webp=ZPQ0Z0VYnaxaZRnkr5OfD8WgKd8%3D",
+    "image": "/images/products/sowan/sowan-201711714.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/rengginang-ketan-terasi?extParam=whid%3D387005%26src%3Dshop"
   },
   {
@@ -2961,7 +2961,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/product-1/2017/8/15/5492430/5492430_5f34e06a-b272-44c4-85f4-fe3199982c84_1000_1000.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=n8n8iCnM4IoKrViGS%2Fh6ORDP5qk%3D&x-signature-webp=AU2F%2FqvxrKmArwsajx51K4W62ao%3D",
+    "image": "/images/products/sowan/sowan-201711271.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/rengginang-ketan-hitam?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2975,7 +2975,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/2e0dc9d6-5a3d-4abb-a160-18749b6ce3c2.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=ShAtsWJS5DGcIWO97UDIDg4k6bo%3D&x-signature-webp=xNIOxxDKbdofexXetIPUxc0CZNw%3D",
+    "image": "/images/products/sowan/sowan-198673568.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/es-ampyang?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -2989,7 +2989,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/d9c67620-2dae-4ccb-b078-4acd3e365382.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=fPHue7k486cA9jPDAjsgAvIMHxA%3D&x-signature-webp=5MwLZsI3YQc0TgNDQhiqaMtpQtU%3D",
+    "image": "/images/products/sowan/sowan-7359614875.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/jj-semprong-pisang-suji?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -3003,7 +3003,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/product-1/2017/4/20/5492430/5492430_cdb49c08-46a6-4168-997e-b9790eb1c173_1024_768.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=cPUlYC4stc5rAqMYtnM0FYKkdQ4%3D&x-signature-webp=J8ttYbRCdRWCuyuIR50rS%2Fmxhn0%3D",
+    "image": "/images/products/sowan/sowan-174858913.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/jj-semprong-coklat?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -3017,7 +3017,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/12/30/44c8a079-c758-455d-93ff-0fcf48009491.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=MWsqbvY7crZ3PFZ6xDxneoNJLB8%3D&x-signature-webp=Iwt4ZWSKfHqi042NmzAVGEaHJ74%3D",
+    "image": "/images/products/sowan/sowan-95708683.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/bagelen-special-batter?extParam=whid%3D387005%26src%3Dshop"
   },
   {
@@ -3031,7 +3031,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/0a4afd2a-7b88-45c3-89df-8a951dd6fe5f.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=3qgR6DT2czNNH6L4D2SclzRfXX0%3D&x-signature-webp=zz%2BgK%2F81jLQ5i0tuu6bvLzWxOq0%3D",
+    "image": "/images/products/sowan/sowan-95701674.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/bagelen-special-cheese?extParam=whid%3D387005%26src%3Dshop"
   },
   {
@@ -3045,7 +3045,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/product-1/2015/11/19/5492430/5492430_57392e3e-7d3d-441e-a3df-aedbade11915.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392255&x-signature=gTAODjUagKP1pdyZCSbB1KrvUyk%3D&x-signature-webp=5WdZNI%2BsiJAkRiPerxyXXwj5Qts%3D",
+    "image": "/images/products/sowan/sowan-24355111.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/singkong?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -3059,7 +3059,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/VqbcmM/2022/11/29/370fcb59-7681-4549-88ee-a15c34af3bf5.png~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392256&x-signature=HNEVl7tjwJd%2BgaaTamxXBe2jQK4%3D&x-signature-webp=rAgtM01da1DIxWrCysa2rYVfTB8%3D",
+    "image": "/images/products/sowan/sowan-23411508.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/gepuk-ny-yong?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -3073,7 +3073,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/product-1/2017/4/20/23410978/23410978_dedd8c1b-b612-48bb-9ca4-04e35e45062d_1024_768.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392256&x-signature=YxpZJHlRbiIj%2B%2FeOfiWJwNVT9Vw%3D&x-signature-webp=0XkDy4W9Lf91HApYfaU0zAKlufc%3D",
+    "image": "/images/products/sowan/sowan-23410978.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/pia-nyonya-surabaya?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -3087,7 +3087,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/product-1/2015/11/5/5492430/5492430_34a0ce13-6788-4b8b-9354-daf6b45be40c.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392256&x-signature=6lUccYEAZBK9R7ScjyXCkUamnus%3D&x-signature-webp=gVs2f5qj4UfS9qEjhZlLnEVl9Pc%3D",
+    "image": "/images/products/sowan/sowan-23183122.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/sagon-bakar?extParam=whid%3D387005%26src%3Dshop"
   },
   {
@@ -3101,7 +3101,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/product-1/2015/11/5/5492430/5492430_56907aa2-0116-4a2d-87d9-369b8ec29fb5.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392256&x-signature=SVZOpMt%2Bkssorx%2B%2FEQNrpd1qD6I%3D&x-signature-webp=LSEEWTD%2B3yP8z19FGzMoi69k%2FrA%3D",
+    "image": "/images/products/sowan/sowan-23180226.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/teh-dapur-solo?extParam=src%3Dshop%26whid%3D387005"
   },
   {
@@ -3115,7 +3115,7 @@ const products = [
     "origin": "Oleh-Oleh Sowan (Sunter, Jakarta)",
     "expiryDetail": "Tahan Lama",
     "description": "Produk original resmi Oleh-Oleh Sowan Tokopedia. Kualitas premium terjamin dengan cita rasa otentik Nusantara.",
-    "image": "https://p16-images-sign-sg.tokopedia-static.net/tos-alisg-i-aphluv4xwc-sg/img/product-1/2015/11/4/5492430/5492430_227a3756-222b-4c2c-8748-c8ca12fee836.jpg~tplv-aphluv4xwc-origin-jpeg.jpeg?lk3s=7a10017b&x-expires=1787392256&x-signature=%2Fq7kKlIBygL3Li%2FQ4SExrnyQEug%3D&x-signature-webp=a5sP3dbQepDFqa%2FMxyca5uxKDnY%3D",
+    "image": "/images/products/sowan/sowan-23103582.jpg",
     "tokopediaUrl": "https://www.tokopedia.com/oleholehsowan/singkong-caramel?extParam=src%3Dshop%26whid%3D387005"
   }
 ];
