@@ -326,6 +326,7 @@ function setView(html) {
 function renderKatalog() {
   const brandTabs = [
     { id: "Semua", label: "Semua Produk" },
+    { id: "Buku", label: "Buku Rekam Medis & Audit" },
     { id: "Kartika Sari", label: "Kartika Sari Bandung" },
     { id: "Aksesoris", label: "Aksesoris Kartika Sari" },
     { id: "MAMADEE", label: "Kopi MAMADEE" },
@@ -352,28 +353,43 @@ function renderKatalog() {
         <div class="flex flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
           <div class="flex items-start gap-3.5">
             <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/25 backdrop-blur-sm">
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M10.3 3.5h3.4L21 17.2a1.5 1.5 0 01-1.3 2.3H4.3A1.5 1.5 0 013 17.2L10.3 3.5z" />
+              <svg class="h-6 w-6 text-yellow-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div class="min-w-0">
               <div class="mb-1 flex flex-wrap items-center gap-2">
-                <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-blue-100">Pemberitahuan penting</p>
-                <span class="rounded-full bg-red-500 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide shadow-sm">Segera ditutup</span>
+                <span class="rounded-full bg-emerald-500 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide shadow-sm flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                  Pemesanan Sudah Dibuka Hari Ini
+                </span>
+                <span class="rounded-full bg-amber-400 text-gray-900 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide shadow-sm">
+                  Penyerahan: Senin Pagi
+                </span>
               </div>
-              <p class="text-sm font-bold leading-snug sm:text-base">Batas akhir pemesanan oleh-oleh</p>
-              <p class="mt-1 text-xs leading-relaxed text-blue-100 sm:text-sm">Pastikan pesanan Anda masuk sebelum batas waktu.</p>
+              <p class="text-sm font-bold leading-snug sm:text-base">Katalog Pemesanan Oleh-Oleh Resmi APTIRMIKI</p>
+              <p class="mt-1 text-xs leading-relaxed text-blue-100 sm:text-sm">Silakan pilih dan pesan oleh-oleh khas Bandung & UMKM sekarang sebelum batas waktu penutupan.</p>
             </div>
           </div>
-          <div class="flex shrink-0 items-center gap-3 rounded-xl border border-white/20 bg-white/10 px-3.5 py-2.5 backdrop-blur-sm sm:min-w-[220px] sm:justify-center">
-            <svg class="h-5 w-5 shrink-0 text-blue-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-              <circle cx="12" cy="12" r="9" />
-              <path stroke-linecap="round" d="M12 7v5l3 2" />
-            </svg>
-            <div>
-              <p class="text-[10px] font-medium uppercase tracking-wider text-blue-100">Ditutup pada</p>
-              <p class="text-sm font-bold leading-tight sm:text-base">Minggu, 23 Agustus</p>
-              <p class="mt-0.5 text-xs font-semibold text-white">09.00 WIB</p>
+          <div class="flex shrink-0 flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3">
+            <div class="flex items-center gap-2.5 rounded-xl border border-white/20 bg-white/10 px-3.5 py-2 backdrop-blur-sm">
+              <svg class="h-5 w-5 shrink-0 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="9" />
+                <path stroke-linecap="round" d="M12 7v5l3 2" />
+              </svg>
+              <div>
+                <p class="text-[9px] font-medium uppercase tracking-wider text-blue-100">Batas Akhir (Close Order)</p>
+                <p class="text-xs sm:text-sm font-bold leading-tight text-white">Minggu Pagi, 09.00 WIB</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5 rounded-xl border border-white/20 bg-white/10 px-3.5 py-2 backdrop-blur-sm">
+              <svg class="h-5 w-5 shrink-0 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+              </svg>
+              <div>
+                <p class="text-[9px] font-medium uppercase tracking-wider text-blue-100">Penyerahan Oleh-Oleh</p>
+                <p class="text-xs sm:text-sm font-bold leading-tight text-white">Senin Pagi (Lokasi Acara)</p>
+              </div>
             </div>
           </div>
         </div>
@@ -592,10 +608,12 @@ function renderProductGridHtml() {
     } else if (activeCategory === "Aksesoris" || activeCategory === "Merchandise & Aksesoris Kartika Sari") {
       // Khusus Aksesoris Kartika Sari
       matchCat = isAksesorisProd(p);
+    } else if (activeCategory === "Buku" || activeCategory === "Buku & Referensi") {
+      matchCat = p.category === "Buku & Referensi" || p.brand === "APTIRMIKI" || (p.name || "").toLowerCase().includes("buku");
     } else if (activeCategory === "MAMADEE") {
       matchCat = p.brand === "MAMADEE";
     } else if (activeCategory === "Produk UMKM" || activeCategory === "UMKM") {
-      matchCat = p.category === "Produk UMKM" || (p.brand !== "Kartika Sari" && p.brand !== "MAMADEE");
+      matchCat = p.category === "Produk UMKM" || (p.brand !== "Kartika Sari" && p.brand !== "MAMADEE" && p.brand !== "APTIRMIKI" && p.category !== "Buku & Referensi");
     } else if (activeCategory !== "Semua") {
       matchCat = p.category === activeCategory || p.brand === activeCategory;
     }
@@ -620,12 +638,31 @@ function renderProductGridHtml() {
       </div>`;
   }
 
-  // Tampilkan dikelompokkan menjadi 4 seksi terpisah saat tab Semua Produk aktif
+  // Tampilkan dikelompokkan menjadi 5 seksi terpisah saat tab Semua Produk aktif
   if (activeCategory === "Semua" && !searchQuery) {
+    const bukuProds = filtered.filter((p) => p.category === "Buku & Referensi" || p.brand === "APTIRMIKI" || (p.name || "").toLowerCase().includes("buku"));
     const kartikaProds = filtered.filter((p) => p.brand === "Kartika Sari" && !isAksesorisProd(p));
     const aksesorisProds = filtered.filter((p) => isAksesorisProd(p));
     const mamadeeGroups = getMamadeeGroups(filtered.filter((p) => p.brand === "MAMADEE"));
-    const umkmProds = filtered.filter((p) => p.brand !== "Kartika Sari" && p.brand !== "MAMADEE");
+    const umkmProds = filtered.filter((p) => p.brand !== "Kartika Sari" && p.brand !== "MAMADEE" && p.brand !== "APTIRMIKI" && p.category !== "Buku & Referensi" && !(p.name || "").toLowerCase().includes("buku"));
+
+    const bukuHtml =
+      bukuProds.length > 0
+        ? `
+      <div class="mb-12">
+        <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-indigo-200">
+          <span class="w-3.5 h-3.5 rounded-full bg-indigo-600 shrink-0"></span>
+          <div>
+            <h3 class="font-bold text-base sm:text-xl text-gray-900 leading-tight">Buku & Referensi Ilmiah Rekam Medis</h3>
+            <p class="text-xs text-gray-500 hidden sm:block">Buku panduan resmi rekam medis & audit koding klinis terbitan original untuk praktisi & akademisi</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
+          ${bukuProds.map((p) => renderProductCardItemHtml(p, cart)).join("")}
+        </div>
+      </div>
+    `
+        : "";
 
     const kartikaHtml =
       kartikaProds.length > 0
@@ -699,7 +736,7 @@ function renderProductGridHtml() {
     `
         : "";
 
-    return `${kartikaHtml}${aksesorisHtml}${mamadeeHtml}${umkmHtml}`;
+    return `${bukuHtml}${kartikaHtml}${aksesorisHtml}${mamadeeHtml}${umkmHtml}`;
   }
 
   // Jika memilih kategori MAMADEE

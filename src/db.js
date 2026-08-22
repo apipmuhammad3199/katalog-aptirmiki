@@ -73,21 +73,16 @@ function readDB() {
           data.products.push({ ...defProd });
           added = true;
         } else {
-          // Update price, supplierPrice, and category if updated in products.js
+          // Update price, supplierPrice, category, and images if updated in products.js
           const cur = data.products[existsIdx];
-          if (defProd.brand === "Kartika Sari") {
-            if (cur.price !== defProd.price || cur.supplierPrice !== defProd.supplierPrice || cur.category !== defProd.category) {
-              data.products[existsIdx].price = defProd.price;
-              data.products[existsIdx].supplierPrice = defProd.supplierPrice;
-              data.products[existsIdx].category = defProd.category;
-              data.products[existsIdx].unit = defProd.unit;
-              data.products[existsIdx].expiryDetail = defProd.expiryDetail;
-              added = true;
-            }
-          }
-          // Upgrade external/broken URLs to local high-res webp/jpg if available
-          if (defProd.image && defProd.image.startsWith("/images/") && !String(data.products[existsIdx].image || "").startsWith("/images/")) {
+          if (cur.price !== defProd.price || cur.supplierPrice !== defProd.supplierPrice || cur.category !== defProd.category || cur.unit !== defProd.unit || cur.image !== defProd.image) {
+            data.products[existsIdx].price = defProd.price;
+            data.products[existsIdx].supplierPrice = defProd.supplierPrice;
+            data.products[existsIdx].category = defProd.category;
+            data.products[existsIdx].unit = defProd.unit;
+            data.products[existsIdx].expiryDetail = defProd.expiryDetail;
             data.products[existsIdx].image = defProd.image;
+            data.products[existsIdx].description = defProd.description;
             added = true;
           }
         }
@@ -286,15 +281,15 @@ async function syncWithKV() {
               mergedNewDefaults = true;
             } else {
               const cur = local.products[existsIdx];
-              if (defProd.brand === "Kartika Sari") {
-                if (cur.price !== defProd.price || cur.supplierPrice !== defProd.supplierPrice || cur.category !== defProd.category) {
-                  local.products[existsIdx].price = defProd.price;
-                  local.products[existsIdx].supplierPrice = defProd.supplierPrice;
-                  local.products[existsIdx].category = defProd.category;
-                  local.products[existsIdx].unit = defProd.unit;
-                  local.products[existsIdx].expiryDetail = defProd.expiryDetail;
-                  mergedNewDefaults = true;
-                }
+              if (cur.price !== defProd.price || cur.supplierPrice !== defProd.supplierPrice || cur.category !== defProd.category || cur.unit !== defProd.unit || cur.image !== defProd.image) {
+                local.products[existsIdx].price = defProd.price;
+                local.products[existsIdx].supplierPrice = defProd.supplierPrice;
+                local.products[existsIdx].category = defProd.category;
+                local.products[existsIdx].unit = defProd.unit;
+                local.products[existsIdx].expiryDetail = defProd.expiryDetail;
+                local.products[existsIdx].image = defProd.image;
+                local.products[existsIdx].description = defProd.description;
+                mergedNewDefaults = true;
               }
             }
           }
