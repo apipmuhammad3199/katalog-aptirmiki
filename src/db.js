@@ -72,20 +72,6 @@ function readDB() {
         if (existsIdx === -1) {
           data.products.push({ ...defProd });
           added = true;
-        } else {
-          // Update price, supplierPrice, category, stock, and images if updated in products.js
-          const cur = data.products[existsIdx];
-          if (cur.price !== defProd.price || cur.supplierPrice !== defProd.supplierPrice || cur.category !== defProd.category || cur.unit !== defProd.unit || cur.image !== defProd.image || cur.stock !== defProd.stock) {
-            data.products[existsIdx].price = defProd.price;
-            data.products[existsIdx].supplierPrice = defProd.supplierPrice;
-            data.products[existsIdx].category = defProd.category;
-            data.products[existsIdx].unit = defProd.unit;
-            data.products[existsIdx].stock = defProd.stock;
-            data.products[existsIdx].expiryDetail = defProd.expiryDetail;
-            data.products[existsIdx].image = defProd.image;
-            data.products[existsIdx].description = defProd.description;
-            added = true;
-          }
         }
       }
     }
@@ -280,19 +266,6 @@ async function syncWithKV() {
             if (existsIdx === -1) {
               local.products.push({ ...defProd });
               mergedNewDefaults = true;
-            } else {
-              const cur = local.products[existsIdx];
-              if (cur.price !== defProd.price || cur.supplierPrice !== defProd.supplierPrice || cur.category !== defProd.category || cur.unit !== defProd.unit || cur.image !== defProd.image || cur.stock !== defProd.stock) {
-                local.products[existsIdx].price = defProd.price;
-                local.products[existsIdx].supplierPrice = defProd.supplierPrice;
-                local.products[existsIdx].category = defProd.category;
-                local.products[existsIdx].unit = defProd.unit;
-                local.products[existsIdx].stock = defProd.stock;
-                local.products[existsIdx].expiryDetail = defProd.expiryDetail;
-                local.products[existsIdx].image = defProd.image;
-                local.products[existsIdx].description = defProd.description;
-                mergedNewDefaults = true;
-              }
             }
           }
           if (mergedNewDefaults) {

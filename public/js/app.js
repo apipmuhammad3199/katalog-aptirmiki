@@ -288,6 +288,9 @@ async function render() {
   if (path !== "tracking" && path !== "riwayat" && path !== "konfirmasi") {
     stopLiveSync();
   }
+  if (path !== "katalog" && path) {
+    stopKatalogLiveSync();
+  }
 
   if (path === "keranjang") {
     toggleFloatingButtons(false);
@@ -307,7 +310,7 @@ async function render() {
           const prevKey = `${data.order.id}_${data.order.status}_${Boolean(data.order.proof)}`;
           if (lastKnownStatusMap[data.order.id] && lastKnownStatusMap[data.order.id] !== prevKey) {
             const flowItem = (data.statusFlow || []).find((s) => s.key === data.order.status);
-            showToast(`🔔 Status pesanan #${data.order.id} diperbarui: ${flowItem ? flowItem.label : data.order.status}`);
+            showToast(`Status pesanan #${data.order.id} diperbarui: ${flowItem ? flowItem.label : data.order.status}`);
             renderKonfirmasi(params[0]);
           }
           lastKnownStatusMap[data.order.id] = prevKey;
@@ -325,7 +328,32 @@ async function render() {
     return renderTracking(params[0], "riwayat");
   }
   toggleFloatingButtons(true);
+  startKatalogLiveSync();
   return renderKatalog();
+}
+
+let katalogSyncTimer = null;
+function startKatalogLiveSync() {
+  stopKatalogLiveSync();
+  katalogSyncTimer = setInterval(async () => {
+    const { path } = currentRoute();
+    if (path === "katalog" || !path) {
+      const prevChecksum = PRODUCTS.map((p) => `${p.id}:${p.price}:${p.stock}:${p.isSoldOut}`).join("|");
+      await refreshProducts();
+      const newChecksum = PRODUCTS.map((p) => `${p.id}:${p.price}:${p.stock}:${p.isSoldOut}`).join("|");
+      if (prevChecksum !== newChecksum) {
+        const gridContainer = document.getElementById("product-grid-container");
+        if (gridContainer) gridContainer.innerHTML = renderProductGridHtml();
+      }
+    }
+  }, 4000);
+}
+
+function stopKatalogLiveSync() {
+  if (katalogSyncTimer) {
+    clearInterval(katalogSyncTimer);
+    katalogSyncTimer = null;
+  }
 }
 
 function setView(html) {

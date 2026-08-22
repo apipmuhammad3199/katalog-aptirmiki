@@ -1589,8 +1589,8 @@ document.getElementById("manual-order-form")?.addEventListener("submit", async (
     if (!res.ok) throw new Error(result.error || "Gagal menyimpan pesanan");
 
     closeManualOrderModal();
-    await loadData();
-    showSuccessModal("Pesanan Berhasil Dicatat!", `Pesanan #${result.id} a.n ${result.customer?.name} berhasil masuk rekap.`);
+    await loadAll();
+    showSuccessModal({ title: "Pesanan Berhasil Dicatat!", message: `Pesanan #${result.id} a.n ${result.customer?.name} berhasil masuk rekap.` });
   } catch (err) {
     if (errEl) {
       errEl.textContent = err.message;
