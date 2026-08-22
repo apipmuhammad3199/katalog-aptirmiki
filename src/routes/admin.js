@@ -171,7 +171,7 @@ router.get("/products", requireAdmin, (req, res) => {
 });
 
 router.post("/products", requireAdmin, async (req, res) => {
-  const { name, brand, category, price, supplierPrice, unit, origin, expiryDetail, description, image } = req.body || {};
+  const { name, brand, category, price, supplierPrice, unit, origin, expiryDetail, description, image, stock } = req.body || {};
   if (!name || !category || !price || !unit) {
     return res.status(400).json({ error: "Nama, kategori, harga, dan satuan produk wajib diisi." });
   }
@@ -193,6 +193,7 @@ router.post("/products", requireAdmin, async (req, res) => {
     price: sellingPrice,
     supplierPrice: costPrice,
     unit: String(unit).trim(),
+    stock: stock !== undefined && stock !== null && stock !== "" ? Number(stock) : null,
     origin: origin ? String(origin).trim() : "Betawi, Jakarta",
     expiryDetail: expiryDetail ? String(expiryDetail).trim() : "Tahan Lama",
     description: description ? String(description).trim() : "",
@@ -205,7 +206,7 @@ router.post("/products", requireAdmin, async (req, res) => {
 });
 
 router.put("/products/:id", requireAdmin, async (req, res) => {
-  const { name, brand, category, price, supplierPrice, unit, origin, expiryDetail, description, image } = req.body || {};
+  const { name, brand, category, price, supplierPrice, unit, origin, expiryDetail, description, image, stock } = req.body || {};
   const updates = {};
   if (name !== undefined) updates.name = String(name).trim();
   if (brand !== undefined) updates.brand = String(brand).trim();
@@ -213,6 +214,7 @@ router.put("/products/:id", requireAdmin, async (req, res) => {
   if (price !== undefined) updates.price = Number(price) || 0;
   if (supplierPrice !== undefined && supplierPrice !== "") updates.supplierPrice = Number(supplierPrice) || 0;
   if (unit !== undefined) updates.unit = String(unit).trim();
+  if (stock !== undefined) updates.stock = stock !== null && stock !== "" ? Number(stock) : null;
   if (origin !== undefined) updates.origin = String(origin).trim();
   if (expiryDetail !== undefined) updates.expiryDetail = String(expiryDetail).trim();
   if (description !== undefined) updates.description = String(description).trim();

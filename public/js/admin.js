@@ -914,6 +914,7 @@ function openProductModal(productId = null) {
     document.getElementById("prod-price").value = p.price ? formatRupiahInput(p.price) : "";
     document.getElementById("prod-supplier-price").value = p.supplierPrice !== undefined ? formatRupiahInput(p.supplierPrice) : formatRupiahInput(Math.round(p.price * 0.7));
     document.getElementById("prod-unit").value = p.unit;
+    if (document.getElementById("prod-stock")) document.getElementById("prod-stock").value = typeof p.stock === "number" ? p.stock : "";
     document.getElementById("prod-origin").value = p.origin || "";
     document.getElementById("prod-expiry").value = p.expiryDetail || "";
     document.getElementById("prod-desc").value = p.description || "";
@@ -922,6 +923,7 @@ function openProductModal(productId = null) {
     document.getElementById("product-modal-title").textContent = "Tambah Produk Baru";
     form.reset();
     document.getElementById("prod-id").value = "";
+    if (document.getElementById("prod-stock")) document.getElementById("prod-stock").value = "";
   }
 
   updateProfitPreview();
@@ -958,6 +960,7 @@ document.getElementById("product-form").addEventListener("submit", async (e) => 
   errEl.classList.add("hidden");
 
   const id = document.getElementById("prod-id").value;
+  const stockInput = document.getElementById("prod-stock") ? document.getElementById("prod-stock").value.trim() : "";
   const payload = {
     name: document.getElementById("prod-name").value,
     brand: document.getElementById("prod-brand") ? document.getElementById("prod-brand").value : "Betawi Asli",
@@ -965,6 +968,7 @@ document.getElementById("product-form").addEventListener("submit", async (e) => 
     price: parseRupiahInput(document.getElementById("prod-price").value),
     supplierPrice: parseRupiahInput(document.getElementById("prod-supplier-price").value),
     unit: document.getElementById("prod-unit").value,
+    stock: stockInput !== "" ? Number(stockInput) : null,
     origin: document.getElementById("prod-origin").value,
     expiryDetail: document.getElementById("prod-expiry").value,
     description: document.getElementById("prod-desc").value,

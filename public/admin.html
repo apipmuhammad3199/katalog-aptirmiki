@@ -288,22 +288,29 @@
           </div>
         </div>
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
           <div>
             <label class="text-xs font-semibold text-gray-700">Kategori *</label>
-            <input list="category-datalist" required id="prod-category" placeholder="Pilih atau ketik kategori..." class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-xs sm:text-sm mt-1 focus:border-[--color-primary] bg-gray-50/50 focus:bg-white" />
+            <input list="category-datalist" required id="prod-category" placeholder="Pilih / ketik..." class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-xs sm:text-sm mt-1 focus:border-[--color-primary] bg-gray-50/50 focus:bg-white" />
             <datalist id="category-datalist">
+              <option value="Buku & Referensi"></option>
               <option value="Minuman & Kopi MAMADEE"></option>
               <option value="Bolen & Pastry Kartika Sari"></option>
               <option value="Bolu & Kue Kartika Sari"></option>
               <option value="Brownies Kartika Sari"></option>
+              <option value="Cemilan & Snack Kartika Sari"></option>
+              <option value="Merchandise & Aksesoris Kartika Sari"></option>
               <option value="Produk UMKM"></option>
               <option value="Kuliner & Sambal UMKM"></option>
             </datalist>
           </div>
           <div>
             <label class="text-xs font-semibold text-gray-700">Satuan *</label>
-            <input required id="prod-unit" type="text" placeholder="box / pack / botol / toples" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-xs sm:text-sm mt-1 focus:border-[--color-primary] bg-gray-50/50 focus:bg-white" />
+            <input required id="prod-unit" type="text" placeholder="buku / box / pack / botol" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-xs sm:text-sm mt-1 focus:border-[--color-primary] bg-gray-50/50 focus:bg-white" />
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-700">Batas Kuota / Stok</label>
+            <input id="prod-stock" type="number" min="0" placeholder="Contoh: 8 (opsional)" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-xs sm:text-sm mt-1 focus:border-[--color-primary] bg-gray-50/50 focus:bg-white" />
           </div>
         </div>
 
