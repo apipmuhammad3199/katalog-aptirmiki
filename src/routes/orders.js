@@ -87,10 +87,15 @@ router.post("/", async (req, res) => {
           const found = (o.items || []).find((it) => String(it.productId).toLowerCase().trim() === String(product.id).toLowerCase().trim());
           return sum + (found ? (Number(found.qty) || 0) : 0);
         }, 0);
-      const remainingStock = product.stock - totalBooked;
+      const remainingStock = Math.max(0, product.stock - totalBooked);
       if (qty > remainingStock) {
+        if (remainingStock <= 0) {
+          return res.status(400).json({
+            error: `Mohon maaf, produk '${product.name}' sudah Sold Out (Habis Terjual).`,
+          });
+        }
         return res.status(400).json({
-          error: `Mohon maaf, stok '${product.name}' hanya tersisa ${Math.max(0, remainingStock)} ${product.unit || "buku"}.`,
+          error: `Mohon maaf, stok '${product.name}' hanya tersisa ${remainingStock} ${product.unit || "buku"}.`,
         });
       }
     }

@@ -589,9 +589,9 @@ function renderProductCardItemHtml(p, cart) {
                         <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
                         <span>Sisa ${p.stock} ${escapeHtml(p.unit || "buku")}</span>
                       </span>`
-                    : `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-gray-100 text-gray-500 border border-gray-200">
-                        <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
-                        <span>Stok Habis</span>
+                    : `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-slate-900 text-white shadow-2xs tracking-wider uppercase">
+                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                        <span>Sold Out</span>
                       </span>`
                 }
               </div>`
@@ -804,8 +804,8 @@ function cartControl(productId, qty) {
   const isOutOfStock = prod && typeof prod.stock === "number" && prod.stock <= 0;
 
   if (isOutOfStock) {
-    return `<button disabled class="w-full bg-gray-100 text-gray-400 text-xs sm:text-sm font-semibold py-2 rounded-xl cursor-not-allowed border border-gray-200">
-      Stok Habis
+    return `<button disabled class="w-full bg-gray-100 text-gray-400 text-xs sm:text-sm font-bold py-2 rounded-xl cursor-not-allowed border border-gray-200 uppercase tracking-wider">
+      Sold Out
     </button>`;
   }
 
