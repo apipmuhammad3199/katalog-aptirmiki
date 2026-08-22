@@ -1422,6 +1422,181 @@ document.querySelectorAll("[data-export-opt]").forEach((btn) => {
   });
 });
 
+// ===== Manual Order / WhatsApp Order Modal Logic =====
+let MANUAL_ORDER_ITEMS = [];
+
+function openManualOrderModal() {
+  const modal = document.getElementById("manual-order-modal");
+  if (!modal) return;
+
+  // Reset form
+  document.getElementById("manual-order-name").value = "";
+  document.getElementById("manual-order-wa").value = "";
+  document.getElementById("manual-order-instansi").value = "";
+  document.getElementById("manual-order-target-bank").value = "BCA";
+  document.getElementById("manual-order-method").value = "Ambil di Booth";
+  document.getElementById("manual-order-detail").value = "";
+  
+  const errEl = document.getElementById("manual-order-error");
+  if (errEl) errEl.classList.add("hidden");
+
+  MANUAL_ORDER_ITEMS = [];
+  renderManualOrderItems();
+
+  // Populate product dropdown
+  const selectEl = document.getElementById("manual-item-select");
+  if (selectEl && Array.isArray(ALL_PRODUCTS)) {
+    selectEl.innerHTML = ALL_PRODUCTS.map(
+      (p) => `<option value="${p.id}">${escapeHtml(p.name)} (${p.brand || "Umum"}) - ${rupiah(p.price)}</option>`
+    ).join("");
+  }
+
+  modal.classList.remove("hidden");
+}
+
+function closeManualOrderModal() {
+  const modal = document.getElementById("manual-order-modal");
+  if (modal) modal.classList.add("hidden");
+}
+
+function renderManualOrderItems() {
+  const container = document.getElementById("manual-order-items-list");
+  const totalEl = document.getElementById("manual-order-total-preview");
+  if (!container) return;
+
+  if (MANUAL_ORDER_ITEMS.length === 0) {
+    container.innerHTML = `<p class="text-xs text-gray-400 italic py-2 text-center bg-gray-50 rounded-lg">Belum ada produk yang ditambahkan.</p>`;
+    if (totalEl) totalEl.textContent = rupiah(0);
+    return;
+  }
+
+  let total = 0;
+  container.innerHTML = MANUAL_ORDER_ITEMS.map((item, idx) => {
+    const subtotal = (item.price || 0) * (item.qty || 1);
+    total += subtotal;
+    return `
+      <div class="flex items-center justify-between gap-2 bg-gray-50 rounded-xl px-3 py-2 border border-gray-100">
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-semibold text-gray-800 truncate">${escapeHtml(item.name)}</p>
+          <p class="text-[11px] text-gray-500">${escapeHtml(item.brand || "Umum")} · ${rupiah(item.price)} × ${item.qty} = <span class="font-bold text-emerald-700">${rupiah(subtotal)}</span></p>
+        </div>
+        <button type="button" data-del-manual-item="${idx}" class="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition text-xs font-bold">
+          ✕
+        </button>
+      </div>
+    `;
+  }).join("");
+
+  if (totalEl) totalEl.textContent = rupiah(total);
+
+  // Bind delete buttons
+  container.querySelectorAll("[data-del-manual-item]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const idx = Number(btn.dataset.delManualItem);
+      MANUAL_ORDER_ITEMS.splice(idx, 1);
+      renderManualOrderItems();
+    });
+  });
+}
+
+document.getElementById("add-manual-order-btn")?.addEventListener("click", openManualOrderModal);
+document.getElementById("close-manual-order-modal")?.addEventListener("click", closeManualOrderModal);
+document.getElementById("cancel-manual-order-modal")?.addEventListener("click", closeManualOrderModal);
+
+document.getElementById("manual-add-item-btn")?.addEventListener("click", () => {
+  const selectEl = document.getElementById("manual-item-select");
+  const qtyInput = document.getElementById("manual-item-qty");
+  if (!selectEl || !qtyInput) return;
+
+  const prodId = selectEl.value;
+  const qty = Math.max(1, Number(qtyInput.value) || 1);
+  const prod = ALL_PRODUCTS.find((p) => p.id === prodId);
+  if (!prod) return;
+
+  const existing = MANUAL_ORDER_ITEMS.find((i) => i.productId === prod.id);
+  if (existing) {
+    existing.qty += qty;
+  } else {
+    MANUAL_ORDER_ITEMS.push({
+      productId: prod.id,
+      name: prod.name,
+      brand: prod.brand || "Umum",
+      price: Number(prod.price) || 0,
+      unit: prod.unit || "pcs",
+      qty: qty,
+    });
+  }
+
+  qtyInput.value = 1;
+  renderManualOrderItems();
+});
+
+document.getElementById("manual-order-form")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById("manual-order-error");
+  if (errEl) errEl.classList.add("hidden");
+
+  if (MANUAL_ORDER_ITEMS.length === 0) {
+    if (errEl) {
+      errEl.textContent = "Silakan tambahkan minimal 1 produk ke dalam pesanan.";
+      errEl.classList.remove("hidden");
+    }
+    return;
+  }
+
+  const name = document.getElementById("manual-order-name").value.trim();
+  const wa = document.getElementById("manual-order-wa").value.trim();
+  const instansi = document.getElementById("manual-order-instansi").value.trim();
+  const targetBank = document.getElementById("manual-order-target-bank").value;
+  const method = document.getElementById("manual-order-method").value;
+  const detail = document.getElementById("manual-order-detail").value.trim();
+
+  const payload = {
+    customer: {
+      name,
+      wa,
+      instansi,
+      targetBank,
+      method,
+      detail,
+    },
+    items: MANUAL_ORDER_ITEMS.map((it) => ({
+      productId: it.productId,
+      qty: it.qty,
+    })),
+  };
+
+  const saveBtn = document.getElementById("save-manual-order-btn");
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Menyimpan...";
+  }
+
+  try {
+    const res = await fetch("/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.error || "Gagal menyimpan pesanan");
+
+    closeManualOrderModal();
+    await loadData();
+    showSuccessModal("Pesanan Berhasil Dicatat!", `Pesanan #${result.id} a.n ${result.customer?.name} berhasil masuk rekap.`);
+  } catch (err) {
+    if (errEl) {
+      errEl.textContent = err.message;
+      errEl.classList.remove("hidden");
+    }
+  } finally {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = "Simpan & Rekap Pesanan";
+    }
+  }
+});
+
 // ===== Privacy Mode & Overview Panel Toggle =====
 let IS_PRIVACY_MODE = localStorage.getItem("admin_privacy_mode") === "1";
 let IS_OVERVIEW_HIDDEN = localStorage.getItem("admin_overview_hidden") === "1";
